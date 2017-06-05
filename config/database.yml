@@ -1,0 +1,25 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  adapter: mysql2
+  pool: 5
+  timeout: 3000
+  encoding: utf8
+  username: root
+  password:
+
+development:
+  <<: *default
+  database: hackathon_portal_development
+
+test:
+  <<: *default
+  database: hackathon_portal_test
+
+production:
+  <<: *default
+  database: hackathon_portal_roduction
