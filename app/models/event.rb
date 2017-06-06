@@ -36,5 +36,6 @@
 class Event < ApplicationRecord
   def self.import_events
     Connpass.import_events!
+    Doorkeeper.import_events!
   end
 end
