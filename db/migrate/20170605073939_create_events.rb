@@ -9,7 +9,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.string :description, null: false
       t.datetime :started_at, null: false
       t.datetime :ended_at, null: false
-      t.integer :limit, null: false, default: 0
+      t.integer :limit_number, null: false, default: 0
       t.string :address, null: false
       t.string :place, null: false
       t.float :lat
@@ -18,9 +18,12 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.integer :max_prize, null: false, default: 0
       t.string :currency_unit, null: false, default: "円"
       t.string :owner_id
+      t.string :owner_nickname
       t.string :owner_name
+      t.integer :attend_number, null: false, default: 0
+      t.integer :substitute_number, null: false, default: 0
     end
-    add_index :events, [:event_id, :type]
+    add_index :events, [:event_id, :type], unique: true
     add_index :events, [:started_at, :ended_at]
     add_index :events, :keyword
     add_index :events, :title
