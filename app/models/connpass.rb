@@ -8,7 +8,7 @@
 #  keyword           :string(255)      not null
 #  title             :string(255)      not null
 #  url               :string(255)      not null
-#  description       :string(255)      not null
+#  description       :text(65535)
 #  started_at        :datetime         not null
 #  ended_at          :datetime         not null
 #  limit_number      :integer          default(0), not null
@@ -24,6 +24,8 @@
 #  owner_name        :string(255)
 #  attend_number     :integer          default(0), not null
 #  substitute_number :integer          default(0), not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #

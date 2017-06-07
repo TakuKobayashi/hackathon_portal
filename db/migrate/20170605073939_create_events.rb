@@ -6,7 +6,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.string :keyword, null: false
       t.string :title, null: false
       t.string :url, null: false
-      t.string :description, null: false
+      t.text :description
       t.datetime :started_at, null: false
       t.datetime :ended_at, null: false
       t.integer :limit_number, null: false, default: 0
@@ -22,6 +22,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.string :owner_name
       t.integer :attend_number, null: false, default: 0
       t.integer :substitute_number, null: false, default: 0
+      t.timestamps
     end
     add_index :events, [:event_id, :type], unique: true
     add_index :events, [:started_at, :ended_at]
