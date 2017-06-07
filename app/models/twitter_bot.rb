@@ -18,7 +18,7 @@
 #
 
 class TwitterBot < ApplicationRecord
-  belongs_to :from, polymorphic: true
+  belongs_to :from, polymorphic: true, required: false
 
   def self.tweet!(from: nil)
     apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
@@ -29,7 +29,7 @@ class TwitterBot < ApplicationRecord
       config.access_token_secret = apiconfig["twitter"]["bot"]["access_token_secret"]
     end
     tweet_result = twitter_client.update("テスト")
-    return tweet_result
-#    TwitterBot.create()
+    twitter_bot = TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from)
+    return twitter_bot
   end
 end
