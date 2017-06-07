@@ -44,6 +44,9 @@ gem 'google-api-client', '~> 0.11'
 
 gem 'qiita'
 
+gem 'twitter'
+gem 'tweetstream'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
