@@ -43,33 +43,39 @@ class Connpass < Event
   end
 
   def self.import_events!
-    connpass_event_last = Connpass.last
-    events_response = Connpass.find_event(keywords: ["ハッカソン", "hackathon", "はっかそん"])
-    connpass_events = []
-    events_response["events"].each do |res|
-      connpass_events << Connpass.new(
-        event_id: res["event_id"].to_s,
-        keyword: res["keyword"].to_s,
-        title: res["title"].to_s,
-        url: res["event_url"].to_s,
-        description: res["description"].to_s,
-        started_at: res["started_at"],
-        ended_at: res["ended_at"],
-        limit_number: res["limit"],
-        address: res["address"].to_s,
-        place: res["place"].to_s,
-        lat: res["lat"],
-        lon: res["lon"],
-        cost: 0,
-        max_prize: 0,
-        currency_unit: "円",
-        owner_id: res["owner_id"],
-        owner_nickname: res["owner_nickname"],
-        owner_name: res["owner_display_name"],
-        attend_number: res["accepted"],
-        substitute_number: res["waiting"]
-      )
+    results_available = 0
+    start = 1
+    update_columns = Connpass.column_names - ["id", "type", "event_id", "created_at"]
+    begin
+      events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
+      results_available = events_response["results_available"]
+      start += events_response["results_returned"]
+      connpass_events = []
+      events_response["events"].each do |res|
+        connpass_events << Connpass.new(
+          event_id: res["event_id"].to_s,
+          title: res["title"].to_s,
+          url: res["event_url"].to_s,
+          description: res["description"].to_s,
+          started_at: Time.parse(res["started_at"]),
+          ended_at: Time.parse(res["ended_at"]),
+          limit_number: res["limit"],
+          address: res["address"].to_s,
+          place: res["place"].to_s,
+          lat: res["lat"],
+          lon: res["lon"],
+          cost: 0,
+          max_prize: 0,
+          currency_unit: "円",
+          owner_id: res["owner_id"],
+          owner_nickname: res["owner_nickname"],
+          owner_name: res["owner_display_name"],
+          attend_number: res["accepted"],
+          substitute_number: res["waiting"]
+        )
+      end
+
+      Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
     end
-    Connpass.import!(connpass_events)
   end
 end
