@@ -18,3 +18,10 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+set :output, "#{path}/log/cron.log"
+
+every 8.hours do
+  rake "batch:crawl_and_tweet"
+  command "/bin/echo `date`: crawl and tweet bot!!"
+end

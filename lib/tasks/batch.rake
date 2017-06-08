@@ -1,5 +1,5 @@
 namespace :batch do
-  task work: :environment do
+  task crawl_and_tweet: :environment do
     Event.import_events!
     Event.where("started_at > ? AND limit_number > attend_number", Time.current).find_each do |event|
       sanitized_title = ApplicationRecord.basic_sanitize(event.title).downcase
