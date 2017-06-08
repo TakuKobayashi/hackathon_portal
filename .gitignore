@@ -18,6 +18,7 @@ coverage
 *.DS_Store
 db/schema.rb
 config/apiconfig.yml
+config/database.yml
 
 .ruby-gemset
 .ruby-version
