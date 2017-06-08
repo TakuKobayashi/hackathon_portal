@@ -36,7 +36,9 @@
 #
 
 class Event < ApplicationRecord
-  def self.import_events
+  HACKATHON_KEYWORDS = ["hackathon", "ハッカソン", "jam", "ジャム", "アイディアソン", "ideathon"]
+
+  def self.import_events!
     Connpass.import_events!
     Doorkeeper.import_events!
   end
