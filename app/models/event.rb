@@ -5,7 +5,6 @@
 #  id                :integer          not null, primary key
 #  event_id          :string(255)
 #  type              :string(255)
-#  keyword           :string(255)      not null
 #  title             :string(255)      not null
 #  url               :string(255)      not null
 #  description       :text(65535)
@@ -30,7 +29,6 @@
 # Indexes
 #
 #  index_events_on_event_id_and_type        (event_id,type) UNIQUE
-#  index_events_on_keyword                  (keyword)
 #  index_events_on_started_at_and_ended_at  (started_at,ended_at)
 #  index_events_on_title                    (title)
 #

@@ -3,7 +3,6 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     create_table :events do |t|
       t.string :event_id
       t.string :type
-      t.string :keyword, null: false
       t.string :title, null: false
       t.string :url, null: false
       t.text :description
@@ -26,7 +25,6 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     end
     add_index :events, [:event_id, :type], unique: true
     add_index :events, [:started_at, :ended_at]
-    add_index :events, :keyword
     add_index :events, :title
   end
 end
