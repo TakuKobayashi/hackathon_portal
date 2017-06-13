@@ -10,7 +10,7 @@
 #  description       :text(65535)
 #  started_at        :datetime         not null
 #  ended_at          :datetime         not null
-#  limit_number      :integer          default(0), not null
+#  limit_number      :integer
 #  address           :string(255)      not null
 #  place             :string(255)      not null
 #  lat               :float(24)
@@ -76,6 +76,6 @@ class Connpass < Event
       end
 
       Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
-    end
+    end while start < results_available
   end
 end

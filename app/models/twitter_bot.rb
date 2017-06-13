@@ -20,7 +20,7 @@
 class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
-  def self.tweet!(text:, from: nil)
+  def self.tweet!(text:, from: nil, options: {})
     apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     twitter_client = Twitter::REST::Client.new do |config|
       config.consumer_key        = apiconfig["twitter"]["consumer_key"]
@@ -28,7 +28,7 @@ class TwitterBot < ApplicationRecord
       config.access_token        = apiconfig["twitter"]["bot"]["access_token_key"]
       config.access_token_secret = apiconfig["twitter"]["bot"]["access_token_secret"]
     end
-    tweet_result = twitter_client.update(text)
+    tweet_result = twitter_client.update(text, options)
     twitter_bot = TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from)
     return twitter_bot
   end

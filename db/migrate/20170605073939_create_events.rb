@@ -8,7 +8,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.text :description
       t.datetime :started_at, null: false
       t.datetime :ended_at, null: false
-      t.integer :limit_number, null: false, default: 0
+      t.integer :limit_number
       t.string :address, null: false
       t.string :place, null: false
       t.float :lat
