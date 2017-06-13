@@ -34,10 +34,21 @@
 #
 
 class Event < ApplicationRecord
-  HACKATHON_KEYWORDS = ["hackathon", "ハッカソン", "jam", "ジャム", "アイディアソン", "ideathon"]
+  HACKATHON_KEYWORDS = ["hackathon", "ハッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon"]
 
   def self.import_events!
     Connpass.import_events!
     Doorkeeper.import_events!
+  end
+
+  def generate_tweet_text
+     tweet_words = [self.title, self.url, self.started_at.strftime("%Y年%m月%d日")]
+     tweet_words += ["#hackathon"]
+     text_size = 0
+     tweet_words.select! do |text|
+       text_size += text.size
+       text_size <= 140
+     end
+     return tweet_words.join("\n")
   end
 end
