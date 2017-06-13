@@ -38,36 +38,40 @@ class Doorkeeper < Event
 
   def self.find_event(keywords:, page: 1)
     http_client = HTTPClient.new
-    response = http_client.get(DOORKEEPER_URL, {q: keywords, page: page}, {})
+    response = http_client.get(DOORKEEPER_URL, {q: keywords.join("|"), page: page}, {})
     return JSON.parse(response.body)
   end
 
   def self.import_events!
-    events_response = Doorkeeper.find_event(keywords: ["ハッカソン", "hackathon", "はっかそん"])
-    doorkeeper_events = []
-    events_response.each do |res|
-      event = res["event"]
-      doorkeeper_events << Doorkeeper.new(
-        event_id: event["id"].to_s,
-        keyword: event["keyword"].to_s,
-        title: event["title"].to_s,
-        url: event["public_url"].to_s,
-        description: event["description"].to_s,
-        started_at: event["starts_at"],
-        ended_at: event["ends_at"],
-        limit_number: event["ticket_limit"],
-        address: event["address"].to_s,
-        place: event["venue_name"].to_s,
-        lat: event["lat"],
-        lon: event["long"],
-        cost: 0,
-        max_prize: 0,
-        currency_unit: "円",
-        owner_id: event["group"],
-        attend_number: event["participants"],
-        substitute_number: event["waitlisted"]
-      )
-    end
-    Doorkeeper.import!(doorkeeper_events)
+    page = 1
+    update_columns = Connpass.column_names - ["id", "type", "event_id", "created_at"]
+    begin
+      events_response = Doorkeeper.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
+      doorkeeper_events = []
+      events_response.each do |res|
+        event = res["event"]
+        doorkeeper_events << Doorkeeper.new(
+          event_id: event["id"].to_s,
+          title: event["title"].to_s,
+          url: event["public_url"].to_s,
+          description: ApplicationRecord.basic_sanitize(event["description"].to_s),
+          started_at: Time.parse(event["starts_at"]),
+          ended_at: Time.parse(event["ends_at"]),
+          limit_number: event["ticket_limit"],
+          address: event["address"].to_s,
+          place: event["venue_name"].to_s,
+          lat: event["lat"],
+          lon: event["long"],
+          cost: 0,
+          max_prize: 0,
+          currency_unit: "円",
+          owner_id: event["group"],
+          attend_number: event["participants"],
+          substitute_number: event["waitlisted"]
+        )
+      end
+      Doorkeeper.import!(doorkeeper_events)
+      page += 1
+    end while events_response.present?
   end
 end

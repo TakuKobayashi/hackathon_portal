@@ -56,7 +56,7 @@ class Connpass < Event
           event_id: res["event_id"].to_s,
           title: res["title"].to_s,
           url: res["event_url"].to_s,
-          description: res["description"].to_s,
+          description: ApplicationRecord.basic_sanitize(res["description"].to_s),
           started_at: Time.parse(res["started_at"]),
           ended_at: Time.parse(res["ended_at"]),
           limit_number: res["limit"],
