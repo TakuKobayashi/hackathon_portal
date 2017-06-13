@@ -6,14 +6,15 @@ namespace :batch do
       sanitized_title = ApplicationRecord.basic_sanitize(event.title).downcase
       keyword = Event::HACKATHON_KEYWORDS.detect{|word| sanitized_title.include?(word) }
       if keyword.present?
-        tweet_words = ["#{keyword}情報!!", event.title, event.url, event.started_at.strftime("%Y/%m/%d %H:%M 開始"), event.ended_at.strftime("%Y/%m/%d %H:%M 終了")]
-        if event.limit_number.present?
-          tweet_words << "定員:#{event.limit_number}名 残りあと#{event.limit_number - event.attend_number}名"
-        else
-          tweet_words << "現在:#{event.attend_number}名参加中!!"
-        end
+        tweet_words = [event.title, event.url, event.started_at.strftime("開催日:%Y年%m月%d日")]
         tweet_words += ["#hackathon"]
-        TwitterBot.tweet!(text: tweet_words.join("\n") , from: event, options: {lat: event.lat, long: event.lon})
+        text_size = 0
+        tweet_words.select! do |text|
+          text_size += text.size
+          text_size <= 140
+        end
+        text = tweet_words.join("\n")
+        TwitterBot.tweet!(text: text, from: event, options: {lat: event.lat, long: event.lon})
       end
     end
   end
