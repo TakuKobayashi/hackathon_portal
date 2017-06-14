@@ -5,6 +5,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.string :type
       t.string :title, null: false
       t.string :url, null: false
+      t.string :shortener_url
       t.text :description
       t.datetime :started_at, null: false
       t.datetime :ended_at, null: false

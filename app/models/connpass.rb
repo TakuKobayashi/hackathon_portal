@@ -7,6 +7,7 @@
 #  type              :string(255)
 #  title             :string(255)      not null
 #  url               :string(255)      not null
+#  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
 #  ended_at          :datetime         not null
