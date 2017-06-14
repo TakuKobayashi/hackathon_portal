@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime         not null
+#  ended_at          :datetime
 #  limit_number      :integer
 #  address           :string(255)      not null
 #  place             :string(255)      not null
@@ -49,7 +49,7 @@ class Doorkeeper < Event
     stop_flg = false
 
     page = 1
-    update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
+    update_columns = Doorkeeper.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Doorkeeper.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
       doorkeeper_events = []
@@ -59,13 +59,11 @@ class Doorkeeper < Event
           stop_flg = true
           break
         end
-        doorkeeper_events << Doorkeeper.new(
+        doorkeeper_event = Doorkeeper.new(
           event_id: event["id"].to_s,
           title: event["title"].to_s,
           url: event["public_url"].to_s,
           description: ApplicationRecord.basic_sanitize(event["description"].to_s),
-          started_at: Time.parse(event["starts_at"]),
-          ended_at: Time.parse(event["ends_at"]),
           limit_number: event["ticket_limit"],
           address: event["address"].to_s,
           place: event["venue_name"].to_s,
@@ -78,7 +76,10 @@ class Doorkeeper < Event
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]
         )
-        extra[Doorkeeper.to_s] = res["id"].to_s
+        doorkeeper_event.started_at = Time.parse(event["starts_at"])
+        doorkeeper_event.ended_at = Time.parse(event["ends_at"]) if event["ends_at"].present?
+        doorkeeper_events << doorkeeper_event
+        extra[Doorkeeper.to_s] = event["id"].to_s
       end
       Doorkeeper.import!(doorkeeper_events)
       page += 1

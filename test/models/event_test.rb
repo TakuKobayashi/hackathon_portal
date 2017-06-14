@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime         not null
+#  ended_at          :datetime
 #  limit_number      :integer
 #  address           :string(255)      not null
 #  place             :string(255)      not null

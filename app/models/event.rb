@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime         not null
+#  ended_at          :datetime
 #  limit_number      :integer
 #  address           :string(255)      not null
 #  place             :string(255)      not null
@@ -42,6 +42,7 @@ class Event < ApplicationRecord
   def self.import_events!
     Connpass.import_events!
     Doorkeeper.import_events!
+    Atnd.import_events!
   end
 
   def hackathon_event?
@@ -51,6 +52,9 @@ class Event < ApplicationRecord
 
   def generate_tweet_text
      tweet_words = [self.title, self.short_url, self.started_at.strftime("%Y年%m月%d日")]
+     if self.limit_number.present?
+       tweet_words << "定員#{self.limit_number}人"
+     end
      tweet_words += ["#hackathon"]
      text_size = 0
      tweet_words.select! do |text|

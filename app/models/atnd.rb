@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime         not null
+#  ended_at          :datetime
 #  limit_number      :integer
 #  address           :string(255)      not null
 #  place             :string(255)      not null
@@ -34,60 +34,59 @@
 #  index_events_on_title                    (title)
 #
 
-class Connpass < Event
-  CONNPASS_URL = "https://connpass.com/api/v1/event/"
+class Atnd < Event
+  ATND_URL = "http://api.atnd.org/events/"
 
   def self.find_event(keywords:, start: 1)
     http_client = HTTPClient.new
-    response = http_client.get(CONNPASS_URL, {keyword_or: keywords, count: 100, start: start, order: 1}, {})
+    response = http_client.get(ATND_URL, {keyword_or: keywords, count: 100, start: start, format: :json}, {})
     return JSON.parse(response.body)
   end
 
   def self.import_events!
     extra = ExtraInfo.read_extra_info
-    last_update_event_id = extra[Connpass.to_s].to_s
+    last_update_event_id = extra[Atnd.to_s].to_s
     stop_flg = false
 
     results_available = 0
     start = 1
-    update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
+    update_columns = Atnd.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
-      events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
-      results_available = events_response["results_available"]
+      events_response = Atnd.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       start += events_response["results_returned"]
-      connpass_events = []
+      atnd_events = []
       events_response["events"].each do |res|
-        if res["event_id"].to_s == last_update_event_id
+        event = res["event"]
+        if event["event_id"].to_s == last_update_event_id
           stop_flg = true
           break
         end
-        connpass_event = Connpass.new(
-          event_id: res["event_id"].to_s,
-          title: res["title"].to_s,
-          url: res["event_url"].to_s,
-          description: ApplicationRecord.basic_sanitize(res["description"].to_s),
-          limit_number: res["limit"],
-          address: res["address"].to_s,
-          place: res["place"].to_s,
-          lat: res["lat"],
-          lon: res["lon"],
+        atnd_event = Atnd.new(
+          event_id: event["event_id"].to_s,
+          title: event["title"].to_s,
+          url: event["url"].to_s,
+          description: ApplicationRecord.basic_sanitize(event["description"].to_s),
+          limit_number: event["limit"],
+          address: event["address"].to_s,
+          place: event["place"].to_s,
+          lat: event["lat"],
+          lon: event["lon"],
           cost: 0,
           max_prize: 0,
           currency_unit: "円",
-          owner_id: res["owner_id"],
-          owner_nickname: res["owner_nickname"],
-          owner_name: res["owner_display_name"],
-          attend_number: res["accepted"],
-          substitute_number: res["waiting"]
+          owner_id: event["owner_id"],
+          owner_nickname: event["owner_nickname"],
+          attend_number: event["accepted"],
+          substitute_number: event["waiting"]
         )
-        connpass_event.started_at = Time.parse(res["started_at"])
-        connpass_event.ended_at = Time.parse(res["ended_at"]) if res["ended_at"].present?
-        connpass_events << connpass_event
-        extra[Connpass.to_s] = res["event_id"].to_s
+        atnd_event.started_at = Time.parse(event["started_at"])
+        atnd_event.ended_at = Time.parse(event["ended_at"]) if event["ended_at"].present?
+        atnd_events << atnd_event
+        extra[Atnd.to_s] = event["event_id"].to_s
       end
 
-      Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
-    end while start < results_available && !stop_flg
+      Atnd.import!(atnd_events, on_duplicate_key_update: update_columns)
+    end while atnd_events.present? && !stop_flg
     ExtraInfo.update(extra)
   end
 end
