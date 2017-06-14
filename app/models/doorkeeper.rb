@@ -44,7 +44,7 @@ class Doorkeeper < Event
   end
 
   def self.import_events!
-    extra = Event.read_extra_info
+    extra = ExtraInfo.read_extra_info
     last_update_event_id = extra[Doorkeeper.to_s].to_s
     stop_flg = false
 
@@ -83,6 +83,6 @@ class Doorkeeper < Event
       Doorkeeper.import!(doorkeeper_events)
       page += 1
     end while events_response.present? && !stop_flg
-    Event.update(extra)
+    ExtraInfo.update(extra)
   end
 end

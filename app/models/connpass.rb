@@ -44,7 +44,7 @@ class Connpass < Event
   end
 
   def self.import_events!
-    extra = Event.read_extra_info
+    extra = ExtraInfo.read_extra_info
     last_update_event_id = extra[Connpass.to_s].to_s
     stop_flg = false
 
@@ -87,6 +87,6 @@ class Connpass < Event
 
       Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
     end while start < results_available && !stop_flg
-    Event.update(extra)
+    ExtraInfo.update(extra)
   end
 end
