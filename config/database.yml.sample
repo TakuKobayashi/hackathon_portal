@@ -16,4 +16,4 @@ test:
 
 production:
   <<: *default
-  database: hackathon_portal_roduction
+  database: hackathon_portal_production
