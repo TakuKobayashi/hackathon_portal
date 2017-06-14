@@ -23,10 +23,4 @@ set :output, "#{path}/log/cron.log"
 
 every :day, at: '15:00' do
   rake "batch:crawl_and_tweet"
-  command "/bin/echo `date`: crawl and tweet bot!!"
-end
-
-every :day, at: '3:00' do
-  rake "batch:crawl_and_tweet"
-  command "/bin/echo `date`: crawl and tweet bot!!"
 end
