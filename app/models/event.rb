@@ -68,8 +68,9 @@ class Event < ApplicationRecord
   end
 
   def convert_to_short_url!
-  	apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
+    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
+    service.key = apiconfig["google"]["apikey"]
     url_obj = Google::Apis::UrlshortenerV1::Url.new
     url_obj.long_url = self.url
     result = service.insert_url(url_obj)
