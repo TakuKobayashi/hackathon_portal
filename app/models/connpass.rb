@@ -44,15 +44,23 @@ class Connpass < Event
   end
 
   def self.import_events!
+    extra = Event.read_extra_info
+    last_update_event_id = extra[Connpass.to_s].to_s
+    stop_flg = false
+
     results_available = 0
     start = 1
-    update_columns = Connpass.column_names - ["id", "type", "event_id", "created_at"]
+    update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       results_available = events_response["results_available"]
       start += events_response["results_returned"]
       connpass_events = []
       events_response["events"].each do |res|
+        if res["event_id"].to_s == last_update_event_id
+          stop_flg = true
+          break
+        end
         connpass_events << Connpass.new(
           event_id: res["event_id"].to_s,
           title: res["title"].to_s,
@@ -74,9 +82,11 @@ class Connpass < Event
           attend_number: res["accepted"],
           substitute_number: res["waiting"]
         )
+        extra[Connpass.to_s] = res["event_id"].to_s
       end
 
       Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
-    end while start < results_available
+    end while start < results_available && !stop_flg
+    Event.update(extra)
   end
 end

@@ -44,13 +44,21 @@ class Doorkeeper < Event
   end
 
   def self.import_events!
+    extra = Event.read_extra_info
+    last_update_event_id = extra[Doorkeeper.to_s].to_s
+    stop_flg = false
+
     page = 1
-    update_columns = Connpass.column_names - ["id", "type", "event_id", "created_at"]
+    update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Doorkeeper.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
       doorkeeper_events = []
       events_response.each do |res|
         event = res["event"]
+        if event["id"].to_s == last_update_event_id
+          stop_flg = true
+          break
+        end
         doorkeeper_events << Doorkeeper.new(
           event_id: event["id"].to_s,
           title: event["title"].to_s,
@@ -70,9 +78,11 @@ class Doorkeeper < Event
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]
         )
+        extra[Doorkeeper.to_s] = res["id"].to_s
       end
       Doorkeeper.import!(doorkeeper_events)
       page += 1
-    end while events_response.present?
+    end while events_response.present? && !stop_flg
+    Event.update(extra)
   end
 end
