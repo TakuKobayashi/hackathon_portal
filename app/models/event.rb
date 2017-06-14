@@ -37,11 +37,16 @@
 require 'google/apis/urlshortener_v1'
 
 class Event < ApplicationRecord
-  HACKATHON_KEYWORDS = ["hackathon", "ハッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon"]
+  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon"]
 
   def self.import_events!
     Connpass.import_events!
     Doorkeeper.import_events!
+  end
+
+  def hackathon_event?
+    sanitized_title = ApplicationRecord.basic_sanitize(self.title).downcase
+    return Event::HACKATHON_KEYWORDS.any?{|word| sanitized_title.include?(word) }
   end
 
   def generate_tweet_text
