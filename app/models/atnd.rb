@@ -79,8 +79,8 @@ class Atnd < Event
           attend_number: event["accepted"],
           substitute_number: event["waiting"]
         )
-        atnd_event.started_at = Time.parse(event["started_at"])
-        atnd_event.ended_at = Time.parse(event["ended_at"]) if event["ended_at"].present?
+        atnd_event.started_at = DateTime.parse(event["started_at"])
+        atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
         atnd_events << atnd_event
         extra[Atnd.to_s] = event["event_id"].to_s
       end

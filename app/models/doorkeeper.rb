@@ -76,8 +76,8 @@ class Doorkeeper < Event
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]
         )
-        doorkeeper_event.started_at = Time.parse(event["starts_at"])
-        doorkeeper_event.ended_at = Time.parse(event["ends_at"]) if event["ends_at"].present?
+        doorkeeper_event.started_at = DateTime.parse(event["starts_at"])
+        doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
         doorkeeper_events << doorkeeper_event
         extra[Doorkeeper.to_s] = event["id"].to_s
       end

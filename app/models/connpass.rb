@@ -80,8 +80,8 @@ class Connpass < Event
           attend_number: res["accepted"],
           substitute_number: res["waiting"]
         )
-        connpass_event.started_at = Time.parse(res["started_at"])
-        connpass_event.ended_at = Time.parse(res["ended_at"]) if res["ended_at"].present?
+        connpass_event.started_at = DateTime.parse(res["started_at"])
+        connpass_event.ended_at = DateTime.parse(res["ended_at"]) if res["ended_at"].present?
         connpass_events << connpass_event
         extra[Connpass.to_s] = res["event_id"].to_s
       end
