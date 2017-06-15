@@ -7,3 +7,6 @@ twitter:
 
 google:
   apikey:
+
+qiita:
+  request_token: 
