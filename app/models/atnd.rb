@@ -35,11 +35,12 @@
 #
 
 class Atnd < Event
-  ATND_URL = "http://api.atnd.org/events/"
+  ATND_API_URL = "http://api.atnd.org/events/"
+  ATND_EVENTPAGE_URL = "https://atnd.org/events/"
 
   def self.find_event(keywords:, start: 1)
     http_client = HTTPClient.new
-    response = http_client.get(ATND_URL, {keyword_or: keywords, count: 100, start: start, format: :json}, {})
+    response = http_client.get(ATND_API_URL, {keyword_or: keywords, count: 100, start: start, format: :json}, {})
     return JSON.parse(response.body)
   end
 
@@ -64,7 +65,7 @@ class Atnd < Event
         atnd_event = Atnd.new(
           event_id: event["event_id"].to_s,
           title: event["title"].to_s,
-          url: event["url"].to_s,
+          url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
           description: ApplicationRecord.basic_sanitize(event["description"].to_s),
           limit_number: event["limit"],
           address: event["address"].to_s,
