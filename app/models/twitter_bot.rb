@@ -31,7 +31,6 @@ class TwitterBot < ApplicationRecord
     twitter_client = get_twitter_client
     result = twitter_client.destroy_status(self.tweet_id)
     destroy!
-    return result
   end
 
   private
