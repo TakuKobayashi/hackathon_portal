@@ -64,6 +64,33 @@ class Event < ApplicationRecord
      return tweet_words.join("\n")
   end
 
+  def generate_google_map_url
+    return "https://www.google.co.jp/maps?q=#{self.lat},#{self.lon}"
+  end
+
+  def generate_google_map_static_image_url
+    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
+    return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{apiconfig["google"]["apikey"]}&size=185x185"
+  end
+
+  def generate_qiita_cell_text
+    words = ["### [#{self.title}](#{self.url})", self.started_at.strftime("%Y年%m月%d日"), "場所:#{self.place}([#{self.address}](#{self.generate_google_map_url})"]
+    words << "![Qiita](#{generate_google_map_static_image_url})"
+    if self.limit_number.present?
+      words << "定員#{self.limit_number}人"
+    end
+    words << "#{Time.now.strftime("%Y年%m月%d日 %H:%M")}現在 #{self.attend_number}人参加中"
+    if self.limit_number.present?
+      remain_number = self.limit_number - self.attend_number
+      if remain_number > 0
+        words << "<span style=\"#FFFF00\">あと残り#{remain_number}人</span> 参加可能"
+      else
+        words << "今だと補欠登録されると思います。<span style=\"#FFFF00\">(#{self.substitute_number}人が補欠登録中)</span>"
+      end
+    end
+    return words.join("\n")
+  end
+
   def short_url
     if shortener_url.blank?
       convert_to_short_url!
