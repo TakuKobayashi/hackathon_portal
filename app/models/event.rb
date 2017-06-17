@@ -74,7 +74,7 @@ class Event < ApplicationRecord
   end
 
   def generate_qiita_cell_text
-    words = ["### [#{self.title}](#{self.url})", self.started_at.strftime("%Y年%m月%d日"), "場所:#{self.place}([#{self.address}](#{self.generate_google_map_url}))"]
+    words = ["### [#{self.title}](#{self.url})", self.started_at.strftime("%Y年%m月%d日"), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
     words << "![#{self.address}](#{generate_google_map_static_image_url})"
     if self.limit_number.present?
       words << "定員#{self.limit_number}人"
@@ -83,9 +83,9 @@ class Event < ApplicationRecord
     if self.limit_number.present?
       remain_number = self.limit_number - self.attend_number
       if remain_number > 0
-        words << "<span style=\"#FFFF00\">あと残り#{remain_number}人</span> 参加可能"
+        words << "<span style=\"color: #FFFF00;\">あと残り#{remain_number}人</span> 参加可能"
       else
-        words << "今だと補欠登録されると思います。<span style=\"#FFFF00\">(#{self.substitute_number}人が補欠登録中)</span>"
+        words << "今だと補欠登録されると思います。<span style=\"color: #FFFF00\">(#{self.substitute_number}人が補欠登録中)</span>"
       end
     end
     return words.join("\n")
