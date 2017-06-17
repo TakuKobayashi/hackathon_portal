@@ -98,11 +98,18 @@ class Event < ApplicationRecord
     return self.shortener_url
   end
 
+  # {年}{開始月}{終了月}になるように番号を形成する
   def season_date_number
     number = self.started_at.year * 10000
     month = self.started_at.month
     if (1..3).cover?(month)
       return number + 103
+    elsif (4..6).cover?(month)
+      return number + 406
+    elsif (7..9).cover?(month)
+      return number + 709
+    elsif (10..12).cover?(month)
+      return number + 1012
     end
   end
 
