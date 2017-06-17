@@ -30,7 +30,7 @@ class QiitaBot < ApplicationRecord
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      events_from_qiita = Event.where(event_id: qiita_bot.event_ids).order("started_at ASC")
+      events_from_qiita = Event.where(id: qiita_bot.event_ids).order("started_at ASC")
 
       month_range = date_number % 10000
       year_number = (date_number / 10000).to_i
