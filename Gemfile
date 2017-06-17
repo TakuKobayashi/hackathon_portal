@@ -48,6 +48,10 @@ gem 'twitter'
 gem 'tweetstream'
 gem 'charwidth'
 
+gem 'devise'
+gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
+gem 'inherited_resources', git: 'https://github.com/activeadmin/inherited_resources'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
