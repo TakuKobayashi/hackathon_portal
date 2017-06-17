@@ -26,8 +26,8 @@ class QiitaBot < ApplicationRecord
 
   def self.post_or_update_article!(events: [])
     client = get_qiita_client
-    events_groop = events.groop_by{|e| e.season_date_number }
-    events_groop.each do |date_number, event_arr|
+    events_group = events.group_by{|e| e.season_date_number }
+    events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
       events_from_qiita = Event.where(event_id: qiita_bot.event_ids).order("started_at ASC")
