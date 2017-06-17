@@ -75,7 +75,7 @@ class Event < ApplicationRecord
 
   def generate_qiita_cell_text
     words = ["### [#{self.title}](#{self.url})", self.started_at.strftime("%Y年%m月%d日"), "場所:#{self.place}([#{self.address}](#{self.generate_google_map_url})"]
-    words << "![Qiita](#{generate_google_map_static_image_url})"
+    words << "![#{self.address}](#{generate_google_map_static_image_url})"
     if self.limit_number.present?
       words << "定員#{self.limit_number}人"
     end
@@ -96,6 +96,14 @@ class Event < ApplicationRecord
       convert_to_short_url!
     end
     return self.shortener_url
+  end
+
+  def season_date_number
+    number = self.started_at.year * 10000
+    month = self.started_at.month
+    if (1..3).cover?(month)
+      return number + 103
+    end
   end
 
   def convert_to_short_url!
