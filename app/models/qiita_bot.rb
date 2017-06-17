@@ -55,12 +55,13 @@ class QiitaBot < ApplicationRecord
         response = client.update_item(qiita_bot.qiita_id, send_params).body
       end
       qiita_bot.qiita_id = response["id"] if qiita_bot.qiita_id.blank?
+      response_tags = response["tags"] || []
       qiita_bot.update!({
         title: response["title"],
         url: response["url"],
         body: response["body"],
         rendered_body: response["raw_body"],
-        tag_names: response["tags"].map{|t| t["name"] }
+        tag_names: response_tags.map{|t| t["name"] }
       })
     end
   end
