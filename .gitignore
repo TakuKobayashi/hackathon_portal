@@ -19,6 +19,7 @@ coverage
 db/schema.rb
 config/apiconfig.yml
 config/database.yml
+config/initializers/devise.rb
 
 .ruby-gemset
 .ruby-version
