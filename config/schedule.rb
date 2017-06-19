@@ -21,6 +21,10 @@
 
 set :output, "#{path}/log/cron.log"
 
+every :day, at: '11:00' do
+  rake "batch:event_crawl"
+end
+
 every :day, at: '15:00' do
-  rake "batch:crawl_and_tweet"
+  rake "batch:bot_tweet"
 end
