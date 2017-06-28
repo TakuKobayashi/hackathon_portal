@@ -83,9 +83,9 @@ class Event < ApplicationRecord
     if self.limit_number.present?
       remain_number = self.limit_number - self.attend_number
       if remain_number > 0
-        words << "<font color=\"#FFFF00;\">あと残り#{remain_number}人</font> 参加可能"
+        words << "<font color=\"#FF0000;\">あと残り#{remain_number}人</font> 参加可能"
       else
-        words << "今だと補欠登録されると思います。<font color=\"#FFFF00\">(#{self.substitute_number}人が補欠登録中)</font>"
+        words << "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
       end
     end
     return words.join("\n")
