@@ -40,7 +40,7 @@ class QiitaBot < ApplicationRecord
       body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソンの開催情報を定期的に紹介!!\n※こちらは自動的に集めたもののご紹介になります。\n"
       body += events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
       send_params = {
-        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソン開催情報まとめ!(自動収集版)",
+        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソン開催情報まとめ!(#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新)",
         body: body,
         tags: [
           {
