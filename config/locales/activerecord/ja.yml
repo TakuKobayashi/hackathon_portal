@@ -1,0 +1,20 @@
+ja:
+  activerecord:
+    models:
+      event: "イベント"
+    attributes:
+      event:
+        title: イベント名
+        type: ソース元
+        url: URL
+        description: 詳細説明
+        started_at: 開始日時
+        ended_at: 終了日時
+        limit_number: 定員
+        address: 開催場所の住所
+        place: 開催場所名
+        cost: 参加費
+        max_prize: 賞金
+        currency_unit: 通貨単位
+        attend_number: 参加人数
+        substitute_number: 補欠人数
