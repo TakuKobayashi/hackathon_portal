@@ -45,6 +45,15 @@ class QiitaBot < ApplicationRecord
         tags: [
           {
             name: "hackathon",
+          },
+          {
+            name: "ハッカソン",
+          },
+          {
+            name: "まとめ",
+          },
+          {
+            name: year_number.to_s,
           }
         ]
       }

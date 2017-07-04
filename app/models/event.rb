@@ -55,7 +55,7 @@ class Event < ApplicationRecord
      if self.limit_number.present?
        tweet_words << "定員#{self.limit_number}人"
      end
-     tweet_words += ["#hackathon"]
+     tweet_words += ["#hackathon", "#ハッカソン"]
      text_size = 0
      tweet_words.select! do |text|
        text_size += text.size
