@@ -30,8 +30,14 @@ ActiveAdmin.register Event  do
     f.inputs do
       f.input :title, as: :string
       f.input :url, as: :string
-      f.input :started_at, as: :datetime_select
-      f.input :ended_at, as: :datetime_select
+      li do
+        label :started_at
+        f.datetime_select(:started_at, include_seconds: false, default: 7.day.since.change(hour: 10))
+      end
+      li do
+        label :ended_at
+        f.datetime_select(:ended_at, include_seconds: false, default: 8.day.since.change(hour: 20))
+      end
       f.input :limit_number, as: :number
       f.input :address, as: :string
       f.input :place, as: :string
