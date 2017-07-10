@@ -7,7 +7,7 @@ ActiveAdmin.register Event  do
     id_column
     column(:title)
     column(:type)
-    column(:url){|a| link_to(a.url) }
+    column(:url){|a| link_to(a.url, a.url) }
     column("開催期間") {|a|
       message = a.started_at.strftime("%Y年%m月%d日 %H:%M") + " ~ "
       if a.ended_at.present?
