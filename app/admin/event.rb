@@ -50,7 +50,10 @@ ActiveAdmin.register Event  do
 
   collection_action :create, method: :post do
     attributes = params.require(:event).permit!
-    SelfPostEvent.create!(attributes)
+    event = SelfPostEvent.create!(attributes)
+    if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
+      TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: {lat: event.lat, long: event.lon})
+    end
     redirect_to({action: :index}, notice: "event is created!!")
   end
 
