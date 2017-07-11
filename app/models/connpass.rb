@@ -65,7 +65,7 @@ class Connpass < Event
           event_id: res["event_id"].to_s,
           title: res["title"].to_s,
           url: res["event_url"].to_s,
-          description: ApplicationRecord.basic_sanitize(res["description"].to_s),
+          description: Sanitizer.basic_sanitize(res["description"].to_s),
           limit_number: res["limit"],
           address: res["address"].to_s,
           place: res["place"].to_s,

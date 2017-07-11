@@ -53,7 +53,7 @@ class Event < ApplicationRecord
   end
 
   def hackathon_event?
-    sanitized_title = ApplicationRecord.basic_sanitize(self.title).downcase
+    sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
     return Event::HACKATHON_KEYWORDS.any?{|word| sanitized_title.include?(word) }
   end
 

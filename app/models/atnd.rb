@@ -66,7 +66,7 @@ class Atnd < Event
           event_id: event["event_id"].to_s,
           title: event["title"].to_s,
           url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
-          description: ApplicationRecord.basic_sanitize(event["description"].to_s),
+          description: Sanitizer.basic_sanitize(event["description"].to_s),
           limit_number: event["limit"],
           address: event["address"].to_s,
           place: event["place"].to_s,

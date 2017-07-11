@@ -63,7 +63,7 @@ class Doorkeeper < Event
           event_id: event["id"].to_s,
           title: event["title"].to_s,
           url: event["public_url"].to_s,
-          description: ApplicationRecord.basic_sanitize(event["description"].to_s),
+          description: Sanitizer.basic_sanitize(event["description"].to_s),
           limit_number: event["ticket_limit"],
           address: event["address"].to_s,
           place: event["venue_name"].to_s,
