@@ -7,6 +7,10 @@ module Sanitizer
     return text.gsub(/<script[^>]+?\/>|<script(.|\s)*?\/script>/, "")
   end
 
+  def self.delete_empty_words(text)
+    return text.gsub(/\r|\n|\t/, "")
+  end
+
   def self.basic_sanitize(text)
     #絵文字を除去
     sanitized_word = text.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
