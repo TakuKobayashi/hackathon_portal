@@ -1,3 +1,9 @@
+require 'google/apis/calendar_v3'
+require 'googleauth'
+require 'googleauth/stores/file_token_store'
+
+require 'fileutils'
+
 namespace :batch do
   task event_crawl: :environment do
     Event.import_events!
@@ -11,5 +17,10 @@ namespace :batch do
       end
     end
     QiitaBot.post_or_update_article!(events: future_events)
+  end
+
+  task regist_calender: :environment do
+    client_id = Google::Auth::ClientId.from_file(Rails.root.to_s + "/client_secret.json")
+    p client_id
   end
 end
