@@ -32,7 +32,7 @@ class QiitaBot < ApplicationRecord
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
       before_events_from_qiita, after_events_from_qiita = Event.where(id: qiita_bot.event_ids).order("started_at ASC").partition do |e|
         if e.ended_at.present?
-          e.ended_at > Time.cuurent
+          e.ended_at > Time.current
         else
           true
         end
