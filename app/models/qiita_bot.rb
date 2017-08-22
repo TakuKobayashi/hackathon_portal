@@ -30,15 +30,25 @@ class QiitaBot < ApplicationRecord
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      events_from_qiita = Event.where(id: qiita_bot.event_ids).order("started_at ASC")
+      before_events_from_qiita, after_events_from_qiita = Event.where(id: qiita_bot.event_ids).order("started_at ASC").partition do |e|
+        if e.ended_at.present?
+          e.ended_at > Time.cuurent
+        else
+          true
+        end
+      end
 
       month_range = date_number % 10000
       year_number = (date_number / 10000).to_i
       start_month = (month_range / 100).to_i
       end_month = (month_range % 100).to_i
       body = "#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新\n"
-      body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソンの開催情報を定期的に紹介!!\n※こちらは自動的に集めたもののご紹介になります。\n"
-      body += events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
+      body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソンの開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
+      body += "# これから開催されるイベント\n\n"
+      body += before_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
+      body += "\n\n---------------------------------------\n\n"
+      body += "# すでに終了したイベント\n\n"
+      body += after_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
       send_params = {
         title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソン開催情報まとめ!(#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新)",
         body: body,
