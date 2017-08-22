@@ -86,7 +86,7 @@ class Event < ApplicationRecord
     if self.limit_number.present?
       words << "定員#{self.limit_number}人"
     end
-    if self.ended_at.present? && self.ended_at < Time.currenct
+    if self.ended_at.present? && self.ended_at < Time.current
       words << "#{self.attend_number}人が参加しました"
     else
       words << "#{Time.now.strftime("%Y年%m月%d日 %H:%M")}現在 #{self.attend_number}人参加中"
