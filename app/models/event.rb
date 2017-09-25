@@ -90,9 +90,10 @@ class Event < ApplicationRecord
       # 画像じゃないものも含まれていることもあるので分別する
       fi = FastImage.new(image_url.to_s)
       if fi.type.present?
-        size_text = ApplicationRecord.calc_resize_text(width: fi.width, height: fi.height, max_length: 300)
-        width, height = size_text.split("x")
-        words << "<img src=\"#{image_url})\" width=\"#{width}\" height=\"#{height}\">"
+        width, height = fi.size
+        size_text = ApplicationRecord.calc_resize_text(width: width, height: height, max_length: 300)
+        resize_width, resize_height = size_text.split("x")
+        words << "<img src=\"#{image_url})\" width=\"#{resize_width}\" height=\"#{resize_height}\">"
       end
     end
     words += [
