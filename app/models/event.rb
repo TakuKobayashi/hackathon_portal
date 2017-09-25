@@ -93,7 +93,7 @@ class Event < ApplicationRecord
         width, height = fi.size
         size_text = ApplicationRecord.calc_resize_text(width: width, height: height, max_length: 300)
         resize_width, resize_height = size_text.split("x")
-        words << "<img src=\"#{image_url})\" width=\"#{resize_width}\" height=\"#{resize_height}\">"
+        words << "<img src=\"#{image_url}\" width=\"#{resize_width}\" height=\"#{resize_height}\">"
       end
     end
     words += [
