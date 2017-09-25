@@ -86,7 +86,14 @@ class Event < ApplicationRecord
       "### [#{self.title}](#{self.url})",
     ]
     if og.images.present?
-      words << "![#{self.title}](#{og.images.first})"
+      image_url = og.images.first
+      # 画像じゃないものも含まれていることもあるので分別する
+      fi = FastImage.new(image_url.to_s)
+      if fi.type.present?
+        size_text = ApplicationRecord.calc_resize_text(width: fi.width, height: fi.height, max_length: 300)
+        width, height = size_text.split("x")
+        words << "<img src=\"#{image_url})\" width=\"#{width}\" height=\"#{height}\">"
+      end
     end
     words += [
       self.started_at.strftime("%Y年%m月%d日"),

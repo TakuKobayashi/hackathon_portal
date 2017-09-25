@@ -9,8 +9,8 @@
 #  season_number :integer          not null
 #  tag_names     :string(255)
 #  event_ids     :text(65535)      not null
-#  body          :text(65535)      not null
-#  rendered_body :text(65535)
+#  body          :text(16777215)   not null
+#  rendered_body :text(16777215)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

@@ -7,8 +7,8 @@ class CreateQiitaBots < ActiveRecord::Migration[5.0]
       t.integer :season_number, null: false
       t.string :tag_names
       t.text :event_ids, null: false
-      t.text :body, null: false
-      t.text :rendered_body
+      t.text :body, null: false, :limit => 16777215
+      t.text :rendered_body, :limit => 16777215
       t.timestamps
     end
     add_index :qiita_bots, :qiita_id, unique: true
