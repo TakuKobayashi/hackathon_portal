@@ -86,7 +86,7 @@ class Event < ApplicationRecord
       "### [#{self.title}](#{self.url})",
     ]
     if og.images.present?
-      words << "![#{self.title}](#{og.images.first})",
+      words << "![#{self.title}](#{og.images.first})"
     end
     words += [
       self.started_at.strftime("%Y年%m月%d日"),
