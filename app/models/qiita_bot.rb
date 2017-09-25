@@ -46,9 +46,11 @@ class QiitaBot < ApplicationRecord
       body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソンの開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
       body += "# これから開催されるイベント\n\n"
       body += before_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
-      body += "\n\n---------------------------------------\n\n"
-      body += "# すでに終了したイベント\n\n"
-      body += after_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
+      if after_events_from_qiita.present?
+        body += "\n\n---------------------------------------\n\n"
+        body += "# すでに終了したイベント\n\n"
+        body += after_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
+      end
       send_params = {
         title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソン開催情報まとめ!(#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新)",
         body: body,
