@@ -248,6 +248,9 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
+    opengraph_parser (0.2.3)
+      addressable
+      nokogiri
     orm_adapter (0.5.0)
     os (0.9.6)
     polyamorous (1.3.1)
@@ -418,6 +421,7 @@ DEPENDENCIES
   omniauth
   omniauth-google-oauth2
   omniauth-twitter
+  opengraph_parser
   puma (~> 3.7)
   puma_worker_killer
   qiita

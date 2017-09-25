@@ -81,8 +81,19 @@ class Event < ApplicationRecord
   end
 
   def generate_qiita_cell_text
-    words = ["### [#{self.title}](#{self.url})", self.started_at.strftime("%Y年%m月%d日"), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
-    words << "![#{self.address}](#{generate_google_map_static_image_url})"
+    og = OpenGraph.new(self.url)
+    words = [
+      "### [#{self.title}](#{self.url})",
+    ]
+    if og.images.present?
+      words << "![#{self.title}](#{og.images.first})",
+    end
+    words += [
+      self.started_at.strftime("%Y年%m月%d日"),
+      self.place,
+      "[#{self.address}](#{self.generate_google_map_url})",
+      "![#{self.address}](#{generate_google_map_static_image_url})"
+    ]
     if self.limit_number.present?
       words << "定員#{self.limit_number}人"
     end
