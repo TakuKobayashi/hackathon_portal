@@ -62,9 +62,6 @@ class QiitaBot < ApplicationRecord
             name: "ハッカソン",
           },
           {
-            name: "アイディアソン",
-          },
-          {
             name: "ゲームジャム",
           },
           {
