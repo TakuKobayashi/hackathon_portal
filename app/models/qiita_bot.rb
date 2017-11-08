@@ -62,7 +62,7 @@ class QiitaBot < ApplicationRecord
             name: "ハッカソン",
           },
           {
-            name: "ゲームジャム",
+            name: "アイディアソン",
           },
           {
             name: "まとめ",
