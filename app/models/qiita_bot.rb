@@ -52,7 +52,7 @@ class QiitaBot < ApplicationRecord
         body += after_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
       end
       send_params = {
-        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソン開催情報まとめ!(#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新)",
+        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
         body: body,
         tags: [
           {
@@ -60,6 +60,12 @@ class QiitaBot < ApplicationRecord
           },
           {
             name: "ハッカソン",
+          },
+          {
+            name: "アイディアソン",
+          },
+          {
+            name: "ゲームジャム",
           },
           {
             name: "まとめ",
