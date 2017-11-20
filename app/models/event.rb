@@ -26,6 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  hash_tag          :string(255)
 #
 # Indexes
 #
@@ -58,17 +59,20 @@ class Event < ApplicationRecord
   end
 
   def generate_tweet_text
-     tweet_words = [self.title, self.short_url, self.started_at.strftime("%Y年%m月%d日")]
-     if self.limit_number.present?
-       tweet_words << "定員#{self.limit_number}人"
-     end
-     tweet_words += ["#hackathon", "#ハッカソン"]
-     text_size = 0
-     tweet_words.select! do |text|
-       text_size += text.size
-       text_size <= 140
-     end
-     return tweet_words.join("\n")
+    tweet_words = [self.title, self.short_url, self.started_at.strftime("%Y年%m月%d日")]
+    if self.limit_number.present?
+      tweet_words << "定員#{self.limit_number}人"
+    end
+    if self.hash_tag.present?
+      tweet_words << "#" + self.hash_tag.to_s.gsub("#", "")
+    end
+    tweet_words += ["#hackathon", "#ハッカソン"]
+    text_size = 0
+    tweet_words.select! do |text|
+      text_size += text.size
+      text_size <= 140
+    end
+    return tweet_words.join("\n")
   end
 
   def generate_google_map_url

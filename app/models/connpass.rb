@@ -26,6 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  hash_tag          :string(255)
 #
 # Indexes
 #
@@ -63,6 +64,7 @@ class Connpass < Event
         end
         connpass_event = Connpass.new(
           event_id: res["event_id"].to_s,
+          hash_tag: res["hash_tag"],
           title: res["title"].to_s,
           url: res["event_url"].to_s,
           description: Sanitizer.basic_sanitize(res["description"].to_s),

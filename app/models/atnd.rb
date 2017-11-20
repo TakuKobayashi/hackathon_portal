@@ -26,6 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  hash_tag          :string(255)
 #
 # Indexes
 #
@@ -80,6 +81,11 @@ class Atnd < Event
           attend_number: event["accepted"],
           substitute_number: event["waiting"]
         )
+        dom = ApplicationRecord.request_and_parse_html(url: atnd_event.url)
+        hash_tag_dom = dom.css(".clearfix").detect{|label| label.text.include?("ハッシュタグ") }
+        if hash_tag_dom.present?
+          atnd_event.hash_tag = hash_tag_dom.css("a").text.strip
+        end
         atnd_event.started_at = DateTime.parse(event["started_at"])
         atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
         atnd_events << atnd_event
