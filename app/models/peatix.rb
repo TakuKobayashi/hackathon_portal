@@ -36,10 +36,12 @@
 #
 
 class Peatix < Event
-  PEATIX_SEARCH_URL = "http://peatix.com/search"
+  PEATIX_ROOT_URL = "http://peatix.com"
+  PEATIX_SEARCH_URL = PEATIX_ROOT_URL + "/search"
 
   def self.find_event(keywords:, start: 1)
-    event_dom = ApplicationRecord.request_and_parse_html(url: PEATIX_SEARCH_URL, method: :post, params: {q: keywords.join(" ")})
+    
+    event_dom = ApplicationRecord.request_and_parse_html(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: 1, size: 10})
     self.import_events!(event_dom)
     return event_dom
   end
@@ -51,7 +53,7 @@ class Peatix < Event
     event_list_dom.css("a").each do |adom|
       next if adom["href"].blank?
       url = Addressable::URI.parse(adom["href"].to_s)
-      next if url.scheme.blank?
+      next if url.scheme.blank? || !url.to_s.include?(PEATIX_ROOT_URL)
       location_str = Charwidth.normalize(adom.css(".event-thumb_location").text)
       address_str = Sanitizer.scan_japan_address(location_str).flatten.map(&:strip).join
       place_str = location_str.gsub(address_str, "").split(" ").reject{|l| l.strip.blank? || l.include?("会場") || l.include?("〒") }.join(" ")
