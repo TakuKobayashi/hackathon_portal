@@ -48,7 +48,7 @@ gem 'google-api-client', '~> 0.11'
 
 gem 'qiita'
 
-gem 'twitter'
+gem 'twitter', '>= 6.0'
 gem 'tweetstream'
 gem 'charwidth'
 
