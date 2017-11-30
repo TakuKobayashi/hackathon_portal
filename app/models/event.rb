@@ -64,7 +64,11 @@ class Event < ApplicationRecord
       tweet_words << "定員#{self.limit_number}人"
     end
     if self.hash_tag.present?
-      tweet_words << "#" + self.hash_tag.to_s.gsub("#", "")
+      hashtags = self.hash_tag.to_s.split(" ")
+      hashtags.each do |hashtag|
+        next if hashtag.blank?
+        tweet_words << "#" + hashtag.gsub("#", "")
+      end
     end
     tweet_words += ["#hackathon", "#ハッカソン"]
     text_size = 0
