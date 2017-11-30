@@ -40,6 +40,7 @@ class Doorkeeper < Event
 
   def self.find_event(keywords:, page: 1)
     http_client = HTTPClient.new
+    http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     response = http_client.get(DOORKEEPER_URL, {q: keywords.join("|"), page: page}, {})
     return JSON.parse(response.body)
   end

@@ -40,6 +40,7 @@ class Connpass < Event
 
   def self.find_event(keywords:, start: 1)
     http_client = HTTPClient.new
+    http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     response = http_client.get(CONNPASS_URL, {keyword_or: keywords, count: 100, start: start, order: 1}, {})
     return JSON.parse(response.body)
   end

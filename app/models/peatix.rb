@@ -40,7 +40,6 @@ class Peatix < Event
   PEATIX_SEARCH_URL = PEATIX_ROOT_URL + "/search"
 
   def self.find_event(keywords:, start: 1)
-    
     event_dom = ApplicationRecord.request_and_parse_html(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: 1, size: 10})
     self.import_events!(event_dom)
     return event_dom
