@@ -23,6 +23,7 @@ ActiveAdmin.register Event  do
     column(:max_prize) {|a| a.max_prize.to_s + a.currency_unit }
     column(:attend_number)
     column(:substitute_number)
+    column(:hash_tag)
     actions
   end
 
