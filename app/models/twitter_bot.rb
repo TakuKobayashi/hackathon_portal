@@ -33,7 +33,6 @@ class TwitterBot < ApplicationRecord
     destroy!
   end
 
-  private
   def self.get_twitter_client
     apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     twitter_client = Twitter::REST::Client.new do |config|
