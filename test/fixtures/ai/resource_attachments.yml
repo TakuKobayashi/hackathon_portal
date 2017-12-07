@@ -4,7 +4,7 @@
 #
 #  id                :integer          not null, primary key
 #  tweet_resource_id :integer          not null
-#  category          :integer          default(0), not null
+#  category          :integer          default("website"), not null
 #  origin_src        :string(255)      not null
 #  query             :text(65535)
 #  options           :text(65535)

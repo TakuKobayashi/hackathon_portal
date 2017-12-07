@@ -14,4 +14,5 @@
 #
 
 class Ai::ResourceSummary < ApplicationRecord
+  belongs_to :resource, polymorphic: true, required: false
 end

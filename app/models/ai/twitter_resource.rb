@@ -20,12 +20,5 @@
 #  index_ai_tweet_resources_on_resource_id_and_type  (resource_id,type) UNIQUE
 #
 
-class Ai::TweetResource < ApplicationRecord
-  serialize :options, JSON
-
-  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
-  has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
-  has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :tweet_resource_id
-  has_many :sentences, class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
-  has_many :attachments, class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
+class Ai::TwitterResource < Ai::TweetResource
 end

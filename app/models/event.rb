@@ -41,6 +41,9 @@ class Event < ApplicationRecord
   geocoded_by :address, latitude: :lat, longitude: :lon
   after_validation :geocode
 
+  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
+  has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+
   before_save do
     self.address = Charwidth.normalize(self.address)
   end
