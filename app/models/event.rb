@@ -96,7 +96,7 @@ class Event < ApplicationRecord
       fi = FastImage.new(image_url.to_s)
       if fi.type.present?
         width, height = fi.size
-        size_text = ApplicationRecord.calc_resize_text(width: width, height: height, max_length: 300)
+        size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
         resize_width, resize_height = size_text.split("x")
         words << (ActionController::Base.helpers.image_tag(image_url, {width: resize_width, height: resize_height, alt: self.title}) + "\n")
       end
