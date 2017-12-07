@@ -40,7 +40,7 @@ class Peatix < Event
   PEATIX_SEARCH_URL = PEATIX_ROOT_URL + "/search"
 
   def self.find_event(keywords:, start: 1)
-    event_dom = ApplicationRecord.request_and_parse_html(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: 1, size: 10})
+    event_dom = RequestParser.request_and_parse_html(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: 1, size: 10})
     self.import_events!(event_dom)
     return event_dom
   end
@@ -56,7 +56,7 @@ class Peatix < Event
       location_str = Charwidth.normalize(adom.css(".event-thumb_location").text)
       address_str = Sanitizer.scan_japan_address(location_str).flatten.map(&:strip).join
       place_str = location_str.gsub(address_str, "").split(" ").reject{|l| l.strip.blank? || l.include?("会場") || l.include?("〒") }.join(" ")
-      event_detail_dom = ApplicationRecord.request_and_parse_html(url: url.origin.to_s + url.path.to_s)
+      event_detail_dom = RequestParser.request_and_parse_html(url: url.origin.to_s + url.path.to_s)
       owner_name_arr = Charwidth.normalize(adom.css("span.event-thumb_organizer").text).split(" ")
       owner_url = event_detail_dom.css(".pod-thumb_link").map{|a| a["href"]}.compact.first
       peatix_event = Peatix.new(

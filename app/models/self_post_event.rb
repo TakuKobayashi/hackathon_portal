@@ -38,7 +38,7 @@
 class SelfPostEvent < Event
   before_create do
     if self.url.present? && self.description.blank?
-      doc = ApplicationRecord.request_and_parse_html(url: self.url)
+      doc = RequestParser.request_and_parse_html(url: self.url)
       sanitized_html = Sanitizer.delete_javascript_in_html(doc.css("body").children.to_html)
       sanitized_html = Sanitizer.delete_html_comment(sanitized_html)
       sanitized_html = Sanitizer.delete_empty_words(sanitized_html)
