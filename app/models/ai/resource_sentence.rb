@@ -1,0 +1,15 @@
+# == Schema Information
+#
+# Table name: ai_resource_sentences
+#
+#  id                :integer          not null, primary key
+#  tweet_resource_id :integer          not null
+#  body              :text(65535)      not null
+#
+# Indexes
+#
+#  index_ai_resource_sentences_on_tweet_resource_id  (tweet_resource_id)
+#
+
+class Ai::ResourceSentence < ApplicationRecord
+end
