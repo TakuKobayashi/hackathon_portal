@@ -48,7 +48,8 @@ class Event < ApplicationRecord
     self.address = Charwidth.normalize(self.address)
   end
 
-  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon"]
+  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
+  DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
 
   def self.import_events!
     Connpass.import_events!
@@ -58,7 +59,20 @@ class Event < ApplicationRecord
 
   def hackathon_event?
     sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
-    return Event::HACKATHON_KEYWORDS.any?{|word| sanitized_title.include?(word) }
+    keyword = Event::HACKATHON_KEYWORDS.detect{|word| sanitized_title.include?(word)}
+    if keyword.blank?
+      return false
+    elsif keyword == "合宿"
+      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+      appear_count = 0
+      Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
+        appear_count += sanitized_title.scan(keyword).size * 2
+        appear_count += sanitized_description.scan(keyword).size
+      end
+      return appear_count >= 2
+    else
+      return true
+    end
   end
 
   def generate_tweet_text
