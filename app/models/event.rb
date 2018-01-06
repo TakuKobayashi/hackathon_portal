@@ -70,6 +70,7 @@ class Event < ApplicationRecord
   end
 
   def development_camp?(keyword: nil)
+    sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
     if keyword.present?
       check_word = keyword
     else
