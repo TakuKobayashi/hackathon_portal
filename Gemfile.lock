@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/activeadmin/activeadmin
-  revision: 46526fc21917978f1d8253bc84082aeeb215ea45
+  revision: 8155e88a0b94e1b8af4a5f5eeeff667ba0c7a754
   specs:
     activeadmin (2.0.0.alpha)
       arbre (>= 1.1.1)
@@ -17,12 +17,12 @@ GIT
 
 GIT
   remote: https://github.com/activeadmin/inherited_resources
-  revision: 46493ce10fc7d9f0bcd753f5d298c67ca83cf9b0
+  revision: 8603b3054683fa798134d76c12a32d9e287b307e
   specs:
-    inherited_resources (1.7.2)
-      actionpack (>= 4.2, < 5.2)
+    inherited_resources (1.8.0)
+      actionpack (>= 4.2, <= 5.2)
       has_scope (~> 0.6)
-      railties (>= 4.2, < 5.2)
+      railties (>= 4.2, <= 5.2)
       responders
 
 GEM
@@ -84,13 +84,13 @@ GEM
     buftok (0.2.0)
     builder (3.2.3)
     byebug (9.1.0)
-    capybara (2.16.1)
+    capybara (2.17.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
-      xpath (~> 2.0)
+      xpath (>= 2.0, < 4.0)
     charwidth (0.1.4)
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
@@ -104,10 +104,10 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     crass (1.0.3)
-    daemons (1.2.5)
+    daemons (1.2.6)
     declarative (0.0.10)
     declarative-option (0.1.0)
-    devise (4.3.0)
+    devise (4.4.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0, < 5.2)
@@ -123,7 +123,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
-    fastimage (2.1.0)
+    fastimage (2.1.1)
     ffi (1.9.18)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
@@ -132,7 +132,7 @@ GEM
     get_process_mem (0.2.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    google-api-client (0.17.3)
+    google-api-client (0.19.1)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (>= 0.5, < 0.7.0)
       httpclient (>= 2.8.1, < 3.0)
@@ -150,7 +150,7 @@ GEM
     has_scope (0.7.1)
       actionpack (>= 4.1, < 5.2)
       activesupport (>= 4.1, < 5.2)
-    hashie (3.5.6)
+    hashie (3.5.7)
     http (3.0.0)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -205,7 +205,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
-    minitest (5.10.3)
+    minitest (5.11.1)
     multi_json (1.12.2)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -213,17 +213,17 @@ GEM
     natto (1.1.1)
       ffi (>= 1.9.0)
     naught (1.1.0)
-    nio4r (2.1.0)
+    nio4r (2.2.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
-    oauth (0.5.3)
+    oauth (0.5.4)
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.13)
       jwt (~> 1.0)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    omniauth (1.7.1)
+    omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
     omniauth-google-oauth2 (0.5.2)
@@ -234,8 +234,8 @@ GEM
     omniauth-oauth (1.1.0)
       oauth
       omniauth (~> 1.0)
-    omniauth-oauth2 (1.4.0)
-      oauth2 (~> 1.0)
+    omniauth-oauth2 (1.5.0)
+      oauth2 (~> 1.1)
       omniauth (~> 1.2)
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
@@ -245,7 +245,7 @@ GEM
       nokogiri
     orm_adapter (0.5.0)
     os (0.9.6)
-    polyamorous (1.3.1)
+    polyamorous (1.3.2)
       activerecord (>= 3.0)
     public_suffix (3.0.1)
     puma (3.11.0)
@@ -309,10 +309,10 @@ GEM
       railties (>= 4.2.0, < 5.3)
     retriable (3.1.1)
     roauth (0.0.8)
-    rouge (3.0.0)
+    rouge (3.1.0)
     ruby_dep (1.5.0)
     rubyzip (1.2.1)
-    sass (3.5.3)
+    sass (3.5.5)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -323,7 +323,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    selenium-webdriver (3.7.0)
+    selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     signet (0.8.1)
@@ -375,7 +375,7 @@ GEM
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uber (0.1.0)
-    uglifier (3.2.0)
+    uglifier (4.1.2)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -393,8 +393,8 @@ GEM
     whenever (0.10.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
-    xpath (2.1.0)
-      nokogiri (~> 1.3)
+    xpath (3.0.0)
+      nokogiri (~> 1.8)
 
 PLATFORMS
   ruby
@@ -443,4 +443,4 @@ DEPENDENCIES
   xml-simple
 
 BUNDLED WITH
-   1.15.1
+   1.16.1
