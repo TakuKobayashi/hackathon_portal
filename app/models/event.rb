@@ -171,14 +171,18 @@ class Event < ApplicationRecord
   def season_date_number
     number = self.started_at.year * 10000
     month = self.started_at.month
-    if (1..3).cover?(month)
-      return number + 103
-    elsif (4..6).cover?(month)
-      return number + 406
-    elsif (7..9).cover?(month)
-      return number + 709
-    elsif (10..12).cover?(month)
-      return number + 1012
+    if (1..2).cover?(month)
+      return number + 102
+    elsif (3..4).cover?(month)
+        return number + 304
+    elsif (5..6).cover?(month)
+      return number + 506
+    elsif (7..8).cover?(month)
+      return number + 708
+    elsif (9..10).cover?(month)
+      return number + 910
+    elsif (11..12).cover?(month)
+      return number + 1112
     end
   end
 
