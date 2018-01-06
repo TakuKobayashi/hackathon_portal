@@ -63,6 +63,19 @@ class Event < ApplicationRecord
     if keyword.blank?
       return false
     elsif keyword == "合宿"
+      return development_camp?(keyword: keyword)
+    else
+      return true
+    end
+  end
+
+  def development_camp?(keyword: nil)
+    if keyword.present?
+      check_word = keyword
+    else
+      check_word = Event::HACKATHON_KEYWORDS.detect{|word| sanitized_title.include?(word)}
+    end
+    if check_word == "合宿"
       sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count = 0
       Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
@@ -71,7 +84,7 @@ class Event < ApplicationRecord
       end
       return appear_count >= 2
     else
-      return true
+      return false
     end
   end
 
@@ -84,7 +97,11 @@ class Event < ApplicationRecord
       hashtags = self.hash_tag.to_s.split(" #")
       tweet_words += hashtags.map{|hashtag| "#" + hashtag.to_s }
     end
-    tweet_words += ["#hackathon", "#ハッカソン"]
+    if development_camp?
+      tweet_words += ["#開発合宿", "#合宿"]
+    else
+      tweet_words += ["#hackathon", "#ハッカソン"]
+    end
     text_size = 0
     tweet_words.select! do |text|
       text_size += text.size
