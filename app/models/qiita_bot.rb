@@ -43,7 +43,7 @@ class QiitaBot < ApplicationRecord
       start_month = (month_range / 100).to_i
       end_month = (month_range % 100).to_i
       body = "#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新\n"
-      body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月ハッカソンの開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
+      body += "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
       body += "# これから開催されるイベント\n\n"
       body += before_events_from_qiita.map{|event| event.generate_qiita_cell_text }.join("\n\n")
       if after_events_from_qiita.present?
@@ -65,7 +65,7 @@ class QiitaBot < ApplicationRecord
             name: "アイディアソン",
           },
           {
-            name: "まとめ",
+            name: "合宿",
           },
           {
             name: year_number.to_s,
