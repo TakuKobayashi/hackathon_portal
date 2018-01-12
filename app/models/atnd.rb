@@ -40,10 +40,7 @@ class Atnd < Event
   ATND_EVENTPAGE_URL = "https://atnd.org/events/"
 
   def self.find_event(keywords:, start: 1)
-    http_client = HTTPClient.new
-    http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    response = http_client.get(ATND_API_URL, {keyword_or: keywords, count: 100, start: start, format: :json}, {})
-    return JSON.parse(response.body)
+    return RequestParser.request_and_parse_json(url: ATND_API_URL, params: {keyword_or: keywords, count: 100, start: start, format: :json})
   end
 
   def self.import_events!
