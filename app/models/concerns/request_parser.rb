@@ -18,7 +18,12 @@ module RequestParser
       logger = ActiveSupport::Logger.new("log/json_parse_error.log")
       console = ActiveSupport::Logger.new(STDOUT)
       logger.extend ActiveSupport::Logger.broadcast(console)
-      message = "Request URL:" + url + "\nRequest Method:" + method.to_s + "\nRequest Params:" + params.to_json + "\nerror: #{e.message}\n #{e.backtrace.join("\n")}\n\n"
+      message = ([
+        "Time:" + Time.current.to_s,
+        "Request URL:" + url,
+        "Request Method:" + method.to_s,
+        "Request Params:" + params.to_json,
+        "error: #{e.message}"] + e.backtrace).join("\n") + "\n\n"
       logger.info(message)
     end
     return parsed_json
