@@ -37,48 +37,52 @@
 
 class Peatix < Event
   PEATIX_ROOT_URL = "http://peatix.com"
-  PEATIX_SEARCH_URL = PEATIX_ROOT_URL + "/search"
+  PEATIX_SEARCH_URL = PEATIX_ROOT_URL + "/search/events"
 
-  def self.find_event(keywords:, start: 1)
-    event_dom = RequestParser.request_and_parse_html(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: 1, size: 10})
-    self.import_events!(event_dom)
-    return event_dom
+  PAGE_PER = 10
+
+  def self.find_event(keywords:, page: 1)
+    return RequestParser.request_and_parse_json(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: page, size: PAGE_PER}, header: {"X-Requested-With" => "XMLHttpRequest"}, options: {:follow_redirect => true})
   end
 
-  def self.import_events!(event_dom)
+  def self.import_events!
     peatix_events = []
+    results_available = 0
+    page = 1
     update_columns = Peatix.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
-    event_list_dom = event_dom.css(".event-list")
-    event_list_dom.css("a").each do |adom|
-      next if adom["href"].blank?
-      url = Addressable::URI.parse(adom["href"].to_s)
-      next if url.scheme.blank? || !url.to_s.include?(PEATIX_ROOT_URL)
-      location_str = Charwidth.normalize(adom.css(".event-thumb_location").text)
-      address_str = Sanitizer.scan_japan_address(location_str).flatten.map(&:strip).join
-      place_str = location_str.gsub(address_str, "").split(" ").reject{|l| l.strip.blank? || l.include?("会場") || l.include?("〒") }.join(" ")
-      event_detail_dom = RequestParser.request_and_parse_html(url: url.origin.to_s + url.path.to_s)
-      owner_name_arr = Charwidth.normalize(adom.css("span.event-thumb_organizer").text).split(" ")
-      owner_url = event_detail_dom.css(".pod-thumb_link").map{|a| a["href"]}.compact.first
-      peatix_event = Peatix.new(
-        event_id: url.path.to_s.split("/").last.to_s,
-        title: adom.css("h3").text.to_s.strip,
-        url: url.origin.to_s + url.path.to_s,
-        description: Sanitizer.basic_sanitize(event_detail_dom.css("#field-event-description").css("select").to_html),
-        address: event_detail_dom.css("#field-event-address").text.strip,
-        place: place_str,
-        cost: 0,
-        max_prize: 0,
-        currency_unit: "円",
-        owner_id: owner_url.to_s.split("/").last,
-        attend_number: event_detail_dom.css("a").detect{|a| a[:href].to_s.include?("/attendees") }.try(:text).to_i,
-        owner_name: owner_name_arr[1..owner_name_arr.size].join(" ")
-      )
-      datetime_dom = adom.css("time").detect{|time_dom| time_dom["datetime"].present? }
-      if datetime_dom.present?
-        peatix_event.started_at = DateTime.parse(datetime_dom["datetime"].to_s)
+    begin
+      events_response = Peatix.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
+      json_data = events_response["json_data"]
+      page += 1
+      peatix_events = []
+      json_data["events"].each do |res|
+        tracking_url = Addressable::URI.parse(res["tracking_url")
+        lat, lng = res["latlng"].to_s.split(",")
+        peatix_event = Peatix.new(
+          event_id: res["id"].to_s,
+#          hash_tag: res["hash_tag"],
+          title: res["name"].to_s,
+          url: tracking_url.origin.to_s + tracking_url.path.to_s,
+#          description: Sanitizer.basic_sanitize(res["description"].to_s),
+#          limit_number: res["limit"],
+          address: res["address"].to_s,
+          place: res["venue_name"].to_s,
+          lat: lat,
+          lon: lng,
+          cost: 0,
+          max_prize: 0,
+          currency_unit: "円",
+          owner_id: res["organizer"]["id"],
+          owner_nickname: res["organizer"]["name"],
+          owner_name: res["organizer"]["name"],
+#          attend_number: res["accepted"],
+#          substitute_number: res["waiting"]
+        )
+        peatix_event.started_at = DateTime.parse(res["datetime"])
+        peatix_events << peatix_event
       end
-      peatix_events << peatix_event
-    end
-    Peatix.import!(peatix_events, on_duplicate_key_update: update_columns)
+
+      Peatix.import!(peatix_events, on_duplicate_key_update: update_columns)
+    end while json_data["events"].size < PAGE_PER
   end
 end
