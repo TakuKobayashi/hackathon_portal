@@ -70,7 +70,7 @@ class Doorkeeper < Event
           lon: event["long"],
           cost: 0,
           max_prize: 0,
-          currency_unit: "円",
+          currency_unit: "JPY",
           owner_id: event["group"],
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]

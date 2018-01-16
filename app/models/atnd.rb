@@ -73,7 +73,7 @@ class Atnd < Event
           lon: event["lon"],
           cost: 0,
           max_prize: 0,
-          currency_unit: "円",
+          currency_unit: "JPY",
           owner_id: event["owner_id"],
           owner_nickname: event["owner_nickname"],
           attend_number: event["accepted"],

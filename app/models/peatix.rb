@@ -66,17 +66,22 @@ class Peatix < Event
           place: res["venue_name"].to_s,
           lat: lat,
           lon: lng,
-          cost: 0,
+          attend_number: 0,
           max_prize: 0,
-          currency_unit: "円",
+          currency_unit: "JPY",
           owner_id: res["organizer"]["id"],
           owner_nickname: res["organizer"]["name"],
           owner_name: res["organizer"]["name"],
           started_at: DateTime.parse(res["datetime"].to_s)
         )
         dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: {:follow_redirect => true})
-        peatix_event.description = Sanitizer.basic_sanitize(dom.css("#field-event-description").css("select").to_html)
-        peatix_event.attend_number = dom.css("a").detect{|a| a[:href].to_s.include?("/attendees") }.try(:text).to_i
+        peatix_event.description = Sanitizer.basic_sanitize(dom.css("#field-event-description").to_html)
+        price_dom = dom.css("meta[@itemprop = 'price']").min_by{|price_dom| price_dom["content"].to_i }
+        if price_dom.present?
+          peatix_event.cost = price_dom["content"].to_i
+        else
+          peatix_event.cost = 0
+        end
         peatix_events << peatix_event
         sleep 1
       end

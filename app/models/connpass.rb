@@ -73,7 +73,7 @@ class Connpass < Event
           lon: res["lon"],
           cost: 0,
           max_prize: 0,
-          currency_unit: "円",
+          currency_unit: "JPY",
           owner_id: res["owner_id"],
           owner_nickname: res["owner_nickname"],
           owner_name: res["owner_display_name"],
