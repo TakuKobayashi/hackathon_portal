@@ -56,15 +56,12 @@ class Peatix < Event
       page += 1
       peatix_events = []
       json_data["events"].each do |res|
-        tracking_url = Addressable::URI.parse(res["tracking_url")
+        tracking_url = Addressable::URI.parse(res["tracking_url"])
         lat, lng = res["latlng"].to_s.split(",")
         peatix_event = Peatix.new(
           event_id: res["id"].to_s,
-#          hash_tag: res["hash_tag"],
           title: res["name"].to_s,
           url: tracking_url.origin.to_s + tracking_url.path.to_s,
-#          description: Sanitizer.basic_sanitize(res["description"].to_s),
-#          limit_number: res["limit"],
           address: res["address"].to_s,
           place: res["venue_name"].to_s,
           lat: lat,
@@ -75,14 +72,16 @@ class Peatix < Event
           owner_id: res["organizer"]["id"],
           owner_nickname: res["organizer"]["name"],
           owner_name: res["organizer"]["name"],
-#          attend_number: res["accepted"],
-#          substitute_number: res["waiting"]
+          started_at: DateTime.parse(res["datetime"].to_s)
         )
-        peatix_event.started_at = DateTime.parse(res["datetime"])
+        dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: {:follow_redirect => true})
+        peatix_event.description = Sanitizer.basic_sanitize(dom.css("#field-event-description").css("select").to_html)
+        peatix_event.attend_number = dom.css("a").detect{|a| a[:href].to_s.include?("/attendees") }.try(:text).to_i
         peatix_events << peatix_event
+        sleep 1
       end
 
       Peatix.import!(peatix_events, on_duplicate_key_update: update_columns)
-    end while json_data["events"].size < PAGE_PER
+    end while json_data["events"].size >= PAGE_PER
   end
 end

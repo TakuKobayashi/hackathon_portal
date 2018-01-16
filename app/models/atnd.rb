@@ -79,7 +79,7 @@ class Atnd < Event
           attend_number: event["accepted"],
           substitute_number: event["waiting"]
         )
-        dom = RequestParser.request_and_parse_html(url: atnd_event.url)
+        dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
         hash_tag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
         if hash_tag_dom.present?
           atnd_event.hash_tag = hash_tag_dom.css("a").text.strip
