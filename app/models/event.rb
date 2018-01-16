@@ -45,7 +45,7 @@ class Event < ApplicationRecord
     self.address = Charwidth.normalize(self.address.to_s)
   end
 
-  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
+  HACKATHON_KEYWORDS = ["hackathon", "hack day", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
 
   def self.import_events!
