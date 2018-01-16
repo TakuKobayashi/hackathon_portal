@@ -52,6 +52,7 @@ class Event < ApplicationRecord
     Connpass.import_events!
     Doorkeeper.import_events!
     Atnd.import_events!
+    Peatix.import_events!
   end
 
   def hackathon_event?
