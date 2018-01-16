@@ -45,7 +45,8 @@ class Event < ApplicationRecord
     self.address = Charwidth.normalize(self.address.to_s)
   end
 
-  HACKATHON_KEYWORDS = ["hackathon", "hack day", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
+  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
+  EXTRA_HACKATHON_CHECK_KEYWORDS = ["hack day"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
 
   def self.import_events!
@@ -57,7 +58,7 @@ class Event < ApplicationRecord
 
   def hackathon_event?
     sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
-    keyword = Event::HACKATHON_KEYWORDS.detect{|word| sanitized_title.include?(word)}
+    keyword = (Event::HACKATHON_KEYWORDS + Event::EXTRA_HACKATHON_CHECK_KEYWORDS).detect{|word| sanitized_title.include?(word)}
     if keyword.blank?
       return false
     elsif keyword == "合宿"
@@ -119,12 +120,13 @@ class Event < ApplicationRecord
   end
 
   def generate_qiita_cell_text
-    og = OpenGraph.new(self.url)
+    dom = RequestParser.request_and_parse_html(self.url, options: {:follow_redirect => true})
+    og_image_dom = dom.css("meta[@property = 'og:image']").first
     words = [
       "### [#{self.title}](#{self.url})",
     ]
-    if og.images.present?
-      image_url = og.images.first
+    if og_image_dom.present?
+      image_url = og_image_dom["content"].to_s
       # 画像じゃないものも含まれていることもあるので分別する
       fi = FastImage.new(image_url.to_s)
       if fi.type.present?

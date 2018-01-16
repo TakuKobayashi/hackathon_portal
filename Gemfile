@@ -66,7 +66,6 @@ gem 'rails-i18n', '~> 5.0.0'
 
 #gem 'geocoder'
 
-gem 'opengraph_parser'
 gem 'fastimage'
 
 group :development, :test do
