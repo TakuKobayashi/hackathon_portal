@@ -120,7 +120,7 @@ class Event < ApplicationRecord
   end
 
   def generate_qiita_cell_text
-    dom = RequestParser.request_and_parse_html(self.url, options: {:follow_redirect => true})
+    dom = RequestParser.request_and_parse_html(url: self.url, options: {:follow_redirect => true})
     og_image_dom = dom.css("meta[@property = 'og:image']").first
     words = [
       "### [#{self.title}](#{self.url})",
