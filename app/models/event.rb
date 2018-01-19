@@ -57,6 +57,9 @@ class Event < ApplicationRecord
   end
 
   def hackathon_event?
+    if self.type == "SelfPostEvent"
+      return true
+    end
     sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
     keyword = (Event::HACKATHON_KEYWORDS + Event::EXTRA_HACKATHON_CHECK_KEYWORDS).detect{|word| sanitized_title.include?(word)}
     if keyword.blank?
