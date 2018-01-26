@@ -46,8 +46,19 @@ class Event < ApplicationRecord
   end
 
   HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
-  EXTRA_HACKATHON_CHECK_KEYWORDS = ["hack day"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
+  HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
+    "合宿" => 2,
+    "hackathon" => 2,
+    "ハッカソン" => 2,
+    "ハック" => 1,
+    "アイディアソン" => 2,
+    "アイデアソン" => 2,
+    "ideathon" => 2,
+    "ゲームジャム" => 2,
+    "hack day" => 2,
+    "game jam" => 2
+  }
 
   def self.import_events!
     Connpass.import_events!
@@ -60,15 +71,21 @@ class Event < ApplicationRecord
     if self.type == "SelfPostEvent"
       return true
     end
-    sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
-    keyword = (Event::HACKATHON_KEYWORDS + Event::EXTRA_HACKATHON_CHECK_KEYWORDS).detect{|word| sanitized_title.include?(word)}
-    if keyword.blank?
-      return false
-    elsif keyword == "合宿"
-      return development_camp?(keyword: keyword)
-    else
-      return true
+    appear_count = 0
+    Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
+      sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+      appear_count += sanitized_title.scan(keyword).size * point * 2
+      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+      appear_count += sanitized_description.scan(keyword).size * point
+      if appear_count >= 4
+        if keyword == "合宿"
+          return development_camp?(keyword: keyword)
+        else
+          return true
+        end
+      end
     end
+    return false
   end
 
   def development_camp?(keyword: nil)
