@@ -75,6 +75,7 @@ class Doorkeeper < Event
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]
         )
+        doorkeeper_event.set_search_hashtag
         doorkeeper_event.started_at = DateTime.parse(event["starts_at"])
         doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
         doorkeeper_events << doorkeeper_event
@@ -84,5 +85,9 @@ class Doorkeeper < Event
       page += 1
     end while events_response.present? && !stop_flg
     ExtraInfo.update(extra)
+  end
+
+  def set_search_hashtag
+    self.hash_tag = Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(" ")
   end
 end

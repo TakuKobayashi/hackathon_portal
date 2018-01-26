@@ -82,11 +82,16 @@ class Peatix < Event
         else
           peatix_event.cost = 0
         end
+        peatix_event.set_search_hashtag
         peatix_events << peatix_event
         sleep 1
       end
 
       Peatix.import!(peatix_events, on_duplicate_key_update: update_columns)
     end while json_data["events"].size >= PAGE_PER
+  end
+
+  def set_search_hashtag
+    self.hash_tag = Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(" ")
   end
 end
