@@ -74,10 +74,10 @@ class Event < ApplicationRecord
     appear_count = 0
     Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
       sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
-      appear_count += sanitized_title.scan(keyword).size * point * 2
+      appear_count += sanitized_title.scan(keyword).size * point * 3
       sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count += sanitized_description.scan(keyword).size * point
-      if appear_count >= 4
+      if appear_count >= 6
         if keyword == "合宿"
           return development_camp?(keyword: keyword)
         else
