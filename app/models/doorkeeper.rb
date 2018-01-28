@@ -43,10 +43,6 @@ class Doorkeeper < Event
   end
 
   def self.import_events!
-    extra = ExtraInfo.read_extra_info
-    last_update_event_id = extra[Doorkeeper.to_s].to_s
-    stop_flg = false
-
     page = 1
     update_columns = Doorkeeper.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
@@ -54,10 +50,6 @@ class Doorkeeper < Event
       doorkeeper_events = []
       events_response.each do |res|
         event = res["event"]
-        if event["id"].to_s == last_update_event_id
-          stop_flg = true
-          break
-        end
         doorkeeper_event = Doorkeeper.new(
           event_id: event["id"].to_s,
           title: event["title"].to_s,
@@ -78,13 +70,12 @@ class Doorkeeper < Event
         doorkeeper_event.set_search_hashtag
         doorkeeper_event.started_at = DateTime.parse(event["starts_at"])
         doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
+        doorkeeper_event.set_location_data
         doorkeeper_events << doorkeeper_event
-        extra[Doorkeeper.to_s] = event["id"].to_s
       end
       Doorkeeper.import!(doorkeeper_events)
       page += 1
-    end while events_response.present? && !stop_flg
-    ExtraInfo.update(extra)
+    end while events_response.present?
   end
 
   def set_search_hashtag

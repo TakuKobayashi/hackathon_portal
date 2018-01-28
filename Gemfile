@@ -64,7 +64,7 @@ gem 'puma_worker_killer'
 
 gem 'rails-i18n', '~> 5.0.0'
 
-#gem 'geocoder'
+gem 'geocoder'
 
 gem 'fastimage'
 

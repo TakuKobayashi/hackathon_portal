@@ -41,10 +41,6 @@ class Event < ApplicationRecord
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
 
-  before_save do
-    self.address = Charwidth.normalize(self.address.to_s)
-  end
-
   HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
@@ -105,6 +101,25 @@ class Event < ApplicationRecord
       return appear_count >= 2
     else
       return false
+    end
+  end
+
+
+  def set_location_data
+    if self.address.present? && self.lat.blank? && self.lon.blank?
+      geo_result = Geocoder.search(self.address).first
+      if geo_result.present?
+        self.lat = geo_result.latitude
+        self.lon = geo_result.longitude
+      end
+    elsif self.address.blank? && self.lat.present? && self.lon.present?
+      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
+      if geo_result.present?
+        self.address = Sanitizer.scan_japan_address(geo_result.address).join
+      end
+    end
+    if self.address.present?
+      self.address = Charwidth.normalize(self.address)
     end
   end
 

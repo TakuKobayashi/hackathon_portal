@@ -82,6 +82,7 @@ class Peatix < Event
         else
           peatix_event.cost = 0
         end
+        peatix_event.set_location_data
         peatix_event.set_search_hashtag
         peatix_events << peatix_event
         sleep 1

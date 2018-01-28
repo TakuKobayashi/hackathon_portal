@@ -43,10 +43,6 @@ class Connpass < Event
   end
 
   def self.import_events!
-    extra = ExtraInfo.read_extra_info
-    last_update_event_id = extra[Connpass.to_s].to_s
-    stop_flg = false
-
     results_available = 0
     start = 1
     update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
@@ -56,10 +52,6 @@ class Connpass < Event
       start += events_response["results_returned"]
       connpass_events = []
       events_response["events"].each do |res|
-        if res["event_id"].to_s == last_update_event_id
-          stop_flg = true
-          break
-        end
         connpass_event = Connpass.new(
           event_id: res["event_id"].to_s,
           hash_tag: res["hash_tag"],
@@ -82,12 +74,11 @@ class Connpass < Event
         )
         connpass_event.started_at = DateTime.parse(res["started_at"])
         connpass_event.ended_at = DateTime.parse(res["ended_at"]) if res["ended_at"].present?
+        connpass_event.set_location_data
         connpass_events << connpass_event
-        extra[Connpass.to_s] = res["event_id"].to_s
       end
 
       Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
-    end while start < results_available && !stop_flg
-    ExtraInfo.update(extra)
+    end while start < results_available
   end
 end

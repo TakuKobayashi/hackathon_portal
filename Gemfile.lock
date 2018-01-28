@@ -128,6 +128,7 @@ GEM
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
+    geocoder (1.4.4)
     get_process_mem (0.2.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -406,6 +407,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   devise
   fastimage
+  geocoder
   google-api-client (~> 0.11)
   httpclient
   inherited_resources!

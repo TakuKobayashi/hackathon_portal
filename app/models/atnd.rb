@@ -44,11 +44,6 @@ class Atnd < Event
   end
 
   def self.import_events!
-    extra = ExtraInfo.read_extra_info
-    last_update_event_id = extra[Atnd.to_s].to_s
-    stop_flg = false
-
-    results_available = 0
     start = 1
     update_columns = Atnd.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
@@ -57,10 +52,6 @@ class Atnd < Event
       atnd_events = []
       events_response["events"].each do |res|
         event = res["event"]
-        if event["event_id"].to_s == last_update_event_id
-          stop_flg = true
-          break
-        end
         atnd_event = Atnd.new(
           event_id: event["event_id"].to_s,
           title: event["title"].to_s,
@@ -86,12 +77,11 @@ class Atnd < Event
         end
         atnd_event.started_at = DateTime.parse(event["started_at"])
         atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
+        atnd_event.set_location_data
         atnd_events << atnd_event
-        extra[Atnd.to_s] = event["event_id"].to_s
       end
 
       Atnd.import!(atnd_events, on_duplicate_key_update: update_columns)
-    end while atnd_events.present? && !stop_flg
-    ExtraInfo.update(extra)
+    end while atnd_events.present?
   end
 end
