@@ -126,7 +126,7 @@ class Event < ApplicationRecord
   def import_hashtags!(hashtag_strings: [])
     sanitized_hashtags = [hashtag_strings].flatten.map do |hashtag|
       htag = Sanitizer.basic_sanitize(hashtag.to_s)
-      Sanitizer.delete_sharp(htag).split(/[\s　,]/)
+      Sanitizer.delete_sharp(htag).split(/[\s　,]/).select{|h| h.present? }
     end.flatten
     return false if sanitized_hashtags.blank?
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
