@@ -44,14 +44,12 @@ class Doorkeeper < Event
 
   def self.import_events!
     page = 1
-    update_columns = Doorkeeper.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Doorkeeper.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
-      doorkeeper_events = []
       events_response.each do |res|
         event = res["event"]
-        doorkeeper_event = Doorkeeper.new(
-          event_id: event["id"].to_s,
+        doorkeeper_event = Doorkeeper.find_or_initialize_by(event_id: event["id"].to_s)
+        doorkeeper_event.attributes = doorkeeper_event.attributes.merge({
           title: event["title"].to_s,
           url: event["public_url"].to_s,
           description: Sanitizer.basic_sanitize(event["description"].to_s),
@@ -66,19 +64,14 @@ class Doorkeeper < Event
           owner_id: event["group"],
           attend_number: event["participants"],
           substitute_number: event["waitlisted"]
-        )
-        doorkeeper_event.set_search_hashtag
+        })
         doorkeeper_event.started_at = DateTime.parse(event["starts_at"])
         doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
         doorkeeper_event.set_location_data
-        doorkeeper_events << doorkeeper_event
+        doorkeeper_event.save!
+        doorkeeper_event.import_hash_tags!(hashtags: search_hashtags)
       end
-      Doorkeeper.import!(doorkeeper_events)
       page += 1
     end while events_response.present?
-  end
-
-  def set_search_hashtag
-    self.hash_tag = Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(" ")
   end
 end

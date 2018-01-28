@@ -19,6 +19,10 @@ module Sanitizer
     return text.scan(/[#＃][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー]+/).map(&:strip)
   end
 
+  def self.delete_sharp(text)
+    return text.gsub(/[#＃]/, "")
+  end
+
   def self.basic_sanitize(text)
     #全角半角をいい感じに整える
     sanitized_word = Charwidth.normalize(text)

@@ -45,15 +45,13 @@ class Connpass < Event
   def self.import_events!
     results_available = 0
     start = 1
-    update_columns = Connpass.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       results_available = events_response["results_available"]
       start += events_response["results_returned"]
-      connpass_events = []
       events_response["events"].each do |res|
-        connpass_event = Connpass.new(
-          event_id: res["event_id"].to_s,
+        connpass_event = Connpass.find_or_initialize_by(event_id: res["event_id"].to_s)
+        connpass_event.attributes = connpass_event.attributes.merge({
           hash_tag: res["hash_tag"],
           title: res["title"].to_s,
           url: res["event_url"].to_s,
@@ -71,14 +69,13 @@ class Connpass < Event
           owner_name: res["owner_display_name"],
           attend_number: res["accepted"],
           substitute_number: res["waiting"]
-        )
+        })
         connpass_event.started_at = DateTime.parse(res["started_at"])
         connpass_event.ended_at = DateTime.parse(res["ended_at"]) if res["ended_at"].present?
         connpass_event.set_location_data
-        connpass_events << connpass_event
+        connpass_event.save!
+        connpass_event.import_hash_tags!(hashtags: res["hash_tag"].to_s.split(/\s/))
       end
-
-      Connpass.import!(connpass_events, on_duplicate_key_update: update_columns)
     end while start < results_available
   end
 end

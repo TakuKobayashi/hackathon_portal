@@ -104,7 +104,6 @@ class Event < ApplicationRecord
     end
   end
 
-
   def set_location_data
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result = Geocoder.search(self.address).first
@@ -121,6 +120,28 @@ class Event < ApplicationRecord
     if self.address.present?
       self.address = Charwidth.normalize(self.address)
     end
+  end
+
+  def import_hash_tags!(hashtags: [])
+    sanitized_hashtags = [hashtags].flatten.map do |hashtag|
+      htag = Sanitizer.basic_sanitize(hashtag.to_s)
+      Sanitizer.delete_sharp(htag).split(/[\s　]/)
+    end.flatten
+    return false if sanitized_hashtags.blank?
+    ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
+    sanitized_hashtags.each do |h|
+      if ai_hashtags[h].present?
+        aih = ai_hashtags[h]
+      else
+        aih = Ai::Hashtag.new(hashtag: h)
+      end
+      aih.update!(appear_count: aih.appear_count + 1)
+      self.hashtags.find_or_create_by(hashtag_id: aih.id)
+    end
+  end
+
+  def search_hashtags
+    return Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(" ")
   end
 
   def generate_tweet_text

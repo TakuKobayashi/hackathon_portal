@@ -46,8 +46,6 @@ class Peatix < Event
   end
 
   def self.import_events!
-    peatix_events = []
-    results_available = 0
     page = 1
     update_columns = Peatix.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
@@ -58,8 +56,8 @@ class Peatix < Event
       json_data["events"].each do |res|
         tracking_url = Addressable::URI.parse(res["tracking_url"])
         lat, lng = res["latlng"].to_s.split(",")
-        peatix_event = Peatix.new(
-          event_id: res["id"].to_s,
+        peatix_event = Peatix.find_or_initialize_by(event_id: res["id"].to_s)
+        peatix_event.attributes = peatix_event.attributes.merge({
           title: res["name"].to_s,
           url: tracking_url.origin.to_s + tracking_url.path.to_s,
           address: res["address"].to_s,
@@ -73,7 +71,7 @@ class Peatix < Event
           owner_nickname: res["organizer"]["name"],
           owner_name: res["organizer"]["name"],
           started_at: DateTime.parse(res["datetime"].to_s)
-        )
+        })
         dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: {:follow_redirect => true})
         peatix_event.description = Sanitizer.basic_sanitize(dom.css("#field-event-description").to_html)
         price_dom = dom.css("meta[@itemprop = 'price']").min_by{|price_dom| price_dom["content"].to_i }
@@ -83,16 +81,10 @@ class Peatix < Event
           peatix_event.cost = 0
         end
         peatix_event.set_location_data
-        peatix_event.set_search_hashtag
-        peatix_events << peatix_event
+        peatix_event.save!
+        peatix_event.import_hash_tags!(hashtags: search_hashtags)
         sleep 1
       end
-
-      Peatix.import!(peatix_events, on_duplicate_key_update: update_columns)
-    end while json_data["events"].size >= PAGE_PER
-  end
-
-  def set_search_hashtag
-    self.hash_tag = Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(" ")
+    end while json_data["events"].present?
   end
 end

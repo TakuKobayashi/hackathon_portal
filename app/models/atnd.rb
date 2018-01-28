@@ -45,15 +45,13 @@ class Atnd < Event
 
   def self.import_events!
     start = 1
-    update_columns = Atnd.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       events_response = Atnd.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       start += events_response["results_returned"]
-      atnd_events = []
       events_response["events"].each do |res|
         event = res["event"]
-        atnd_event = Atnd.new(
-          event_id: event["event_id"].to_s,
+        atnd_event = Atnd.find_or_initialize_by(event_id: event["event_id"].to_s)
+        atnd_event.attributes = atnd_event.attributes.merge({
           title: event["title"].to_s,
           url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
           description: Sanitizer.basic_sanitize(event["description"].to_s),
@@ -69,19 +67,17 @@ class Atnd < Event
           owner_nickname: event["owner_nickname"],
           attend_number: event["accepted"],
           substitute_number: event["waiting"]
-        )
-        dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
-        hash_tag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
-        if hash_tag_dom.present?
-          atnd_event.hash_tag = hash_tag_dom.css("a").text.strip
-        end
+        })
         atnd_event.started_at = DateTime.parse(event["started_at"])
         atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
         atnd_event.set_location_data
-        atnd_events << atnd_event
+        atnd_event.save!
+        dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
+        hash_tag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
+        if hash_tag_dom.present?
+          atnd_event.import_hash_tags!(hashtags: hash_tag_dom.css("a").text.strip.split(/\s/))
+        end
       end
-
-      Atnd.import!(atnd_events, on_duplicate_key_update: update_columns)
     end while atnd_events.present?
   end
 end
