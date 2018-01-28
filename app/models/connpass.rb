@@ -51,7 +51,6 @@ class Connpass < Event
       events_response["events"].each do |res|
         connpass_event = Connpass.find_or_initialize_by(event_id: res["event_id"].to_s)
         connpass_event.attributes = connpass_event.attributes.merge({
-          hash_tag: res["hash_tag"],
           title: res["title"].to_s,
           url: res["event_url"].to_s,
           description: Sanitizer.basic_sanitize(res["description"].to_s),
