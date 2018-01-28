@@ -39,7 +39,8 @@ require 'google/apis/urlshortener_v1'
 
 class Event < ApplicationRecord
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
-  has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+  has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+  has_many :hashtags, through: :resource_hashtags, source: :hashtag
 
   HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
@@ -122,8 +123,8 @@ class Event < ApplicationRecord
     end
   end
 
-  def import_hash_tags!(hashtags: [])
-    sanitized_hashtags = [hashtags].flatten.map do |hashtag|
+  def import_hashtags!(hashtag_strings: [])
+    sanitized_hashtags = [hashtag_strings].flatten.map do |hashtag|
       htag = Sanitizer.basic_sanitize(hashtag.to_s)
       Sanitizer.delete_sharp(htag).split(/[\s　]/)
     end.flatten
@@ -135,8 +136,8 @@ class Event < ApplicationRecord
       else
         aih = Ai::Hashtag.new(hashtag: h)
       end
-      aih.update!(appear_count: aih.appear_count + 1)
-      self.hashtags.find_or_create_by(hashtag_id: aih.id)
+      aih.save!
+      self.resource_hashtags.find_or_create_by(hashtag_id: aih.id)
     end
   end
 
@@ -149,10 +150,8 @@ class Event < ApplicationRecord
     if self.limit_number.present?
       tweet_words << "定員#{self.limit_number}人"
     end
-    if self.hash_tag.present?
-      hashtags = self.hash_tag.to_s.split(" #")
-      tweet_words += hashtags.map{|hashtag| "#" + hashtag.to_s }
-    end
+    hs = self.hashtags.map(&:hashtag).map{|hashtag| "#" + hashtag.to_s }
+    tweet_words += hs
     if development_camp?
       tweet_words += ["#開発合宿", "#合宿"]
     else

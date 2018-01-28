@@ -73,9 +73,9 @@ class Atnd < Event
         atnd_event.set_location_data
         atnd_event.save!
         dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
-        hash_tag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
-        if hash_tag_dom.present?
-          atnd_event.import_hash_tags!(hashtags: hash_tag_dom.css("a").text.strip.split(/\s/))
+        hashtag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
+        if hashtag_dom.present?
+          atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css("a").text.strip.split(/\s/))
         end
       end
     end while atnd_events.present?

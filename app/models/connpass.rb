@@ -74,7 +74,7 @@ class Connpass < Event
         connpass_event.ended_at = DateTime.parse(res["ended_at"]) if res["ended_at"].present?
         connpass_event.set_location_data
         connpass_event.save!
-        connpass_event.import_hash_tags!(hashtags: res["hash_tag"].to_s.split(/\s/))
+        connpass_event.import_hashtags!(hashtag_strings: res["hash_tag"].to_s.split(/\s/))
       end
     end while start < results_available
   end

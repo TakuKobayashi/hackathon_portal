@@ -2,9 +2,8 @@
 #
 # Table name: ai_hashtags
 #
-#  id           :integer          not null, primary key
-#  hashtag      :string(255)      not null
-#  appear_count :integer          default(0), not null
+#  id      :integer          not null, primary key
+#  hashtag :string(255)      not null
 #
 # Indexes
 #
