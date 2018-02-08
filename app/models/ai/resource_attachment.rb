@@ -25,4 +25,32 @@ class Ai::ResourceAttachment < ApplicationRecord
   }
 
   belongs_to :tweet_resource, class_name: 'Ai::TweetResource', foreign_key: :tweet_resource_id, required: false
+
+  def src
+    url = Addressable::URI.parse(self.origin_src)
+    url.query = self.query
+    return url.to_s
+  end
+
+  def src=(url)
+    origin_src, query = Ai::ResourceAttachment.url_partition(url: url)
+    self.origin_src = origin_src
+    self.query = query
+  end
+
+  private
+  def self.url_partition(url:)
+    aurl = Addressable::URI.parse(url)
+    pure_url = aurl.origin.to_s + aurl.path.to_s
+    if pure_url.size > 255
+      word_counter = 0
+      srces, other_pathes = pure_url.split("/").partition do |word|
+        word_counter = word_counter + word.size + 1
+        word_counter <= 255
+      end
+      return srces.join("/"), other_pathes.join("/")
+    else
+      return pure_url, aurl.query
+    end
+  end
 end

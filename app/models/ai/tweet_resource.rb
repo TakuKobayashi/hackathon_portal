@@ -9,8 +9,8 @@
 #  resource_user_name :string(255)
 #  body               :text(65535)      not null
 #  mention_user_name  :string(255)
-#  reply_id           :integer
-#  quote_id           :integer
+#  reply_id           :string(255)
+#  quote_id           :string(255)
 #  published_at       :datetime         not null
 #  options            :text(65535)
 #

@@ -7,8 +7,8 @@ class CreateAiTweetResources < ActiveRecord::Migration[5.1]
       t.string :resource_user_name
       t.text :body, null: false
       t.string :mention_user_name
-      t.integer :reply_id
-      t.integer :quote_id
+      t.string :reply_id
+      t.string :quote_id
       t.datetime :published_at, null: false
       t.text :options
     end
