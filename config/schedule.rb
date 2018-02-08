@@ -25,6 +25,14 @@ every :day, at: '11:00' do
   rake "batch:event_crawl"
 end
 
-every :day, at: '15:00' do
+every :day, at: '19:00' do
   rake "batch:bot_tweet"
+end
+
+every :day, at: '19:00' do
+  rake "batch:bot_tweet"
+end
+
+every 3.hours do
+  runner "Ai::TwitterResource.crawl_hashtag_tweets!"
 end

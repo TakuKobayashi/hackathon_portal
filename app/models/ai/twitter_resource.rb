@@ -22,11 +22,17 @@
 
 class Ai::TwitterResource < Ai::TweetResource
   def self.crawl_hashtag_tweets!
+    crawl_ids = Log::CrawlLog.where("crawled_at > ?", 6.day.ago).where(resource_type: "Ai::Hashtag").pluck(:resource_id)
     future_events = Event.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").preload(:hashtags).select{|event| event.hackathon_event? }
-    hashtags = future_events.map(&:hashtags).flatten
+    hashtags = future_events.map(&:hashtags).flatten.select{|hashtag| !crawl_ids.include?(hashtag.id) }
     twitter_client = TwitterBot.get_twitter_client
     hashtags.each do |hashtag|
-      tweets = twitter_client.search("#" + hashtag.hashtag)
+      tweets = []
+      begin
+        tweets = twitter_client.search("#" + hashtag.hashtag)
+      rescue Twitter::Error::Forbidden, Twitter::Error::ServiceUnavailable, Twitter::Error::ClientError, Twitter::Error::ServerError => error
+        break
+      end
       rid_resources = Ai::TwitterResource.where(resource_id: tweets.map(&:id)).index_by(&:resource_id)
       tweets.each do |tweet|
         next if rid_resources[tweet.id.to_s].present?
@@ -90,8 +96,9 @@ class Ai::TwitterResource < Ai::TweetResource
             Ai::ResourceAttachment.import!(attachments)
           end
         end
-
       end
+      crawl = Log::CrawlLog.find_or_initialize_by(resource: hashtag)
+      crawl.update!(crawled_at: Time.current)
     end
   end
 end
