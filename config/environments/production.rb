@@ -1,5 +1,4 @@
 Rails.application.configure do
-  ENV['SSL_CERT_FILE'] = "/app/project/cacert.pem"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Attempt to read encrypted secrets from `config/secrets.yml.enc`.
