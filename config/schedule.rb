@@ -29,10 +29,6 @@ every :day, at: '19:00' do
   rake "batch:bot_tweet"
 end
 
-every :day, at: '19:00' do
-  rake "batch:bot_tweet"
-end
-
 every 3.hours do
   runner "Ai::TwitterResource.crawl_hashtag_tweets!"
 end
