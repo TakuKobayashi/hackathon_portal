@@ -40,7 +40,7 @@ class Ai::TwitterResource < Ai::TweetResource
           ai_resource = Ai::TwitterResource.new(
             resource_id: tweet.id,
             resource_user_id: tweet.user.id.to_s,
-            resource_user_name: tweet.screen_name,
+            resource_user_name: tweet.user.screen_name,
             body: tweet.text,
             published_at: tweet.created_at
           )
