@@ -25,11 +25,11 @@ class Ai::TwitterResource < Ai::TweetResource
     crawl_ids = Log::Crawl.where("crawled_at > ?", 6.day.ago).where(from_type: "Ai::Hashtag").pluck(:from_id)
     events = []
     Event.preload(:hashtags).find_each do |event|
-      if event.hackathon_event?
+      if event.hackathon_event? && event.hashtags.all?{|hashtag| !crawl_ids.include?(hashtag.id)}
         events << event
       end
     end
-    hashtags = events.map(&:hashtags).flatten.select{|hashtag| !crawl_ids.include?(hashtag.id) }
+    hashtags = events.map(&:hashtags).flatten.uniq
     twitter_client = TwitterBot.get_twitter_client
     hashtags.each do |hashtag|
       tweets = []
