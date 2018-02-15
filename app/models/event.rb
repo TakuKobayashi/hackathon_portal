@@ -105,20 +105,30 @@ class Event < ApplicationRecord
   end
 
   def set_location_data
-=begin
+    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     if self.address.present? && self.lat.blank? && self.lon.blank?
-      geo_result = Geocoder.search(self.address).first
+      geo_result = RequestParser.request_and_parse_json(
+        url: "https://maps.googleapis.com/maps/api/geocode/json",
+        params: {address: self.address, language: "ja", key: apiconfig["google"]["apikey"]}
+        )["results"].first
+      #geo_result = Geocoder.search(self.address).first
       if geo_result.present?
-        self.lat = geo_result.latitude
-        self.lon = geo_result.longitude
+        self.lat = geo_result["geometry"]["location"]["lat"]
+        self.lon = geo_result["geometry"]["location"]["lng"]
+#        self.lat = geo_result.latitude
+#        self.lon = geo_result.longitude
       end
     elsif self.address.blank? && self.lat.present? && self.lon.present?
-      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
+      geo_result = RequestParser.request_and_parse_json(
+        url: "https://maps.googleapis.com/maps/api/geocode/json",
+        params: {latlng: [self.lat, self.lon].join(","), language: "ja", key: apiconfig["google"]["apikey"]}
+        )["results"].first
+#      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
       if geo_result.present?
-        self.address = Sanitizer.scan_japan_address(geo_result.address).join
+        self.address = Sanitizer.scan_japan_address(geo_result["formatted_address"])
+        #self.address = Sanitizer.scan_japan_address(geo_result.address).join
       end
     end
-=end
     if self.address.present?
       self.address = Charwidth.normalize(self.address)
     end
