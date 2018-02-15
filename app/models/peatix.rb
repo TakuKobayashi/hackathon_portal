@@ -81,7 +81,7 @@ class Peatix < Event
         end
         peatix_event.set_location_data
         peatix_event.save!
-        peatix_event.import_hashtags!(hashtag_strings: search_hashtags)
+        peatix_event.import_hashtags!(hashtag_strings: peatix_event.search_hashtags)
         sleep 1
       end
     end while json_data["events"].present?

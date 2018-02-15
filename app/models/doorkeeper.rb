@@ -68,7 +68,7 @@ class Doorkeeper < Event
         doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
         doorkeeper_event.set_location_data
         doorkeeper_event.save!
-        doorkeeper_event.import_hashtags!(hashtag_strings: search_hashtags)
+        doorkeeper_event.import_hashtags!(hashtag_strings: doorkeeper_event.search_hashtags)
       end
       page += 1
     end while events_response.present?
