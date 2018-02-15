@@ -41,7 +41,7 @@ class Ai::TwitterResource < Ai::TweetResource
             resource_id: tweet.id,
             resource_user_id: tweet.user.id.to_s,
             resource_user_name: tweet.user.screen_name,
-            body: tweet.text,
+            body: Sanitizer.basic_sanitize(tweet.text),
             published_at: tweet.created_at
           )
           if tweet.in_reply_to_tweet_id.present?
