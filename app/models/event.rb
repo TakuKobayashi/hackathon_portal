@@ -173,7 +173,7 @@ class Event < ApplicationRecord
       text_size += text.size
       text_size <= 140
     end
-    return tweet_words.join("\n")
+    return tweet_words.uniq.join("\n")
   end
 
   def generate_google_map_url
