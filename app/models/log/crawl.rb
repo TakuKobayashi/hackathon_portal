@@ -16,5 +16,5 @@
 #
 
 class Log::Crawl < ApplicationRecord
-  belongs_to :resource, polymorphic: true, required: false
+  belongs_to :from, polymorphic: true, required: false
 end

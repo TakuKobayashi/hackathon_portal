@@ -22,7 +22,7 @@
 
 class Ai::TwitterResource < Ai::TweetResource
   def self.crawl_hashtag_tweets!
-    crawl_ids = Log::Crawl.where("crawled_at > ?", 6.day.ago).where(resource_type: "Ai::Hashtag").pluck(:resource_id)
+    crawl_ids = Log::Crawl.where("crawled_at > ?", 6.day.ago).where(from_type: "Ai::Hashtag").pluck(:from_id)
     future_events = Event.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").preload(:hashtags).select{|event| event.hackathon_event? }
     hashtags = future_events.map(&:hashtags).flatten.select{|hashtag| !crawl_ids.include?(hashtag.id) }
     twitter_client = TwitterBot.get_twitter_client
@@ -97,7 +97,7 @@ class Ai::TwitterResource < Ai::TweetResource
           end
         end
       end
-      crawl = Log::Crawl.find_or_initialize_by(resource: hashtag)
+      crawl = Log::Crawl.find_or_initialize_by(from: hashtag)
       crawl.update!(crawled_at: Time.current)
     end
   end
