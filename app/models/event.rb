@@ -105,6 +105,7 @@ class Event < ApplicationRecord
   end
 
   def set_location_data
+=begin
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result = Geocoder.search(self.address).first
       if geo_result.present?
@@ -117,6 +118,7 @@ class Event < ApplicationRecord
         self.address = Sanitizer.scan_japan_address(geo_result.address).join
       end
     end
+=end
     if self.address.present?
       self.address = Charwidth.normalize(self.address)
     end
