@@ -71,14 +71,14 @@ class Ai::TwitterResource < Ai::TweetResource
           tweet.urls.flatten.each do |url|
             attachment = ai_resource.attachments.new(category: :website)
             attachment.src = url.expanded_url.to_s
-            attachments << attachmen
+            attachments << attachment
           end
           tweet.media.flatten.each do |m|
             case m
             when Twitter::Media::Photo
               attachment = ai_resource.attachments.new(category: :image)
               attachment.src = m.media_url.to_s
-              attachments << attachmen
+              attachments << attachment
             when Twitter::Media::Video
               attachment = ai_resource.attachments.new
               max_bitrate_variant = m.video_info.variants.max_by{|variant| variant.bitrate.to_i }
@@ -89,7 +89,7 @@ class Ai::TwitterResource < Ai::TweetResource
                 attachment.category = :video
                 attachment.src = max_bitrate_variant.try(:url).to_s
               end
-              attachments << attachmen
+              attachments << attachment
             end
           end
           if attachments.present?
