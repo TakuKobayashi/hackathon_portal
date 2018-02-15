@@ -51,7 +51,6 @@ class Peatix < Event
       events_response = Peatix.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
       json_data = events_response["json_data"]
       page += 1
-      peatix_events = []
       json_data["events"].each do |res|
         tracking_url = Addressable::URI.parse(res["tracking_url"])
         lat, lng = res["latlng"].to_s.split(",")

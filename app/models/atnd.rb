@@ -77,6 +77,6 @@ class Atnd < Event
           atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css("a").text.strip.split(/\s/))
         end
       end
-    end while atnd_events.present?
+    end while events_response["events"].present?
   end
 end
