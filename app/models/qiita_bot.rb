@@ -34,7 +34,7 @@ class QiitaBot < ApplicationRecord
         if e.ended_at.present?
           e.ended_at > Time.current
         else
-          true
+          (e.started_at + 2.day) > Time.current
         end
       end
 
