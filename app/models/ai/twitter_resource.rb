@@ -61,7 +61,7 @@ class Ai::TwitterResource < Ai::TweetResource
           ai_resource.save!
           ai_hashtags = Ai::Hashtag.where(hashtag: tweet.hashtags.map(&:text)).index_by(&:hashtag)
           import_ai_hashtags = []
-          ai_resource.hashtags.each do |ht|
+          tweet.hashtags.each do |ht|
             if ai_hashtags[ht.text].present?
               import_ai_hashtags << ai_resource.hashtags.new(hashtag_id: ai_hashtags[ht.text].id)
             else
