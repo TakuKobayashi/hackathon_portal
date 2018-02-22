@@ -3,8 +3,9 @@ default: &default
   pool: 5
   timeout: 3000
   encoding: utf8
-  username: root
-  password:
+  host: <%= ENV.fetch('MYSQL_HOST', 'localhost') %>
+  username: <%= ENV.fetch("MYSQL_USERNAME", "root") %>
+  password: <%= ENV.fetch("MYSQL_PASSWORD", "") %>
 
 development:
   <<: *default

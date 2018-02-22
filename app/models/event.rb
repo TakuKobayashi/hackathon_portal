@@ -105,11 +105,10 @@ class Event < ApplicationRecord
   end
 
   def set_location_data
-    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result = RequestParser.request_and_parse_json(
         url: "https://maps.googleapis.com/maps/api/geocode/json",
-        params: {address: self.address, language: "ja", key: apiconfig["google"]["apikey"]}
+        params: {address: self.address, language: "ja", key: ENV.fetch('GOOGLE_API_KEY', '')}
         )["results"].first
       #geo_result = Geocoder.search(self.address).first
       if geo_result.present?
@@ -121,7 +120,7 @@ class Event < ApplicationRecord
     elsif self.address.blank? && self.lat.present? && self.lon.present?
       geo_result = RequestParser.request_and_parse_json(
         url: "https://maps.googleapis.com/maps/api/geocode/json",
-        params: {latlng: [self.lat, self.lon].join(","), language: "ja", key: apiconfig["google"]["apikey"]}
+        params: {latlng: [self.lat, self.lon].join(","), language: "ja", key: ENV.fetch('GOOGLE_API_KEY', '')}
         )["results"].first
 #      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
       if geo_result.present?
@@ -181,8 +180,7 @@ class Event < ApplicationRecord
   end
 
   def generate_google_map_static_image_url
-    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
-    return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{apiconfig["google"]["apikey"]}&size=185x185"
+    return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{ENV.fetch('GOOGLE_API_KEY', '')}&size=185x185"
   end
 
   def generate_qiita_cell_text
@@ -256,9 +254,8 @@ class Event < ApplicationRecord
   end
 
   def convert_to_short_url!
-    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
-    service.key = apiconfig["google"]["apikey"]
+    service.key = ENV.fetch('GOOGLE_API_KEY', '')
     url_obj = Google::Apis::UrlshortenerV1::Url.new
     url_obj.long_url = self.url
     result = service.insert_url(url_obj)

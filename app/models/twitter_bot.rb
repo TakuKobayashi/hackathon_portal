@@ -34,12 +34,11 @@ class TwitterBot < ApplicationRecord
   end
 
   def self.get_twitter_client
-    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
     twitter_client = Twitter::REST::Client.new do |config|
-      config.consumer_key        = apiconfig["twitter"]["consumer_key"]
-      config.consumer_secret     = apiconfig["twitter"]["consumer_secret"]
-      config.access_token        = apiconfig["twitter"]["bot"]["access_token_key"]
-      config.access_token_secret = apiconfig["twitter"]["bot"]["access_token_secret"]
+      config.consumer_key        = ENV.fetch('TWITTER_CONSUMER_KEY', '')
+      config.consumer_secret     = ENV.fetch('TWITTER_CONSUMER_SECRET', '')
+      config.access_token        = ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', '')
+      config.access_token_secret = ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
     end
     return twitter_client
   end

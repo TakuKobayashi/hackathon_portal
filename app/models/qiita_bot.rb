@@ -92,8 +92,7 @@ class QiitaBot < ApplicationRecord
 
   private
   def self.get_qiita_client
-    apiconfig = YAML.load(File.open(Rails.root.to_s + "/config/apiconfig.yml"))
-    client = Qiita::Client.new(access_token: apiconfig["qiita"]["access_token"])
+    client = Qiita::Client.new(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     return client
   end
 end
