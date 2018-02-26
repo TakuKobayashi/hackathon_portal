@@ -60,7 +60,7 @@ class EventCalendarBot < ApplicationRecord
       if image_url.to_s.match(/^https:\/\//).present?
         calender_gadget.icon_link = image_url
       end
-      calender_event.gadget = calender_gadget
+      calender_event.gadget = calender_gadget.to_h
 
       if current_calenders[event.id].present?
         current_event_calendar_bot = current_calenders[event.id]
