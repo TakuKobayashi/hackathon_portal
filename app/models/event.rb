@@ -136,12 +136,18 @@ class Event < ApplicationRecord
         )["results"].first
 #      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
       if geo_result.present?
-        self.address = Sanitizer.scan_japan_address(geo_result["formatted_address"]).join.strip
+        searched_address = Charwidth.normalize(Sanitizer.scan_japan_address(geo_result["formatted_address"]).join).
+          gsub(/^[0-9【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]/, "").
+          strip.
+          split(" ").first
+        if searched_address.present?
+          self.address = searched_address
+        end
         #self.address = Sanitizer.scan_japan_address(geo_result.address).join
       end
     end
     if self.address.present?
-      self.address = Charwidth.normalize(self.address).gsub(/^[0-9【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]/, "").strip
+      self.address = Charwidth.normalize(self.address).strip
     end
   end
 
