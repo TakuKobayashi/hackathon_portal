@@ -136,7 +136,7 @@ class Event < ApplicationRecord
         )["results"].first
 #      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
       if geo_result.present?
-        self.address = Sanitizer.scan_japan_address(geo_result["formatted_address"])
+        self.address = Sanitizer.scan_japan_address(geo_result["formatted_address"]).join.strip
         #self.address = Sanitizer.scan_japan_address(geo_result.address).join
       end
     end
