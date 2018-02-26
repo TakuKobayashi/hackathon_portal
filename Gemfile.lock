@@ -91,6 +91,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    certified (1.0.0)
     charwidth (0.1.4)
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
@@ -406,6 +407,7 @@ DEPENDENCIES
   annotate
   byebug
   capybara (~> 2.13)
+  certified
   charwidth
   coffee-rails (~> 4.2)
   devise
