@@ -19,9 +19,4 @@ namespace :batch do
     QiitaBot.post_or_update_article!(events: future_events)
     EventCalendarBot.insert_or_update_calender!(events: future_events)
   end
-
-  task regist_calender: :environment do
-    client_id = Google::Auth::ClientId.from_file(Rails.root.to_s + "/client_secret.json")
-    p client_id
-  end
 end
