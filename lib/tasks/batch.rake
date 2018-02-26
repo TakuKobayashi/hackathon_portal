@@ -17,6 +17,7 @@ namespace :batch do
       end
     end
     QiitaBot.post_or_update_article!(events: future_events)
+    EventCalendarBot.insert_or_update_calender!(events: future_events)
   end
 
   task regist_calender: :environment do

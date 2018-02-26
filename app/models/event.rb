@@ -216,23 +216,33 @@ class Event < ApplicationRecord
     return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{ENV.fetch('GOOGLE_API_KEY', '')}&size=185x185"
   end
 
-  def generate_qiita_cell_text
+  def get_og_image_url
     dom = RequestParser.request_and_parse_html(url: self.url, options: {:follow_redirect => true})
     og_image_dom = dom.css("meta[@property = 'og:image']").first
-    words = [
-      "### [#{self.title}](#{self.url})",
-    ]
     if og_image_dom.present?
       image_url = og_image_dom["content"].to_s
       # 画像じゃないものも含まれていることもあるので分別する
       fi = FastImage.new(image_url.to_s)
       if fi.type.present?
-        width, height = fi.size
-        size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
-        resize_width, resize_height = size_text.split("x")
-        words << (ActionController::Base.helpers.image_tag(image_url, {width: resize_width, height: resize_height, alt: self.title}) + "\n")
+        return image_url.to_s
       end
     end
+    return nil
+  end
+
+  def generate_qiita_cell_text
+    words = [
+      "### [#{self.title}](#{self.url})",
+    ]
+    image_url = self.get_og_image_url
+    if image_url.present?
+      fi = FastImage.new(image_url.to_s)
+      width, height = fi.size
+      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
+      resize_width, resize_height = size_text.split("x")
+      words << (ActionController::Base.helpers.image_tag(image_url, {width: resize_width, height: resize_height, alt: self.title}) + "\n")
+    end
+
     words += [
       self.started_at.strftime("%Y年%m月%d日"),
       self.place,

@@ -40,14 +40,28 @@ class EventCalendarBot < ApplicationRecord
         source: {
           url: event.url,
           title: event.title
-        },
-        color_id: colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
+        }
        })
       if event.ended_at.present?
         calender_event.end = { date_time: event.ended_at.to_datetime.rfc3339 }
       else
         calender_event.end = { date_time: event.started_at.end_of_day.to_datetime.rfc3339 }
       end
+      color_id = colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
+      if color_id.present?
+        calender_event.color_id = color_id
+      end
+
+      calender_gadget = Google::Apis::CalendarV3::Event::Gadget.new({
+        title: event.title,
+        link: event.url
+      })
+      image_url = event.get_og_image_url
+      if image_url.to_s.match(/^https:\/\//).present?
+        calender_gadget.icon_link = image_url
+      end
+      calender_event.gadget = calender_gadget
+
       if current_calenders[event.id].present?
         current_event_calendar_bot = current_calenders[event.id]
         service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
