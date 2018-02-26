@@ -141,7 +141,7 @@ class Event < ApplicationRecord
       end
     end
     if self.address.present?
-      self.address = Charwidth.normalize(self.address)
+      self.address = Charwidth.normalize(self.address).gsub(/^[0-9【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]/, "").strip
     end
   end
 
