@@ -2,14 +2,12 @@
 #
 # Table name: event_calendar_bots
 #
-#  id                    :integer          not null, primary key
-#  from_type             :string(255)      not null
-#  from_id               :integer          not null
-#  calender_id           :string(255)      not null
-#  calender_event_id     :string(255)      not null
-#  duplicate_event_count :integer          default(0), not null
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
+#  id                :integer          not null, primary key
+#  from_type         :string(255)      not null
+#  from_id           :integer          not null
+#  calender_event_id :string(255)      not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #
