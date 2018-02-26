@@ -54,8 +54,7 @@ class Doorkeeper < Event
           else
             doorkeeper_event = Doorkeeper.new(event_id: event["id"].to_s)
           end
-
-          doorkeeper_event.merge_attribute(attrs: {
+          doorkeeper_event.merge_attributes_and_set_location_data(attrs: {
             title: event["title"].to_s,
             url: event["public_url"].to_s,
             description: Sanitizer.basic_sanitize(event["description"].to_s),

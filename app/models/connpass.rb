@@ -56,7 +56,7 @@ class Connpass < Event
           else
             connpass_event = Connpass.new(event_id: res["event_id"].to_s)
           end
-          connpass_event.merge_attribute(attrs: {
+          connpass_event.merge_attributes_and_set_location_data(attrs: {
             title: res["title"].to_s,
             url: res["event_url"].to_s,
             description: Sanitizer.basic_sanitize(res["description"].to_s),

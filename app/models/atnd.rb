@@ -56,7 +56,7 @@ class Atnd < Event
           else
             atnd_event = Atnd.new(event_id: event["event_id"].to_s)
           end
-          atnd_event.merge_attribute(attrs: {
+          atnd_event.merge_attributes_and_set_location_data(attrs: {
             title: event["title"].to_s,
             url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
             description: Sanitizer.basic_sanitize(event["description"].to_s),
