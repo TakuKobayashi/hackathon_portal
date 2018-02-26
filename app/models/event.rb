@@ -104,6 +104,12 @@ class Event < ApplicationRecord
     end
   end
 
+  def merge_attribute(attrs: {})
+    merge_attr = attrs.reject{|key, value| value.nil? }
+    self.attributes = self.attributes.merge(merge_attr)
+    self.set_location_data
+  end
+
   def set_location_data
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result = RequestParser.request_and_parse_json(

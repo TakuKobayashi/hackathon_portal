@@ -51,11 +51,16 @@ class Peatix < Event
       events_response = Peatix.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
       json_data = events_response["json_data"]
       page += 1
+      current_events = Peatix.where(event_id: json_data["events"].map{|res| res["id"]}.compact).index_by(&:event_id)
       json_data["events"].each do |res|
         tracking_url = Addressable::URI.parse(res["tracking_url"])
         lat, lng = res["latlng"].to_s.split(",")
-        peatix_event = Peatix.find_or_initialize_by(event_id: res["id"].to_s)
-        peatix_event.attributes = peatix_event.attributes.merge({
+        if current_events[res["id"].to_s].present?
+          peatix_event = current_events[res["id"].to_s]
+        else
+          peatix_event = Peatix.new(event_id: res["id"].to_s)
+        end
+        peatix_event.merge_attribute(attrs: {
           title: res["name"].to_s,
           url: tracking_url.origin.to_s + tracking_url.path.to_s,
           address: res["address"].to_s,
@@ -78,7 +83,6 @@ class Peatix < Event
         else
           peatix_event.cost = 0
         end
-        peatix_event.set_location_data
         peatix_event.save!
         peatix_event.import_hashtags!(hashtag_strings: peatix_event.search_hashtags)
         sleep 1

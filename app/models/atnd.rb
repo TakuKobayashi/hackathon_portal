@@ -47,10 +47,15 @@ class Atnd < Event
     begin
       events_response = Atnd.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       start += events_response["results_returned"]
+      current_events = Atnd.where(event_id: events_response["events"].map{|res| res["event"]["event_id"]}.compact).index_by(&:event_id)
       events_response["events"].each do |res|
         event = res["event"]
-        atnd_event = Atnd.find_or_initialize_by(event_id: event["event_id"].to_s)
-        atnd_event.attributes = atnd_event.attributes.merge({
+        if current_events[event["event_id"].to_s].present?
+          atnd_event = current_events[event["event_id"].to_s]
+        else
+          atnd_event = Atnd.new(event_id: event["event_id"].to_s)
+        end
+        atnd_event.merge_attribute(attrs: {
           title: event["title"].to_s,
           url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
           description: Sanitizer.basic_sanitize(event["description"].to_s),
@@ -69,7 +74,6 @@ class Atnd < Event
         })
         atnd_event.started_at = DateTime.parse(event["started_at"])
         atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
-        atnd_event.set_location_data
         atnd_event.save!
         dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
         hashtag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }

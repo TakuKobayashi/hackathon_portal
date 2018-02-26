@@ -48,9 +48,14 @@ class Connpass < Event
       events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       results_available = events_response["results_available"]
       start += events_response["results_returned"]
+      current_events = Connpass.where(event_id: events_response["events"].map{|res| res["event_id"]}.compact).index_by(&:event_id)
       events_response["events"].each do |res|
-        connpass_event = Connpass.find_or_initialize_by(event_id: res["event_id"].to_s)
-        connpass_event.attributes = connpass_event.attributes.merge({
+        if current_events[res["event_id"].to_s].present?
+          connpass_event = current_events[res["event_id"].to_s]
+        else
+          connpass_event = Connpass.new(event_id: res["event_id"].to_s)
+        end
+        connpass_event.merge_attribute(attrs: {
           title: res["title"].to_s,
           url: res["event_url"].to_s,
           description: Sanitizer.basic_sanitize(res["description"].to_s),
@@ -70,7 +75,6 @@ class Connpass < Event
         })
         connpass_event.started_at = DateTime.parse(res["started_at"])
         connpass_event.ended_at = DateTime.parse(res["ended_at"]) if res["ended_at"].present?
-        connpass_event.set_location_data
         connpass_event.save!
         connpass_event.import_hashtags!(hashtag_strings: res["hash_tag"].to_s.split(/\s/))
       end

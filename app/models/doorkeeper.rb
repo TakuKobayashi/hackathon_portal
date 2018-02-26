@@ -45,10 +45,15 @@ class Doorkeeper < Event
     page = 1
     begin
       events_response = Doorkeeper.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
+      current_events = Doorkeeper.where(event_id: events_response.map{|res| res["event"]["id"]}.compact).index_by(&:event_id)
       events_response.each do |res|
         event = res["event"]
-        doorkeeper_event = Doorkeeper.find_or_initialize_by(event_id: event["id"].to_s)
-        doorkeeper_event.attributes = doorkeeper_event.attributes.merge({
+        if current_events[event["id"].to_s].present?
+          doorkeeper_event = current_events[event["id"].to_s]
+        else
+          doorkeeper_event = Doorkeeper.new(event_id: event["id"].to_s)
+        end
+        doorkeeper_event.merge_attribute(attrs: {
           title: event["title"].to_s,
           url: event["public_url"].to_s,
           description: Sanitizer.basic_sanitize(event["description"].to_s),
@@ -66,7 +71,6 @@ class Doorkeeper < Event
         })
         doorkeeper_event.started_at = DateTime.parse(event["starts_at"])
         doorkeeper_event.ended_at = DateTime.parse(event["ends_at"]) if event["ends_at"].present?
-        doorkeeper_event.set_location_data
         doorkeeper_event.save!
         doorkeeper_event.import_hashtags!(hashtag_strings: doorkeeper_event.search_hashtags)
       end
