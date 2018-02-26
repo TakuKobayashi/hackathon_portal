@@ -43,6 +43,7 @@ gem 'whenever', :require => false
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
+gem "certified"
 
 gem 'google-api-client', '~> 0.11'
 
