@@ -20,13 +20,14 @@ require 'google/apis/calendar_v3'
 class EventCalendarBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
-  POST_CALENDER_NAME = "hackathon_event"
+  POST_CALENDER_NAME = "ハッカソンポータル"
 
   def self.insert_or_update_calender!(events: [])
     service = self.google_calender_client
     target_calender_id = get_target_calender_id
-    current_calenders = EventCalendarBot.where(from: events).index_by(&:from_id)
+    colors = service.get_color
 
+    current_calenders = EventCalendarBot.where(from: events).index_by(&:from_id)
     event_calendars = []
     events.each do |event|
       calender_event = Google::Apis::CalendarV3::Event.new({
@@ -39,7 +40,8 @@ class EventCalendarBot < ApplicationRecord
         source: {
           url: event.url,
           title: event.title
-        }
+        },
+        color_id: colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
        })
       if event.ended_at.present?
         calender_event.end = { date_time: event.ended_at.to_datetime.rfc3339 }

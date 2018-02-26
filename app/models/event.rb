@@ -44,16 +44,31 @@ class Event < ApplicationRecord
   HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
   DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
-    "合宿" => 2,
     "hackathon" => 2,
     "ハッカソン" => 2,
-    "ハック" => 1,
+    "hack day" => 2,
     "アイディアソン" => 2,
     "アイデアソン" => 2,
     "ideathon" => 2,
     "ゲームジャム" => 2,
-    "hack day" => 2,
-    "game jam" => 2
+    "gamejam" => 2,
+    "game jam" => 2,
+    "合宿" => 2,
+    "ハック" => 1
+  }
+
+  HACKATHON_KEYWORD_CALENDER_INDEX = {
+    "hackathon" => 1,
+    "ハッカソン" => 1,
+    "hack day" => 1,
+    "アイディアソン" => 2,
+    "アイデアソン" => 2,
+    "ideathon" => 2,
+    "ゲームジャム" => 3,
+    "gamejam" => 3,
+    "game jam" => 3,
+    "合宿" => 4,
+    "ハック" => 1
   }
 
   def self.import_events!
@@ -67,21 +82,21 @@ class Event < ApplicationRecord
     if self.type == "SelfPostEvent"
       return true
     end
+    return hackathon_event_hit_keyword.present?
+  end
+
+  def hackathon_event_hit_keyword
     appear_count = 0
     Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
       sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
       appear_count += sanitized_title.scan(keyword).size * point * 3
       sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count += sanitized_description.scan(keyword).size * point
-      if appear_count >= 6
-        if keyword == "合宿"
-          return development_camp?(keyword: keyword)
-        else
-          return true
-        end
+      if appear_count >= 6 || keyword == "合宿" && development_camp?(keyword: keyword)
+        return keyword
       end
     end
-    return false
+    return nil
   end
 
   def development_camp?(keyword: nil)
