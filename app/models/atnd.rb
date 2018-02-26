@@ -48,37 +48,39 @@ class Atnd < Event
       events_response = Atnd.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
       start += events_response["results_returned"]
       current_events = Atnd.where(event_id: events_response["events"].map{|res| res["event"]["event_id"]}.compact).index_by(&:event_id)
-      events_response["events"].each do |res|
-        event = res["event"]
-        if current_events[event["event_id"].to_s].present?
-          atnd_event = current_events[event["event_id"].to_s]
-        else
-          atnd_event = Atnd.new(event_id: event["event_id"].to_s)
-        end
-        atnd_event.merge_attribute(attrs: {
-          title: event["title"].to_s,
-          url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
-          description: Sanitizer.basic_sanitize(event["description"].to_s),
-          limit_number: event["limit"],
-          address: event["address"].to_s,
-          place: event["place"].to_s,
-          lat: event["lat"],
-          lon: event["lon"],
-          cost: 0,
-          max_prize: 0,
-          currency_unit: "JPY",
-          owner_id: event["owner_id"],
-          owner_nickname: event["owner_nickname"],
-          attend_number: event["accepted"],
-          substitute_number: event["waiting"]
-        })
-        atnd_event.started_at = DateTime.parse(event["started_at"])
-        atnd_event.ended_at = DateTime.parse(event["ended_at"]) if event["ended_at"].present?
-        atnd_event.save!
-        dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
-        hashtag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
-        if hashtag_dom.present?
-          atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css("a").text.strip.split(/\s/))
+      transaction do
+        events_response["events"].each do |res|
+          event = res["event"]
+          if current_events[event["event_id"].to_s].present?
+            atnd_event = current_events[event["event_id"].to_s]
+          else
+            atnd_event = Atnd.new(event_id: event["event_id"].to_s)
+          end
+          atnd_event.merge_attribute(attrs: {
+            title: event["title"].to_s,
+            url: ATND_EVENTPAGE_URL + event["event_id"].to_s,
+            description: Sanitizer.basic_sanitize(event["description"].to_s),
+            limit_number: event["limit"],
+            address: event["address"].to_s,
+            place: event["place"].to_s,
+            lat: event["lat"],
+            lon: event["lon"],
+            cost: 0,
+            max_prize: 0,
+            currency_unit: "JPY",
+            owner_id: event["owner_id"],
+            owner_nickname: event["owner_nickname"],
+            attend_number: event["accepted"],
+            substitute_number: event["waiting"],
+            started_at: event["started_at"],
+            ended_at: event["ended_at"]
+          })
+          atnd_event.save!
+          dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: {:follow_redirect => true})
+          hashtag_dom = dom.css("dl.clearfix").detect{|label| label.text.include?("ハッシュタグ") }
+          if hashtag_dom.present?
+            atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css("a").text.strip.split(/\s/))
+          end
         end
       end
     end while events_response["events"].present?

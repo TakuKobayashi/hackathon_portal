@@ -105,8 +105,14 @@ class Event < ApplicationRecord
   end
 
   def merge_attribute(attrs: {})
-    merge_attr = attrs.reject{|key, value| value.nil? }
-    self.attributes = self.attributes.merge(merge_attr)
+    ops = OpenStruct.new(attrs.reject{|key, value| value.nil? })
+    if ops.started_at.present?
+      ops.started_at = DateTime.parse(ops.started_at)
+    end
+    if ops.ended_at.present?
+      ops.ended_at = DateTime.parse(ops.ended_at)
+    end
+    self.attributes = self.attributes.merge(ops.to_h)
     self.set_location_data
   end
 
