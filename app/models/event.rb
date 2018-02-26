@@ -92,7 +92,10 @@ class Event < ApplicationRecord
       appear_count += sanitized_title.scan(keyword).size * point * 3
       sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count += sanitized_description.scan(keyword).size * point
-      if appear_count >= 6 || (keyword == "合宿" && development_camp?(keyword: keyword))
+      if appear_count >= 6
+        if keyword == "合宿" && !development_camp?(keyword: keyword)
+          return nil
+        end
         return keyword
       end
     end
