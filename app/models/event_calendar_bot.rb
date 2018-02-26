@@ -51,7 +51,7 @@ class EventCalendarBot < ApplicationRecord
       if color_id.present?
         calender_event.color_id = color_id
       end
-
+=begin
       calender_gadget = Google::Apis::CalendarV3::Event::Gadget.new({
         title: event.title,
         link: event.url
@@ -61,7 +61,7 @@ class EventCalendarBot < ApplicationRecord
         calender_gadget.icon_link = image_url
       end
       calender_event.gadget = calender_gadget.to_h
-
+=end
       if current_calenders[event.id].present?
         current_event_calendar_bot = current_calenders[event.id]
         service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
