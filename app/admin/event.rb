@@ -38,19 +38,28 @@ ActiveAdmin.register Event  do
         label :ended_at
         f.datetime_select(:ended_at, include_seconds: false, default: 8.day.since.change(hour: 20))
       end
+      f.input :description, as: :text
       f.input :limit_number, as: :number
       f.input :address, as: :string
       f.input :place, as: :string
       f.input :cost, as: :number, hint: "めんどくさかったら適当でいいです"
       f.input :max_prize, as: :number, hint: "めんどくさかったら適当でいいです"
       f.input :currency_unit, as: :string
+      f.has_many :hashtags do |h|
+        h.input :hashtag, label: "ハッシュタグ", as: :string
+      end
     end
     f.actions
   end
 
   collection_action :create, method: :post do
     attributes = params.require(:event).permit!
-    event = SelfPostEvent.create!(attributes)
+    hashtags_attr = attributes.delete("hashtags_attributes")
+    event = SelfPostEvent.new(attributes)
+    event.event_id = SecureRandom.hex
+    event.set_location_data
+    event.save!
+    event.import_hashtags!(hashtag_strings: hashtags_attr.values.map{|hash| hash.values }.flatten)
     if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
       TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: {lat: event.lat, long: event.lon})
     end
