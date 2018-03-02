@@ -13,7 +13,7 @@ module GoogleOauth2Client
     oauth_client.client_secret = ENV.fetch("GOOGLE_OAUTH_CLIENT_SECRET", "")
     oauth_client.authorization_uri = AUTH_URL
     oauth_client.token_credential_uri = TOKEN_URL
-    if google_oauth_config[refresh_token].present? && google_oauth_config[refresh_token]["expires_at"].present? && Time.at(google_oauth_config[refresh_token]["expires_at"]) < Time.current
+    if google_oauth_config[refresh_token].present? && google_oauth_config[refresh_token]["expires_at"].present? && Time.parse(google_oauth_config[refresh_token]["expires_at"]) < Time.current
       oauth_client.access_token = google_oauth_config[refresh_token]["access_token"]
     end
     oauth_client.refresh_token = refresh_token
