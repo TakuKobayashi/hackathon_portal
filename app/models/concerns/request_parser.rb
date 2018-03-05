@@ -2,6 +2,10 @@ module RequestParser
   def self.request_and_parse_html(url: ,method: :get, params: {}, header: {}, options: {})
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http_client.connect_timeout = 300
+    http_client.send_timeout    = 300
+    http_client.receive_timeout = 300
+    http_client.debug_dev = STDOUT
     doc = ""
     begin
       response = http_client.send(method, url, {query: params, header: header}.merge(options))
@@ -15,6 +19,10 @@ module RequestParser
   def self.request_and_parse_json(url: ,method: :get, params: {}, header: {}, options: {})
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http_client.connect_timeout = 300
+    http_client.send_timeout    = 300
+    http_client.receive_timeout = 300
+    http_client.debug_dev = STDOUT
     parsed_json = {}
     begin
       response = http_client.send(method, url, {query: params, header: header}.merge(options))
