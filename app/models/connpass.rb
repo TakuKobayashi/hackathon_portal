@@ -78,6 +78,7 @@ class Connpass < Event
           })
           connpass_event.save!
           connpass_event.import_hashtags!(hashtag_strings: res["hash_tag"].to_s.split(/\s/))
+          sleep 1
         end
       end
     end while start < results_available
