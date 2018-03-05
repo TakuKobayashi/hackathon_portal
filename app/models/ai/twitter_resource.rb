@@ -111,7 +111,7 @@ class Ai::TwitterResource < Ai::TweetResource
       end
     end
     if attachments.present?
-      Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: [:hashtag_id])
+      Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: [:options])
     end
   end
 end
