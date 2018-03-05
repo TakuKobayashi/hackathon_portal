@@ -80,7 +80,7 @@ class Ai::TwitterResource < Ai::TweetResource
       end
     end
     if import_ai_hashtags.present?
-      Ai::ResourceHashtag.import!(import_ai_hashtags, on_duplicate_key_update: :hashtag_id)
+      Ai::ResourceHashtag.import!(import_ai_hashtags, on_duplicate_key_update: [:hashtag_id])
     end
   end
 
@@ -111,7 +111,7 @@ class Ai::TwitterResource < Ai::TweetResource
       end
     end
     if attachments.present?
-      Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: :hashtag_id)
+      Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: [:hashtag_id])
     end
   end
 end
