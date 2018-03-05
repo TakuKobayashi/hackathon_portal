@@ -35,36 +35,38 @@ class Ai::TwitterResource < Ai::TweetResource
       tweets = []
       begin
         tweets = twitter_client.search("#" + hashtag.hashtag)
-      rescue Twitter::Error::Forbidden, Twitter::Error::ServiceUnavailable, Twitter::Error::ClientError, Twitter::Error::ServerError => error
+      rescue Twitter::Error::Forbidden, Twitter::Error::ServiceUnavailable, Twitter::Error::ClientError, Twitter::Error::ServerError, Twitter::Error::TooManyRequests => error
         break
       end
-      rid_resources = Ai::TwitterResource.where(resource_id: tweets.map(&:id)).index_by(&:resource_id)
-      tweets.each do |tweet|
-        next if rid_resources[tweet.id.to_s].present?
-        Ai::TwitterResource.transaction do
-          ai_resource = Ai::TwitterResource.new(
-            resource_id: tweet.id,
-            resource_user_id: tweet.user.id.to_s,
-            resource_user_name: tweet.user.screen_name,
-            body: Sanitizer.basic_sanitize(tweet.text),
-            published_at: tweet.created_at
-          )
-          if tweet.in_reply_to_tweet_id.present?
-            ai_resource.reply_id = tweet.in_reply_to_tweet_id
+      transaction do
+        rid_resources = Ai::TwitterResource.where(resource_id: tweets.map(&:id)).index_by(&:resource_id)
+        tweets.each do |tweet|
+          next if rid_resources[tweet.id.to_s].present?
+          Ai::TwitterResource.transaction do
+            ai_resource = Ai::TwitterResource.new(
+              resource_id: tweet.id,
+              resource_user_id: tweet.user.id.to_s,
+              resource_user_name: tweet.user.screen_name,
+              body: Sanitizer.basic_sanitize(tweet.text),
+              published_at: tweet.created_at
+            )
+            if tweet.in_reply_to_tweet_id.present?
+              ai_resource.reply_id = tweet.in_reply_to_tweet_id
+            end
+            if tweet.quoted_tweet.present?
+              ai_resource.quote_id = tweet.quoted_tweet.id
+            end
+            ai_resource.options = {
+              mentions: tweet.user_mentions.map{|m| {user_id: m.id, user_name: m.screen_name} }
+           }
+            ai_resource.save!
+            ai_resource.register_hashtags!(tweet: tweet)
+            ai_resource.register_attachments!(tweet: tweet)
           end
-          if tweet.quoted_tweet.present?
-            ai_resource.quote_id = tweet.quoted_tweet.id
-          end
-          ai_resource.options = {
-            mentions: tweet.user_mentions.map{|m| {user_id: m.id, user_name: m.screen_name} }
-          }
-          ai_resource.save!
-          ai_resource.register_hashtags!(tweet: tweet)
-          ai_resource.register_attachments!(tweet: tweet)
         end
+        crawl = Log::Crawl.find_or_initialize_by(from: hashtag)
+        crawl.update!(crawled_at: Time.current)
       end
-      crawl = Log::Crawl.find_or_initialize_by(from: hashtag)
-      crawl.update!(crawled_at: Time.current)
     end
   end
 
