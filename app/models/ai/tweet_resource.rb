@@ -28,4 +28,25 @@ class Ai::TweetResource < ApplicationRecord
   has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :tweet_resource_id
   has_many :sentences, class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
   has_many :attachments, class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
+
+  def regist_split_sentence!
+    split_sentences = self.body.split(/[。．.？！!?\n\r]/)
+    split_sentences.each do |sentence|
+      self.sentences.create!(body: sentence)
+    end
+  end
+
+  def split_morphological_analysis
+    xml_hash = RequestParser.request_and_parse_xml(
+      url: "https://jlp.yahooapis.jp/MAService/V1/parse",
+      params: {
+        appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''),
+        sentence: self.body
+      },
+      options: {:follow_redirect => true}
+    )
+    xml_hash["ma_result"].first["word_list"].first["word"].each do |hash|
+#      "surface"=>["コラ"], "reading"=>["こら"], "pos"=>["名詞"]
+    end
+  end
 end

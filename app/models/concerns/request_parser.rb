@@ -1,36 +1,44 @@
+require 'xmlsimple'
+
 module RequestParser
   def self.request_and_parse_html(url: ,method: :get, params: {}, header: {}, options: {})
-    http_client = HTTPClient.new
-    http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    http_client.connect_timeout = 300
-    http_client.send_timeout    = 300
-    http_client.receive_timeout = 300
-    http_client.debug_dev = STDOUT
-    doc = ""
-    begin
-      response = http_client.send(method, url, {query: params, header: header}.merge(options))
-      doc = Nokogiri::HTML.parse(response.body)
-    rescue SocketError => e
-      record_log(record_log(url: url, method: method, params: params, header: header, options: options, exception: e))
-    end
+    text = self.request_and_response_body_text(url: url,method: method, params: params, header: header, options: options)
+    doc = Nokogiri::HTML.parse(text)
     return doc
   end
 
   def self.request_and_parse_json(url: ,method: :get, params: {}, header: {}, options: {})
+    text = self.request_and_response_body_text(url: url,method: method, params: params, header: header, options: options)
+    parsed_json = {}
+    begin
+      parsed_json = JSON.parse(text)
+    rescue JSON::ParserError => e
+      record_log(record_log(url: url, method: method, params: params, header: header, options: options, exception: e))
+    end
+    return parsed_json
+  end
+
+  def self.request_and_parse_xml(url: ,method: :get, params: {}, header: {}, options: {})
+    text = self.request_and_response_body_text(url: url,method: method, params: params, header: header, options: options)
+    parsed_xml = XmlSimple.xml_in(text)
+    return parsed_xml
+  end
+
+  def self.request_and_response_body_text(url: ,method: :get, params: {}, header: {}, options: {})
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http_client.connect_timeout = 300
     http_client.send_timeout    = 300
     http_client.receive_timeout = 300
     http_client.debug_dev = STDOUT
-    parsed_json = {}
+    result = ""
     begin
       response = http_client.send(method, url, {query: params, header: header}.merge(options))
-      parsed_json = JSON.parse(response.body)
-    rescue JSON::ParserError, SocketError => e
+      result = response.body
+    rescue SocketError => e
       record_log(record_log(url: url, method: method, params: params, header: header, options: options, exception: e))
     end
-    return parsed_json
+    return result
   end
 
   private
