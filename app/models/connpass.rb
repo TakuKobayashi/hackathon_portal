@@ -46,8 +46,10 @@ class Connpass < Event
     start = 1
     begin
       events_response = Connpass.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], start: start)
-      results_available = events_response["results_available"]
-      start += events_response["results_returned"]
+      if events_response["results_available"].present?
+        results_available = events_response["results_available"]
+      end
+      start += events_response["results_returned"].to_i
       current_events = Connpass.where(event_id: events_response["events"].map{|res| res["event_id"]}.compact).index_by(&:event_id)
       transaction do
         events_response["events"].each do |res|
