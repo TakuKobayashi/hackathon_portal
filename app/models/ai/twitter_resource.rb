@@ -62,6 +62,11 @@ class Ai::TwitterResource < Ai::TweetResource
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
             ai_resource.register_attachments!(tweet: tweet)
+            ai_resource.regist_split_sentence!
+            if ai_resource.trigrams.blank?
+              words = ai_resource.split_and_sanitize_morphological_analysis
+              ai_resource.regist_split_trigrams!(words: words)
+            end
           end
         end
         crawl = Log::Crawl.find_or_initialize_by(from: hashtag)

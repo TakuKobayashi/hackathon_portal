@@ -19,6 +19,14 @@ module Sanitizer
     return text.scan(/[#＃][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー]+/).map(&:strip)
   end
 
+  def self.delete_hashtag_and_replyes(text)
+    return text.gsub(/[#＃@][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー_]+/, "")
+  end
+
+  def self.delete_urls(text)
+    return text.gsub(/https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/, "")
+  end
+
   def self.delete_sharp(text)
     return text.gsub(/[#＃]/, "")
   end
