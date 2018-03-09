@@ -31,7 +31,7 @@ class Ai::TweetResource < ApplicationRecord
 
   def plane_text_body
     sanitized_body = Sanitizer.delete_urls(self.body)
-    return Sanitizer.delete_hashtag_and_replyes(sanitized_body)
+    return Sanitizer.delete_hashtag_and_replyes(sanitized_body).strip
   end
 
   def regist_split_sentence!

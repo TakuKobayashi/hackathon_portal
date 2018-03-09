@@ -76,13 +76,14 @@ class Ai::TwitterResource < Ai::TweetResource
   end
 
   def register_hashtags!(tweet:)
-    ai_hashtags = Ai::Hashtag.where(hashtag: tweet.hashtags.map(&:text)).index_by(&:hashtag)
+    sanitized_hashtags = tweet.hashtags.map{|hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select{|hashtag_text| hashtag_text.present? }
+    ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     import_ai_hashtags = []
-    tweet.hashtags.each do |ht|
-      if ai_hashtags[ht.text].present?
-        import_ai_hashtags << self.hashtags.new(hashtag_id: ai_hashtags[ht.text].id)
+    hashtag_text.each do |ht|
+      if ai_hashtags[ht].present?
+        import_ai_hashtags << self.hashtags.new(hashtag_id: ai_hashtags[ht].id)
       else
-        new_hashtag = Ai::Hashtag.create!(hashtag: ht.text)
+        new_hashtag = Ai::Hashtag.create!(hashtag: ht)
         import_ai_hashtags << self.hashtags.new(hashtag_id: new_hashtag.id)
       end
     end
