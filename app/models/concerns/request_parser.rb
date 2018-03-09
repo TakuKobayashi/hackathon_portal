@@ -13,7 +13,7 @@ module RequestParser
     begin
       parsed_json = JSON.parse(text)
     rescue JSON::ParserError => e
-      record_log(url: url, method: method, params: params, header: header, options: options, exception: ["error: #{e.message}"] + e.backtrace)
+      self.record_log(url: url, method: method, params: params, header: header, options: options, exception: ["error: #{e.message}"] + e.backtrace)
     end
     return parsed_json
   end
@@ -34,11 +34,11 @@ module RequestParser
     begin
       response = http_client.send(method, url, {query: params, header: header}.merge(options))
       if response.status >= 400
-
+        self.record_log(url: url, method: method, params: params, header: header, options: options, insert_top_messages: ["request Error Status Code: #{response.status}"])
       end
       result = response.body
     rescue SocketError => e
-      record_log(url: url, method: method, params: params, header: header, options: options, error_messages: ["error: #{e.message}"] + e.backtrace)
+      self.record_log(url: url, method: method, params: params, header: header, options: options, error_messages: ["error: #{e.message}"] + e.backtrace)
     end
     return result
   end
