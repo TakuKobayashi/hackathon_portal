@@ -75,7 +75,7 @@ class Ai::TwitterResource < Ai::TweetResource
     end
   end
 
-  def register_hashtags!(tweet: tweet)
+  def register_hashtags!(tweet:)
     ai_hashtags = Ai::Hashtag.where(hashtag: tweet.hashtags.map(&:text)).index_by(&:hashtag)
     import_ai_hashtags = []
     tweet.hashtags.each do |ht|
@@ -91,7 +91,7 @@ class Ai::TwitterResource < Ai::TweetResource
     end
   end
 
-  def register_attachments!(tweet: tweet)
+  def register_attachments!(tweet:)
     attachments = []
     tweet.urls.flatten.each do |url|
       attachment = self.attachments.new(category: :website)
