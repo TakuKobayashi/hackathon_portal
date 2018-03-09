@@ -42,7 +42,9 @@ class Ai::TweetResource < ApplicationRecord
     split_sentences = plane_text_body.split(/[。．.？！!?\n\r]/)
     transaction do
       split_sentences.each do |sentence|
-        import_sentences << self.sentences.create!(body: sentence)
+        if sentence.present?
+          import_sentences << self.sentences.create!(body: sentence)
+        end
       end
     end
     return import_sentences
