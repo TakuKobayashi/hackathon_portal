@@ -13,7 +13,7 @@ module RequestParser
     begin
       parsed_json = JSON.parse(text)
     rescue JSON::ParserError => e
-      self.record_log(url: url, method: method, params: params, header: header, options: options, exception: ["error: #{e.message}"] + e.backtrace)
+      self.record_log(url: url, method: method, params: params, header: header, options: options, error_messages: ["error: #{e.message}"] + e.backtrace, insert_top_messages: ["exception:" + e.class.to_s])
     end
     return parsed_json
   end
@@ -38,7 +38,7 @@ module RequestParser
       end
       result = response.body
     rescue SocketError => e
-      self.record_log(url: url, method: method, params: params, header: header, options: options, error_messages: ["error: #{e.message}"] + e.backtrace)
+      self.record_log(url: url, method: method, params: params, header: header, options: options, error_messages: ["error: #{e.message}"] + e.backtrace, insert_top_messages: ["exception:" + e.class.to_s])
     end
     return result
   end
@@ -50,7 +50,6 @@ module RequestParser
     logger.extend ActiveSupport::Logger.broadcast(console)
     messages = [
       "Time:" + Time.current.to_s,
-      "exception:" + exception.class.to_s,
       "Request URL:" + url,
       "Request Method:" + method.to_s,
       "Request Headers:" + header.to_json,
@@ -58,7 +57,6 @@ module RequestParser
       "Request Options:" + options.to_json,
     ]
     message = (insert_top_messages + messages + error_messages).join("\n") + "\n\n"
-    message = ( + exception.backtrace)
     logger.info(message)
   end
 end
