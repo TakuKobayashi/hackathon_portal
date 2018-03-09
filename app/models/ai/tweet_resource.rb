@@ -57,7 +57,7 @@ class Ai::TweetResource < ApplicationRecord
       },
       options: {:follow_redirect => true}
     )
-    words = xml_hash["ma_result"].first["word_list"].first["word"].map{|hash| hash["surface"] }.flatten
+    words = xml_hash["ma_result"].first["word_list"].first["word"].map{|hash| hash["surface"] }.flatten.select{|word| word.present? }
     return words
   end
 

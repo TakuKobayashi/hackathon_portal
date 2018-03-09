@@ -34,7 +34,7 @@ class Ai::TwitterResource < Ai::TweetResource
     hashtags.each do |hashtag|
       tweets = []
       begin
-        tweets = twitter_client.search("#" + hashtag.hashtag)
+        tweets = twitter_client.search("#" + hashtag.hashtag, lang: "ja")
       rescue Twitter::Error::Forbidden, Twitter::Error::ServiceUnavailable, Twitter::Error::ClientError, Twitter::Error::ServerError, Twitter::Error::TooManyRequests => error
         break
       end
@@ -58,7 +58,7 @@ class Ai::TwitterResource < Ai::TweetResource
             end
             ai_resource.options = {
               mentions: tweet.user_mentions.map{|m| {user_id: m.id, user_name: m.screen_name} }
-           }
+            }
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
             ai_resource.register_attachments!(tweet: tweet)
