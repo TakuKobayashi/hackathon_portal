@@ -24,7 +24,7 @@ module Sanitizer
   end
 
   def self.delete_urls(text)
-    return text.gsub(/https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/, "")
+    return text.gsub(/(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)/, "")
   end
 
   def self.delete_sharp(text)
