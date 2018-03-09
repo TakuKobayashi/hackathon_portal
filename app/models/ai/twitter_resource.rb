@@ -79,7 +79,7 @@ class Ai::TwitterResource < Ai::TweetResource
     sanitized_hashtags = tweet.hashtags.map{|hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select{|hashtag_text| hashtag_text.present? }
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     import_ai_hashtags = []
-    hashtag_text.each do |ht|
+    sanitized_hashtags.each do |ht|
       if ai_hashtags[ht].present?
         import_ai_hashtags << self.hashtags.new(hashtag_id: ai_hashtags[ht].id)
       else
