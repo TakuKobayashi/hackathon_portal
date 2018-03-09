@@ -50,9 +50,10 @@ class Connpass < Event
         results_available = events_response["results_available"]
       end
       start += events_response["results_returned"].to_i
-      current_events = Connpass.where(event_id: (events_response["events"] || []).map{|res| res["event_id"]}.compact).index_by(&:event_id)
+      res_events = events_response["events"] || []
+      current_events = Connpass.where(event_id: res_events.map{|res| res["event_id"]}.compact).index_by(&:event_id)
       transaction do
-        events_response["events"].each do |res|
+        res_events.each do |res|
           if current_events[res["event_id"].to_s].present?
             connpass_event = current_events[res["event_id"].to_s]
           else
