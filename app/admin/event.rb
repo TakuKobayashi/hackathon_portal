@@ -1,5 +1,7 @@
-ActiveAdmin.register Event  do
+ActiveAdmin.register Event do
   menu priority: 0, label: "ハッカソン情報", parent: "ハッカソン情報"
+  config.filters = false
+  config.paginate = true
 
   actions :index, :show, :edit, :update, :new, :create
 
