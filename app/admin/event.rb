@@ -30,6 +30,7 @@ ActiveAdmin.register Event do
 
   form do |f|
     f.inputs do
+      f.input :event_id, as: :string
       f.input :title, as: :string
       f.input :url, as: :string
       li do
@@ -58,7 +59,9 @@ ActiveAdmin.register Event do
     attributes = params.require(:event).permit!
     hashtags_attr = attributes.delete("hashtags_attributes")
     event = SelfPostEvent.new(attributes)
-    event.event_id = SecureRandom.hex
+    if event.event_id.blank?
+      event.event_id = SecureRandom.hex
+    end
     event.set_location_data
     event.save!
     event.import_hashtags!(hashtag_strings: hashtags_attr.values.map{|hash| hash.values }.flatten)
