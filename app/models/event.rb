@@ -72,11 +72,20 @@ class Event < ApplicationRecord
     "ハック" => 1
   }
 
+  before_save do
+    if self.url.size > 255
+      shorted_url = self.get_short_url
+      self.url = shorted_url
+      self.shortener_url = shorted_url
+    end
+  end
+
   def self.import_events!
     Connpass.import_events!
     Doorkeeper.import_events!
     Atnd.import_events!
     Peatix.import_events!
+    Meetup.import_events!
   end
 
   def hackathon_event?
@@ -301,11 +310,15 @@ class Event < ApplicationRecord
   end
 
   def convert_to_short_url!
+    update!(shortener_url: self.get_short_url)
+  end
+
+  def get_short_url
     service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
     service.key = ENV.fetch('GOOGLE_API_KEY', '')
     url_obj = Google::Apis::UrlshortenerV1::Url.new
     url_obj.long_url = self.url
     result = service.insert_url(url_obj)
-    update!(shortener_url: result.id)
+    return result.id
   end
 end
