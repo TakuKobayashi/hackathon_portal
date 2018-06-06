@@ -21,6 +21,7 @@ Twitterでは開催情報についてつぶやきますが、今後はハッカ�
  * [Atnd](https://atnd.org/)
  * [Doorkeeper](https://www.doorkeeper.jp/)
  * [Peatix](https://peatix.com/)
+ * [Meetup](https://www.meetup.com/)
 
 このほかに追加で収集してほしいサービスとかありましたら、issueなどで述べてください。また、管理ツールもあります。管理ツールを使ってみたい!!など、希望の方は[Facebookアカウント](https://www.facebook.com/taku.kobayashi.560)などから個別にご連絡ください。
 
