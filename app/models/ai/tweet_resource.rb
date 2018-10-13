@@ -21,6 +21,8 @@
 #
 
 class Ai::TweetResource < ApplicationRecord
+  include Dumpdb
+
   serialize :options, JSON
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'

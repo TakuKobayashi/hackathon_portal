@@ -16,4 +16,5 @@
 #
 
 class Ai::AppearWord < ApplicationRecord
+  include Dumpdb
 end

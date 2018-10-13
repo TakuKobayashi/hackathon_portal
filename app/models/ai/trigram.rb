@@ -16,6 +16,8 @@
 #
 
 class Ai::Trigram < ApplicationRecord
+  include Dumpdb
+
   enum position_genre: {
     bos: 0,
     eos: 1,
