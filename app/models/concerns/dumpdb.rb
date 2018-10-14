@@ -4,7 +4,7 @@ module Dumpdb
     configuration = ActiveRecord::Base.configurations[environment]
     database = Shellwords.escape(Regexp.escape(configuration['database'].to_s))
     username = Shellwords.escape(Regexp.escape(configuration['username'].to_s))
-    password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))]
+    password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))
 
     table = self.table_name
     commands = []
