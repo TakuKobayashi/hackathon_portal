@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/activeadmin/activeadmin
-  revision: 19ea5a95b4c363f18870fc5cc0cff0dde1c7e19b
+  revision: 559452a65673fcdbe88791420409ae2bb1971389
   specs:
     activeadmin (2.0.0.alpha)
       arbre (>= 1.1.1)
@@ -207,7 +207,7 @@ GEM
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.7.0)
+    mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
