@@ -28,7 +28,7 @@ if defined? :rbenv_root
   job_type :script,  %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec script/:task :output}
 end
 
-every :day, at: '2:50' do
+every :day, at: '4:02' do
   rake "batch:event_crawl"
 end
 
