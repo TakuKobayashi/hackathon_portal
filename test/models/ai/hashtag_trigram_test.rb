@@ -2,7 +2,7 @@
 #
 # Table name: ai_hashtag_trigrams
 #
-#  id         :integer          not null, primary key
+#  id         :bigint(8)        not null, primary key
 #  trigram_id :integer          not null
 #  hashtag_id :integer          not null
 #

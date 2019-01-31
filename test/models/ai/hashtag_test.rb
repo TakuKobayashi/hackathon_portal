@@ -2,7 +2,7 @@
 #
 # Table name: ai_hashtags
 #
-#  id      :integer          not null, primary key
+#  id      :bigint(8)        not null, primary key
 #  hashtag :string(255)      not null
 #
 # Indexes

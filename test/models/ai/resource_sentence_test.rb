@@ -2,7 +2,7 @@
 #
 # Table name: ai_resource_sentences
 #
-#  id                :integer          not null, primary key
+#  id                :bigint(8)        not null, primary key
 #  tweet_resource_id :integer          not null
 #  body              :text(65535)      not null
 #

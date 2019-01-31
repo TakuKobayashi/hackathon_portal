@@ -2,7 +2,7 @@
 #
 # Table name: ai_tweet_resources
 #
-#  id                 :integer          not null, primary key
+#  id                 :bigint(8)        not null, primary key
 #  type               :string(255)
 #  resource_id        :string(255)      not null
 #  resource_user_id   :string(255)
