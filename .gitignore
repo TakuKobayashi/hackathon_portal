@@ -36,3 +36,4 @@ public/assets/
 !server/tmp/.keep
 
 .byebug_history
+.gitconfig

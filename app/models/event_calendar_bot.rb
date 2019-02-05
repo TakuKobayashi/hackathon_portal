@@ -91,7 +91,7 @@ class EventCalendarBot < ApplicationRecord
 
   def self.google_calender_client
     service = Google::Apis::CalendarV3::CalendarService.new
-    service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_CALENDER_REFRESH_TOKEN", ""))
+    service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
     return service
   end
 end
