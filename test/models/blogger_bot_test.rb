@@ -1,29 +1,28 @@
 # == Schema Information
 #
-# Table name: qiita_bots
+# Table name: blogger_bots
 #
-#  id            :integer          not null, primary key
-#  qiita_id      :string(255)      not null
+#  id            :bigint(8)        not null, primary key
+#  blogger_id    :string(255)      not null
 #  title         :string(255)      not null
 #  url           :string(255)      not null
 #  season_number :integer          not null
 #  tag_names     :string(255)
+#  event_type    :string(255)
 #  event_ids     :text(65535)      not null
 #  body          :text(16777215)   not null
-#  rendered_body :text(16777215)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  event_type    :string(255)
 #
 # Indexes
 #
-#  index_qiita_bots_on_qiita_id       (qiita_id) UNIQUE
-#  index_qiita_bots_on_season_number  (season_number)
+#  index_blogger_bots_on_blogger_id     (blogger_id) UNIQUE
+#  index_blogger_bots_on_season_number  (season_number)
 #
 
 require 'test_helper'
 
-class QiitaBotTest < ActiveSupport::TestCase
+class BloggerBotTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
