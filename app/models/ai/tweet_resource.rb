@@ -21,7 +21,6 @@
 #
 
 class Ai::TweetResource < ApplicationRecord
-  include Dumpdb
 
   serialize :options, JSON
 

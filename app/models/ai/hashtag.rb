@@ -11,7 +11,5 @@
 #
 
 class Ai::Hashtag < ApplicationRecord
-  include Dumpdb
-
   has_many :resource_hashtags, class_name: 'Ai::ResourceHashtag', foreign_key: :hashtag_id
 end

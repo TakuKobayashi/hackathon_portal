@@ -1,0 +1,14 @@
+development:
+  access_key_id: <%= ENV.fetch('AWS_DEVELOPMENT_ACCESS_KEY_ID', '') %>
+  secret_access_key: <%= ENV.fetch('AWS_DEVELOPMENT_SECRET_ACCESS_KEY', '') %>
+  region: <%= ENV.fetch('AWS_DEVELOPMENT_REGION', '') %>
+
+test:
+  access_key_id: <%= ENV.fetch('AWS_TEST_ACCESS_KEY_ID', '') %>
+  secret_access_key: <%= ENV.fetch('AWS_TEST_SECRET_ACCESS_KEY', '') %>
+  region: <%= ENV.fetch('AWS_TEST_REGION', '') %>
+
+production:
+  access_key_id: <%= ENV.fetch('AWS_PRODUCTION_ACCESS_KEY_ID', '') %>
+  secret_access_key: <%= ENV.fetch('AWS_PRODUCTION_SECRET_ACCESS_KEY', '') %>
+  region: <%= ENV.fetch('AWS_PRODUCTION_REGION', '') %>

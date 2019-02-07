@@ -14,7 +14,5 @@
 #
 
 class Ai::ResourceSummary < ApplicationRecord
-  include Dumpdb
-
   belongs_to :resource, polymorphic: true, required: false
 end

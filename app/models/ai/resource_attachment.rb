@@ -16,8 +16,6 @@
 #
 
 class Ai::ResourceAttachment < ApplicationRecord
-  include Dumpdb
-
   serialize :options, JSON
 
   enum category: {

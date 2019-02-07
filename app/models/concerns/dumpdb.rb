@@ -1,12 +1,11 @@
 module Dumpdb
-  def to_dump_command(output_root_path:)
+  def self.to_dump_command(table_name: ,output_root_path:)
     environment = Rails.env
     configuration = ActiveRecord::Base.configurations[environment]
     database = Shellwords.escape(Regexp.escape(configuration['database'].to_s))
     username = Shellwords.escape(Regexp.escape(configuration['username'].to_s))
     password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))
 
-    table = self.table_name
     commands = []
     if password.present?
       commands << "MYSQL_PWD=#{password}"
@@ -17,19 +16,19 @@ module Dumpdb
     commands << "--skip-lock-tables"
     commands << "-t"
     commands << database
-    commands << table
+    commands << table_name
     commands << ">"
-    commands << [output_root_path, "#{table}.sql"].join("/")
+    commands << [output_root_path, "#{table_name}.sql"].join("/")
     return commands.join(" ")
   end
 
-  def dump_table!(output_root_path:, is_export_log: true)
-    command = to_dump_command(output_root_path: output_root_path)
+  def self.dump_table!(table_name: ,output_root_path:, is_export_log: true)
+    command = to_dump_command(table_name: table_name, output_root_path: output_root_path)
     if is_export_log
-      Dumpdb.record_log(command: command)
+      self.record_log(command: command)
     end
     system(command)
-    return [output_root_path, "#{self.table_name}.sql"].join("/")
+    return [output_root_path, "#{table_name}.sql"].join("/")
   end
 
   def self.record_log(command:)

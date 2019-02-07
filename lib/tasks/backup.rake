@@ -3,7 +3,29 @@ require 'google/apis/sheets_v4'
 SPREADSHEET_ID = "1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ"
 
 namespace :backup do
-  task ai_dump_and_upload_and_clear_data: :environment do
+  task dump_and_upload_and_clear_data: :environment do
+    [
+      Ai::AppearWord,
+      Ai::HashtagTrigram,
+      Ai::Hashtag,
+      Ai::ResourceAttachment,
+      Ai::ResourceHashtag,
+      Ai::ResourceSentence,
+      Ai::ResourceSummary,
+      Ai::Trigram,
+      Ai::TweetResource,
+    ].each do |clazz|
+      table_name = clazz.table_name
+      sql_file_path = Dumpdb.dump_table!(
+        table_name: table_name,
+        output_root_path: Rails.root.join("tmp").to_s
+      )
+      s3 = Aws::S3::Client.new
+      File.open(sql_file_path, 'rb') do |sql_file|
+        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{table_name}.sql", acl: "public-read")
+      end
+      File.delete(sql_file_path)
+    end
   end
 
   task upload_event_spreadsheet: :environment do
