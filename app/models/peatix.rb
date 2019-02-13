@@ -62,7 +62,7 @@ class Peatix < Event
           else
             peatix_event = Peatix.new(event_id: res["id"].to_s)
           end
-          peatix_event.merge_attributes_and_set_location_data(attrs: {
+          peatix_event.merge_event_attributes(attrs: {
             title: res["name"].to_s,
             url: tracking_url.origin.to_s + tracking_url.path.to_s,
             address: res["address"].to_s,

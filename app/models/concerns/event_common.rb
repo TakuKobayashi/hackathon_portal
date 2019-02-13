@@ -1,5 +1,5 @@
 module EventCommon
-  def merge_attributes_and_set_location_data(attrs: {})
+  def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject{|key, value| value.nil? })
     if ops.started_at.present? && ops.started_at.is_a?(String)
       ops.started_at = DateTime.parse(ops.started_at)
@@ -8,10 +8,10 @@ module EventCommon
       ops.ended_at = DateTime.parse(ops.ended_at)
     end
     self.attributes = self.attributes.merge(ops.to_h)
-    self.set_location_data
+    self.build_location_data
   end
 
-  def set_location_data
+  def build_location_data
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result = RequestParser.request_and_parse_json(
         url: "https://maps.googleapis.com/maps/api/geocode/json",

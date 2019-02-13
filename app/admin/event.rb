@@ -62,7 +62,7 @@ ActiveAdmin.register Event do
     if event.event_id.blank?
       event.event_id = SecureRandom.hex
     end
-    event.set_location_data
+    event.build_location_data
     event.save!
     event.import_hashtags!(hashtag_strings: hashtags_attr.values.map{|hash| hash.values }.flatten)
     if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
