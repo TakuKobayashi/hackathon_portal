@@ -64,7 +64,7 @@ class Meetup < Event
         vanue_hash = res["venue"] || {}
         fee_hash = res["fee"] || {}
         group_hash = res["group"] || {}
-        meetup_event.attributes = meetup_event.attributes.merge({
+        meetup_event.attributes = meetup_event.attributes.merge_attributes_and_set_location_data(attrs: {
           title: Sanitizer.basic_sanitize(res["name"].to_s),
           url: res["link"].to_s,
           description: Sanitizer.basic_sanitize(res["description"].to_s),
@@ -84,7 +84,6 @@ class Meetup < Event
           attend_number: res["yes_rsvp_count"] || res["attendance_count"],
           substitute_number: res["waitlist_count"]
         })
-        meetup_event.set_location_data
         meetup_event.save!
         meetup_event.import_hashtags!(hashtag_strings: meetup_event.search_hashtags)
       end
