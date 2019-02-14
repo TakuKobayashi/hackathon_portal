@@ -21,6 +21,7 @@ module GoogleOauth2Client
       end
     end
     oauth_client.refresh_token = refresh_token
+    oauth_client.fetch_access_token!
     return oauth_client
   end
 end
