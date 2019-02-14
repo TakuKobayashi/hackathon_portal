@@ -1,12 +1,19 @@
 require 'google/apis/sheets_v4'
+require 'google/apis/drive_v3'
 
 SPREADSHEET_ID = "1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ"
 
-module BackupSpreadsheet
+module BackupToGoogleServices
   def self.get_google_sheet_service
     sheet_service = Google::Apis::SheetsV4::SheetsService.new
     sheet_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
     return sheet_service
+  end
+
+  def self.get_google_drive_service
+    drive_service = Google::Apis::DriveV3::DriveService.new
+    drive_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
+    return drive_service
   end
 
   def self.generate_sheet!(sheet_names: [])
@@ -33,7 +40,8 @@ module BackupSpreadsheet
           }
         }
       end
-      result = service.batch_update_spreadsheet(SPREADSHEET_ID, {requests: add_sheet_requests}, {})
+      return service.batch_update_spreadsheet(SPREADSHEET_ID, {requests: add_sheet_requests}, {})
     end
+    return nil
   end
 end
