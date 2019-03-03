@@ -9,6 +9,7 @@ module EventCommon
     end
     self.attributes = self.attributes.merge(ops.to_h)
     self.build_location_data
+    self.build_location_map_image
   end
 
   def build_location_data
@@ -44,6 +45,10 @@ module EventCommon
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip
     end
+  end
+
+  def build_location_map_image
+    self.location_image_binary = self.generate_google_map_static_image_url
   end
 
   def import_hashtags!(hashtag_strings: [])
