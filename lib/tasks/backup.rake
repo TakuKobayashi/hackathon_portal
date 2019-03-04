@@ -20,7 +20,7 @@ namespace :backup do
       s3 = Aws::S3::Client.new
       exist_files = drive.list_files({q: "name='#{table_name}.sql'"})
       File.open(sql_file_path, 'rb') do |sql_file|
-        result = drive.create_file(upload_source: f)
+        result = drive.create_file(upload_source: sql_file)
         s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{table_name}.sql", acl: "public-read")
       end
       File.delete(sql_file_path)
