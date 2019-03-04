@@ -27,6 +27,24 @@ namespace :backup do
     end
   end
 
+  task clear_and_restart_ai_tables: :environment do
+    [
+      Ai::AppearWord,
+      Ai::HashtagTrigram,
+      Ai::Hashtag,
+      Ai::ResourceAttachment,
+      Ai::ResourceHashtag,
+      Ai::ResourceSentence,
+      Ai::ResourceSummary,
+      Ai::Trigram,
+      Ai::TweetResource,
+    ].each do |clazz|
+      prev_auto_increment_id = clazz.last.try(:id).to_i + 1
+      clazz.connection.execute("TRUNCATE TABLE #{clazz.table_name}")
+      clazz.connection.execute("ALTER TABLE #{clazz.table_name} AUTO_INCREMENT=#{prev_auto_increment_id}")
+    end
+  end
+
   task upload_event_spreadsheet: :environment do
     backup_models = [Event, Scaling::UnityEvent]
     table_names = backup_models.map(&:table_name)
