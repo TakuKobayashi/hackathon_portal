@@ -19,8 +19,19 @@ namespace :backup do
       )
       s3 = Aws::S3::Client.new
       exist_files = drive.list_files({q: "name='#{table_name}.sql'"})
+      result = drive.create_file(
+        {
+          name: "#{table_name}.sql",
+          parents: ["143QAunJyQZCDnu19U3jQOMvZWf2Jb_Q_"]
+        },
+        {
+          upload_source: sql_file_path,
+          content_type: 'application/octet-stream',
+          fields: '*',
+          supports_team_drives: true
+        }
+      )
       File.open(sql_file_path, 'rb') do |sql_file|
-        result = drive.create_file(upload_source: sql_file)
         s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{table_name}.sql", acl: "public-read")
       end
       File.delete(sql_file_path)
