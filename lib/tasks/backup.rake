@@ -1,3 +1,6 @@
+require 'google/apis/sheets_v4'
+require 'google/apis/drive_v3'
+
 namespace :backup do
   task dump_and_upload_and_clear_data: :environment do
     drive = BackupToGoogleServices.get_google_drive_service
@@ -59,12 +62,25 @@ namespace :backup do
   task upload_event_spreadsheet: :environment do
     backup_models = [Event, Scaling::UnityEvent]
     table_names = backup_models.map(&:table_name)
-    BackupToGoogleServices.generate_sheet!(sheet_names: table_names)
-
+#    BackupToGoogleServices.generate_sheet!(sheet_names: table_names)
     backup_models.each do |model_class|
+      row_count = model_class.count
+      column_names = model_class.column_names
+      start_row = 1
+      start_column = 1
+      end_row = start_row + row_count
+      end_column = start_column + column_names.size - 1
+
+      range = "'#{model_class.table_name}'!R#{start_row}C#{start_column}:R#{end_row}C#{end_column}"
+      cell_rows = []
+      cell_rows << column_names
       model_class.find_each do |event|
-      # write spread sheet
+        cell_rows << (column_names).map{|column_name| event.send(column_name).to_s }
       end
+      value_range = Google::Apis::SheetsV4::ValueRange.new(values: cell_rows)
+      p cell_rows
+      p range
+      updated = BackupToGoogleServices.get_google_sheet_service.update_spreadsheet_value("1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ", range, value_range, value_input_option: 'USER_ENTERED')
     end
   end
 end
