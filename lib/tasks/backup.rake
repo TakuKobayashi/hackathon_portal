@@ -61,8 +61,10 @@ namespace :backup do
 
   task upload_event_spreadsheet: :environment do
     backup_models = [Event, Scaling::UnityEvent]
-    table_names = backup_models.map(&:table_name)
-#    BackupToGoogleServices.generate_sheet!(sheet_names: table_names)
+
+    service = BackupToGoogleServices.get_google_sheet_service
+    target_spreadsheet = service.get_spreadsheet(BackupToGoogleServices::SPREADSHEET_ID)
+
     backup_models.each do |model_class|
       row_count = model_class.count
       column_names = model_class.column_names
@@ -71,16 +73,27 @@ namespace :backup do
       end_row = start_row + row_count
       end_column = start_column + column_names.size - 1
 
-      range = "'#{model_class.table_name}'!R#{start_row}C#{start_column}:R#{end_row}C#{end_column}"
+      sheet_name = model_class.table_name
+      if target_spreadsheet.sheets.all?{|sheet| sheet.properties.title != sheet_name }
+        sheet_request_hash = {
+          add_sheet: {
+            properties: {
+              title: sheet_name
+            }
+          }
+        }
+        batch_update_request = Google::Apis::SheetsV4::BatchUpdateSpreadsheetRequest.new({requests: [sheet_request_hash]})
+        result = service.batch_update_spreadsheet(BackupToGoogleServices::SPREADSHEET_ID, batch_update_request)
+      end
+
+      range = "'#{sheet_name}'!R#{start_row}C#{start_column}:R#{end_row}C#{end_column}"
       cell_rows = []
       cell_rows << column_names
       model_class.find_each do |event|
         cell_rows << (column_names).map{|column_name| event.send(column_name).to_s }
       end
       value_range = Google::Apis::SheetsV4::ValueRange.new(values: cell_rows)
-      p cell_rows
-      p range
-      updated = BackupToGoogleServices.get_google_sheet_service.update_spreadsheet_value("1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ", range, value_range, value_input_option: 'USER_ENTERED')
+      updated = service.update_spreadsheet_value(BackupToGoogleServices::SPREADSHEET_ID, range, value_range, value_input_option: 'USER_ENTERED')
     end
   end
 end
