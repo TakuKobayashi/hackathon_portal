@@ -4,6 +4,18 @@ require 'google/apis/drive_v3'
 namespace :backup do
   task dump_and_upload_and_clear_data: :environment do
     drive = BackupToGoogleServices.get_google_drive_service
+    backup_folder =  drive.list_files({q: "name='backup' and mimeType='application/vnd.google-apps.folder'"}).files.first
+    if backup_folder.blank?
+      backup_folder = drive.create_file({
+        name: 'backup',
+        mime_type: 'application/vnd.google-apps.folder'
+      },
+      {
+        fields: '*',
+        supports_team_drives: true
+      })
+    end
+    exists_table_name_folders = drive.list_files({q: "mimeType='application/vnd.google-apps.folder' and parents in '#{backup_folder.id}'"}).files.index_by(&:name)
     [
       Ai::AppearWord,
       Ai::HashtagTrigram,
@@ -16,28 +28,40 @@ namespace :backup do
       Ai::TweetResource,
     ].each do |clazz|
       table_name = clazz.table_name
-      sql_file_path = Dumpdb.dump_table!(
+      root_folder = exists_table_name_folders[table_name]
+      if root_folder.blank?
+        root_folder = drive.create_file({
+          name: table_name,
+          mime_type: 'application/vnd.google-apps.folder',
+          parents: [backup_folder.id],
+        },
+        {
+          fields: '*',
+          supports_team_drives: true,
+        })
+      end
+      local_sql_file_path = Dumpdb.dump_table!(
         table_name: table_name,
         output_root_path: Rails.root.join("tmp").to_s
       )
       s3 = Aws::S3::Client.new
-      exist_files = drive.list_files({q: "name='#{table_name}.sql'"})
+      sql_filename = "#{Time.current.strftime("%Y%m%d_%H%M%S")}_#{table_name}.sql"
       result = drive.create_file(
         {
-          name: "#{table_name}.sql",
-          parents: ["143QAunJyQZCDnu19U3jQOMvZWf2Jb_Q_"]
+          name: sql_filename,
+          parents: [root_folder.id]
         },
         {
-          upload_source: sql_file_path,
+          upload_source: local_sql_file_path,
           content_type: 'application/octet-stream',
           fields: '*',
           supports_team_drives: true
         }
       )
-      File.open(sql_file_path, 'rb') do |sql_file|
-        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{table_name}.sql", acl: "public-read")
+      File.open(local_sql_file_path, 'rb') do |sql_file|
+        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
       end
-      File.delete(sql_file_path)
+      File.delete(local_sql_file_path)
     end
   end
 
