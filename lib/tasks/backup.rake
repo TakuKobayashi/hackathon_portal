@@ -88,10 +88,9 @@ namespace :backup do
 
     service = BackupToGoogleServices.get_google_sheet_service
     target_spreadsheet = service.get_spreadsheet(BackupToGoogleServices::SPREADSHEET_ID)
-
     backup_models.each do |model_class|
       row_count = model_class.count
-      column_names = model_class.column_names
+      column_names = model_class.column_names - ["created_at", "updated_at", "location_image_binary"]
       start_row = 1
       start_column = 1
       end_row = start_row + row_count
