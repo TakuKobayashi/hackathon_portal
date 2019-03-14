@@ -44,7 +44,7 @@ namespace :backup do
         table_name: table_name,
         output_root_path: Rails.root.join("tmp").to_s
       )
-      s3 = Aws::S3::Client.new
+      #s3 = Aws::S3::Client.new
       sql_filename = "#{Time.current.strftime("%Y%m%d_%H%M%S")}_#{table_name}.sql"
       result = drive.create_file(
         {
@@ -58,9 +58,9 @@ namespace :backup do
           supports_team_drives: true
         }
       )
-      File.open(local_sql_file_path, 'rb') do |sql_file|
-        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
-      end
+#      File.open(local_sql_file_path, 'rb') do |sql_file|
+#        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
+#      end
       File.delete(local_sql_file_path)
     end
   end
