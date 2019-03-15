@@ -1,5 +1,6 @@
 require 'google/apis/sheets_v4'
 require 'google/apis/drive_v3'
+require 'google/apis/blogger_v3'
 
 module BackupToGoogleServices
   SPREADSHEET_ID = "1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ"
@@ -14,5 +15,11 @@ module BackupToGoogleServices
     drive_service = Google::Apis::DriveV3::DriveService.new
     drive_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
     return drive_service
+  end
+
+  def self.get_google_blogger_service
+    blogger_service = Google::Apis::BloggerV3::BloggerService.new
+    blogger_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
+    return blogger_service
   end
 end
