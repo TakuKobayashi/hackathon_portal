@@ -1,0 +1,27 @@
+  <h3><%= link_to(event.title, event.url) %></h3>
+  <div><% event.og_image_html %></div><br>
+  <div><%= event.started_at.strftime("%Y年%m月%d日") %></div>
+  <div><%= event.place.to_s %></div>
+  <% if event.address.present? %>
+    <div><%= link_to(event.address, event.generate_google_map_url) %></div>
+  <% end %>
+  <% if event.location_image_binary.present? %>
+    <div><%= link_to image_tag("data:image/png;base64,#{Base64.encode64(event.location_image_binary)}", alt: "サンプル画像"), event.generate_google_map_url %></div>
+  <% end %>
+  <% if event.limit_number.present? %>
+    <div>定員<%= event.limit_number %>人</div>
+  <% end %>
+  <% if event.attend_number >= 0 %>
+    <% if event.ended_at.present? && event.ended_at < Time.current %>
+      <div><%= event.attend_number %>人が参加しました</div>
+    <% else %>
+      <div><%= Time.now.strftime("%Y年%m月%d日 %H:%M") %>現在 <%= seeventlf.attend_number %>人参加中"</div>
+      <% if event.limit_number.present? %>
+        <% if (event.limit_number - event.attend_number) > 0 %>
+          <div style="color: #FF0000;">あと残り<%= (event.limit_number - event.attend_number) %>人</div> 参加可能
+        <% else %>
+          <div>今だと補欠登録されると思います。<span style="color: #FF0000;">(<%= event.substitute_number %>人が補欠登録中)</span></div>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>

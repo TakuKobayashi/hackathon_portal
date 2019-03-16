@@ -77,13 +77,9 @@ module EventCommon
     words = [
       "### [#{self.title}](#{self.url})",
     ]
-    image_url = self.get_og_image_url
-    if image_url.present?
-      fi = FastImage.new(image_url.to_s)
-      width, height = fi.size
-      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
-      resize_width, resize_height = size_text.split("x")
-      words << (ActionController::Base.helpers.image_tag(image_url, {width: resize_width, height: resize_height, alt: self.title}) + "\n")
+    image_html = self.og_image_html
+    if image_html.present?
+      words << (image_html + "\n")
     end
 
     words += [
@@ -94,7 +90,7 @@ module EventCommon
     if self.limit_number.present?
       words << "定員#{self.limit_number}人"
     end
-    if self.type == "Atnd" || self.type == "Connpass" || self.type == "Doorkeeper"
+    if self.attend_number >= 0
       if self.ended_at.present? && self.ended_at < Time.current
         words << "#{self.attend_number}人が参加しました"
       else
@@ -110,6 +106,18 @@ module EventCommon
       end
     end
     return words.join("\n")
+  end
+
+  def og_image_html
+    image_url = self.get_og_image_url
+    if image_url.present?
+      fi = FastImage.new(image_url.to_s)
+      width, height = fi.size
+      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
+      resize_width, resize_height = size_text.split("x")
+      return ActionController::Base.helpers.image_tag(image_url, {width: resize_width, height: resize_height, alt: self.title})
+    end
+    return ""
   end
 
   def generate_google_map_url

@@ -1,1 +1,13 @@
-<%= [before_events, after_events, date_number].to_json %>
+<p><%= Time.current.strftime("%Y年%m月%d日 %H:%M") %>更新</p><br>
+<p><%= year_number %>年<%= start_month %>月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!</p><br><br>
+<h1>これから開催されるイベント</h1><br><br>
+<% before_events.each do |event| %>
+  <%= render :partial => "event", :locals => {event: event} %>
+<% end %>
+
+<% if after_events_from_qiita.present? %>
+  <h1>すでに終了したイベント</h1>
+  <% after_events.each do |event| %>
+    <%= render :partial => "event", :locals => {event: event} %>
+  <% end %>
+<% end %>

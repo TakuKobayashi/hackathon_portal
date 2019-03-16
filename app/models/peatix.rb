@@ -69,7 +69,7 @@ class Peatix < Event
             place: res["venue_name"].to_s,
             lat: lat,
             lon: lng,
-            attend_number: 0,
+            attend_number: -1,
             max_prize: 0,
             currency_unit: "JPY",
             owner_id: res["organizer"]["id"],
