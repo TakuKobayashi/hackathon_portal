@@ -133,7 +133,7 @@ module EventCommon
   def generate_google_map_embed_tag
     embed_url = Addressable::URI.parse("https://maps.google.co.jp/maps")
     query_hash = {
-      ll: [self.lat,self.lon].join(",")
+      ll: [self.lat,self.lon].join(","),
       output: "embed",
       z: 16,
     }
