@@ -1,6 +1,6 @@
   <h3><%= link_to(event.title, event.url) %></h3>
   <div><%= event.og_image_html %></div><br>
-  <div style="color: #00FF00;">><%= event.started_at.strftime("%Y年%m月%d日") %></div>
+  <div style="color: #0000FF;"><%= event.started_at.strftime("%Y年%m月%d日") %></div>
   <div><%= event.place.to_s %></div>
   <% if event.address.present? %>
     <div><%= link_to(event.address, event.generate_google_map_url) %></div>
