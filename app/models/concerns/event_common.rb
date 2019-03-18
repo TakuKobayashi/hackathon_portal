@@ -1,4 +1,6 @@
 module EventCommon
+  BITLY_SHORTEN_API_URL = "https://api-ssl.bitly.com/v4/shorten"
+
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject{|key, value| value.nil? })
     if ops.started_at.present? && ops.started_at.is_a?(String)
@@ -173,11 +175,26 @@ module EventCommon
   end
 
   def get_short_url
-    service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
-    service.key = ENV.fetch('GOOGLE_API_KEY', '')
-    url_obj = Google::Apis::UrlshortenerV1::Url.new
-    url_obj.long_url = self.url
-    result = service.insert_url(url_obj)
-    return result.id
+    result = RequestParser.request_and_parse_json(
+      url: BITLY_SHORTEN_API_URL,
+      method: :post,
+      header: {
+        "Authorization" => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}",
+        "Content-Type" => "application/json"
+      },
+      body: {long_url: self.url}.to_json,
+      options: {:follow_redirect => true}
+    )
+    if result["id"].present?
+      return "https://" + result["id"]
+    else
+      return nil
+    end
+#    service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
+#    service.key = ENV.fetch('GOOGLE_API_KEY', '')
+#    url_obj = Google::Apis::UrlshortenerV1::Url.new
+#    url_obj.long_url = self.url
+#    result = service.insert_url(url_obj)
+#    return result.id
   end
 end
