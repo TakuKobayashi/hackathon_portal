@@ -143,7 +143,7 @@ module EventCommon
       query_hash[:q] = self.address
     end
     embed_url.query_values = query_hash
-    return "<iframe width=\"400\" height=\"300\" frameborder=\"0\" scrolling=\"yes\" marginheight=\"0\" marginwidth=\"0\" src=\"#{embed_url.to_s}\"></iframe>"
+    return ActionController::Base.helpers.raw("<iframe width=\"400\" height=\"300\" frameborder=\"0\" scrolling=\"yes\" marginheight=\"0\" marginwidth=\"0\" src=\"#{embed_url.to_s}\"></iframe>")
   end
 
   def get_og_image_url
