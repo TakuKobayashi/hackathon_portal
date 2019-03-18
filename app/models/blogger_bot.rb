@@ -44,9 +44,8 @@ class BloggerBot < ApplicationRecord
           (e.started_at + 2.day) > Time.current
         end
       end
-      month_range = date_number % 10000
+      start_month = date_number % 10000
       year_number = (date_number / 10000).to_i
-      start_month = (month_range / 100).to_i
       blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
       blogger_bot.body = action_view_renderer.render(template: 'blogger/publish', format: 'html', locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month })
       blogger_bot.update_blogger!(google_api_service: service)

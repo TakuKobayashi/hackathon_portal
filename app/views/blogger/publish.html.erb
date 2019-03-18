@@ -6,6 +6,7 @@
 <% end %>
 
 <% if after_events.present? %>
+  <hr>
   <h1>すでに終了したイベント</h1>
   <% after_events.each do |event| %>
     <%= render :partial => "blogger/event", :locals => {event: event} %>
