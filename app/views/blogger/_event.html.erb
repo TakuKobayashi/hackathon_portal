@@ -6,7 +6,7 @@
     <div><%= link_to(event.address, event.generate_google_map_url) %></div>
   <% end %>
   <% if event.location_image_binary.present? %>
-    <div><%= link_to image_tag("data:image/png;base64,#{Base64.encode64(event.location_image_binary)}", alt: event.title), event.generate_google_map_url %></div>
+    <div><%= event.generate_google_map_embed_tag %></div>
   <% end %>
   <% if event.limit_number.present? %>
     <div>定員<%= event.limit_number %>人</div>

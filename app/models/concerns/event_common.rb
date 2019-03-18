@@ -130,6 +130,22 @@ module EventCommon
     return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{ENV.fetch('GOOGLE_API_KEY', '')}&size=185x185"
   end
 
+  def generate_google_map_embed_tag
+    embed_url = Addressable::URI.parse("https://maps.google.co.jp/maps")
+    query_hash = {
+      ll: [self.lat,self.lon].join(",")
+      output: "embed",
+      z: 16,
+    }
+    if self.place.present?
+      query_hash[:q] = self.place
+    elsif self.address.present?
+      query_hash[:q] = self.address
+    end
+    embed_url.query_values = query_hash
+    return "<iframe width=\"400\" height=\"300\" frameborder=\"0\" scrolling=\"yes\" marginheight=\"0\" marginwidth=\"0\" src=\"#{embed_url.to_s}\"></iframe>"
+  end
+
   def get_og_image_url
     dom = RequestParser.request_and_parse_html(url: self.url, options: {:follow_redirect => true})
     og_image_dom = dom.css("meta[@property = 'og:image']").first
