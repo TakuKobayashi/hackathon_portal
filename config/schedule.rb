@@ -37,7 +37,7 @@ every :day, at: '15:00' do
 end
 
 every :day, at: '19:00' do
-  rake "batch:bot_tweet"
+  rake "batch:event_bot_tweet"
 end
 
 every :day, at: '22:00' do

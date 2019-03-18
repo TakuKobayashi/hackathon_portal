@@ -9,7 +9,7 @@ namespace :batch do
     Event.import_events!
   end
 
-  task bot_tweet: :environment do
+  task event_bot_tweet: :environment do
     future_events = Event.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").select{|event| event.hackathon_event? }
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
@@ -18,5 +18,6 @@ namespace :batch do
     end
     QiitaBot.post_or_update_article!(events: future_events)
     EventCalendarBot.insert_or_update_calender!(events: future_events)
+    BloggerBot.post_or_update_article!(events: future_events)
   end
 end
