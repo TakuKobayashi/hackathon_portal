@@ -37,7 +37,7 @@ class BloggerBot < ApplicationRecord
       blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
       blogger_bot.event_type = event_type
       blogger_bot.event_ids = [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      before_events, after_events = event_type.capitalize.where(id: blogger_bot.event_ids).order("started_at ASC").partition do |e|
+      before_events, after_events = event_type.classify.constantize.where(id: blogger_bot.event_ids).order("started_at ASC").partition do |e|
         if e.ended_at.present?
           e.ended_at > Time.current
         else

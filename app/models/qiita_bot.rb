@@ -32,7 +32,7 @@ class QiitaBot < ApplicationRecord
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_type = event_type
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      before_events_from_qiita, after_events_from_qiita = event_type.capitalize.where(id: qiita_bot.event_ids).order("started_at ASC").partition do |e|
+      before_events_from_qiita, after_events_from_qiita = event_type.classify.constantize.where(id: qiita_bot.event_ids).order("started_at ASC").partition do |e|
         if e.ended_at.present?
           e.ended_at > Time.current
         else
