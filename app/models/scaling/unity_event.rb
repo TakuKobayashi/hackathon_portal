@@ -49,4 +49,6 @@ class Scaling::UnityEvent < ApplicationRecord
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
+
+  UNITY_KEYWORDS = ["unity", "Unity", "ユニティ", "XR", "AR", "VR"]
 end
