@@ -11,7 +11,6 @@ module EventCommon
     end
     self.attributes = self.attributes.merge(ops.to_h)
     self.build_location_data
-    self.build_location_map_image
   end
 
   def build_location_data

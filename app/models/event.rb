@@ -2,31 +2,31 @@
 #
 # Table name: events
 #
-#  id                    :integer          not null, primary key
-#  event_id              :string(255)
-#  type                  :string(255)
-#  title                 :string(255)      not null
-#  url                   :string(255)      not null
-#  shortener_url         :string(255)
-#  description           :text(65535)
-#  started_at            :datetime         not null
-#  ended_at              :datetime
-#  limit_number          :integer
-#  address               :string(255)      not null
-#  place                 :string(255)      not null
-#  lat                   :float(24)
-#  lon                   :float(24)
-#  cost                  :integer          default(0), not null
-#  max_prize             :integer          default(0), not null
-#  currency_unit         :string(255)      default("円"), not null
-#  owner_id              :string(255)
-#  owner_nickname        :string(255)
-#  owner_name            :string(255)
-#  attend_number         :integer          default(0), not null
-#  substitute_number     :integer          default(0), not null
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  location_image_binary :binary(16777215)
+#  id                :integer          not null, primary key
+#  event_id          :string(255)
+#  type              :string(255)
+#  title             :string(255)      not null
+#  url               :string(255)      not null
+#  shortener_url     :string(255)
+#  description       :text(65535)
+#  started_at        :datetime         not null
+#  ended_at          :datetime
+#  limit_number      :integer
+#  address           :string(255)      not null
+#  place             :string(255)      not null
+#  lat               :float(24)
+#  lon               :float(24)
+#  cost              :integer          default(0), not null
+#  max_prize         :integer          default(0), not null
+#  currency_unit     :string(255)      default("円"), not null
+#  owner_id          :string(255)
+#  owner_nickname    :string(255)
+#  owner_name        :string(255)
+#  attend_number     :integer          default(0), not null
+#  substitute_number :integer          default(0), not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  judge_state       :integer          default("before_judge"), not null
 #
 # Indexes
 #
@@ -39,6 +39,14 @@ require 'google/apis/urlshortener_v1'
 
 class Event < ApplicationRecord
   include EventCommon
+
+  enum judge_state: {
+    before_judge: 0,
+    maybe_hackathon: 1,
+    maybe_development_camp: 2,
+    another_development_event: 3,
+    unknown: 9,
+  }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'

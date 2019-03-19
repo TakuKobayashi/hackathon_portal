@@ -10,7 +10,7 @@ namespace :batch do
   end
 
   task event_bot_tweet: :environment do
-    future_events = Event.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").select{|event| event.hackathon_event? }
+    future_events = Event.before_judge.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").select{|event| event.hackathon_event? }
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
         TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: {lat: event.lat, long: event.lon})
