@@ -51,4 +51,12 @@ class Scaling::UnityEvent < ApplicationRecord
   accepts_nested_attributes_for :hashtags
 
   UNITY_KEYWORDS = ["unity", "Unity", "ユニティ", "XR", "AR", "VR"]
+
+  def self.import_events!
+    Connpass.import_events!
+    Scaling::DoorkeeperUnityEvent.import_events!
+    Scaling::AtndUnityEvent.import_events!
+    Scaling::PeatixUnityEvent.import_events!
+    Scaling::MeetupUnityEvent.import_events!
+  end
 end
