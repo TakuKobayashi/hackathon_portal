@@ -45,8 +45,8 @@ class Scaling::UnityEvent < ApplicationRecord
     unknown: 9,
   }
 
-  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
-  has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+  has_many :summaries, as: :resource, class_name: "Ai::ResourceSummary"
+  has_many :resource_hashtags, as: :resource, class_name: "Ai::ResourceHashtag"
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 

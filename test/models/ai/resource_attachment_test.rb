@@ -15,7 +15,7 @@
 #  index_ai_resource_attachments_on_origin_src          (origin_src)
 #
 
-require 'test_helper'
+require "test_helper"
 
 class Ai::ResourceAttachmentTest < ActiveSupport::TestCase
   # test "the truth" do

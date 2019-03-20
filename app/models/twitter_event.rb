@@ -40,7 +40,7 @@ class TwitterEvent < Event
     twitter_client = TwitterBot.get_twitter_client
     tweets = []
     retry_count = 0
-    options = {count: 100}
+    options = { count: 100 }
     begin
       tweets = twitter_client.search(keywords, options)
     rescue Twitter::Error::TooManyRequests => e
@@ -61,7 +61,7 @@ class TwitterEvent < Event
     update_columns = TwitterEvent.column_names - ["id", "type", "shortener_url", "event_id", "created_at"]
     begin
       tweets = TwitterEvent.find_event(keywords: Event::HACKATHON_KEYWORDS + ["はっかそん"], page: page)
-      all_stringurls = tweets.map{|t| t.urls.map{|tu| tu.expanded_url.to_s } }.flatten
+      all_stringurls = tweets.map { |t| t.urls.map { |tu| tu.expanded_url.to_s } }.flatten
       stringurl_events = Event.where(url: all_stringurls).index_by(:url)
 
       transaction do
@@ -69,23 +69,23 @@ class TwitterEvent < Event
           tweet.urls.each do |tweet_url|
             url = tweet_url.expanded_url
             next if stringurl_events[url.to_s].present?
-            dom = RequestParser.request_and_parse_html(url: url.to_s, options: {:follow_redirect => true})
+            dom = RequestParser.request_and_parse_html(url: url.to_s, options: { :follow_redirect => true })
             twitter_event = TwitterEvent.new
             twitter_event.merge_event_attributes(attrs: {
-              title: dom.title,
-              url: url.to_s,
-              address: nil,
-              place: nil,
-              lat: nil,
-              lon: nil,
-              attend_number: 0,
-              max_prize: 0,
-              currency_unit: "JPY",
-              owner_id: tweet.user.id,
-              owner_nickname: tweet.user.name,
-              owner_name: tweet.user.screen_name,
-              started_at: Time.now
-            })
+                                                   title: dom.title,
+                                                   url: url.to_s,
+                                                   address: nil,
+                                                   place: nil,
+                                                   lat: nil,
+                                                   lon: nil,
+                                                   attend_number: 0,
+                                                   max_prize: 0,
+                                                   currency_unit: "JPY",
+                                                   owner_id: tweet.user.id,
+                                                   owner_nickname: tweet.user.name,
+                                                   owner_name: tweet.user.screen_name,
+                                                   started_at: Time.now,
+                                                 })
             twitter_event.save!
             twitter_event.import_hashtags!(hashtag_strings: twitter_event.hashtags)
           end

@@ -21,14 +21,13 @@
 #
 
 class Ai::TweetResource < ApplicationRecord
-
   serialize :options, JSON
 
-  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
-  has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
-  has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :tweet_resource_id
-  has_many :sentences, class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
-  has_many :attachments, class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
+  has_many :summaries, as: :resource, class_name: "Ai::ResourceSummary"
+  has_many :hashtags, as: :resource, class_name: "Ai::ResourceHashtag"
+  has_many :trigrams, class_name: "Ai::Trigram", foreign_key: :tweet_resource_id
+  has_many :sentences, class_name: "Ai::ResourceSentence", foreign_key: :tweet_resource_id
+  has_many :attachments, class_name: "Ai::ResourceAttachment", foreign_key: :tweet_resource_id
 
   def plane_text_body
     sanitized_body = Sanitizer.delete_urls(self.body)
@@ -55,12 +54,12 @@ class Ai::TweetResource < ApplicationRecord
     xml_hash = RequestParser.request_and_parse_xml(
       url: "https://jlp.yahooapis.jp/MAService/V1/parse",
       params: {
-        appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''),
-        sentence: plane_text_body
+        appid: ENV.fetch("YAHOO_API_CLIENT_ID", ""),
+        sentence: plane_text_body,
       },
-      options: {:follow_redirect => true}
+      options: { :follow_redirect => true },
     )
-    words = xml_hash["ma_result"].first["word_list"].first["word"].map{|hash| hash["surface"] }.flatten.select{|word| word.present? }
+    words = xml_hash["ma_result"].first["word_list"].first["word"].map { |hash| hash["surface"] }.flatten.select { |word| word.present? }
     return words
   end
 

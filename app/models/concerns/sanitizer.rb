@@ -35,7 +35,7 @@ module Sanitizer
     #全角半角をいい感じに整える
     sanitized_word = Charwidth.normalize(text)
     #絵文字を除去
-    sanitized_word = sanitized_word.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
+    sanitized_word = sanitized_word.encode("SJIS", "UTF-8", invalid: :replace, undef: :replace, replace: "").encode("UTF-8")
     # 余分な空欄を除去
     sanitized_word.strip!
     return sanitized_word

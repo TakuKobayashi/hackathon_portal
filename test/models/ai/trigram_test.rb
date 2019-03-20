@@ -15,7 +15,7 @@
 #  index_ai_trigrams_on_tweet_resource_id              (tweet_resource_id)
 #
 
-require 'test_helper'
+require "test_helper"
 
 class Ai::TrigramTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -42,7 +42,7 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
   PAGE_PER = 10
 
   def self.find_event(keywords:, page: 1)
-    return RequestParser.request_and_parse_json(url: PEATIX_SEARCH_URL, params: {q: keywords.join(" "), country: "JP", p: page, size: PAGE_PER}, header: {"X-Requested-With" => "XMLHttpRequest"}, options: {:follow_redirect => true})
+    return RequestParser.request_and_parse_json(url: PEATIX_SEARCH_URL, params: { q: keywords.join(" "), country: "JP", p: page, size: PAGE_PER }, header: { "X-Requested-With" => "XMLHttpRequest" }, options: { :follow_redirect => true })
   end
 
   def self.import_events!
@@ -52,7 +52,7 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
       events_response = self.find_event(keywords: Scaling::UnityEvent::UNITY_KEYWORDS, page: page)
       json_data = events_response["json_data"]
       page += 1
-      current_events = Scaling::PeatixUnityEvent.where(event_id: json_data["events"].map{|res| res["id"]}.compact).index_by(&:event_id)
+      current_events = Scaling::PeatixUnityEvent.where(event_id: json_data["events"].map { |res| res["id"] }.compact).index_by(&:event_id)
       transaction do
         json_data["events"].each do |res|
           tracking_url = Addressable::URI.parse(res["tracking_url"])
@@ -63,23 +63,23 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
             peatix_event = Scaling::PeatixUnityEvent.new(event_id: res["id"].to_s)
           end
           peatix_event.merge_event_attributes(attrs: {
-            title: res["name"].to_s,
-            url: tracking_url.origin.to_s + tracking_url.path.to_s,
-            address: res["address"].to_s,
-            place: res["venue_name"].to_s,
-            lat: lat,
-            lon: lng,
-            attend_number: -1,
-            max_prize: 0,
-            currency_unit: "JPY",
-            owner_id: res["organizer"]["id"],
-            owner_nickname: res["organizer"]["name"],
-            owner_name: res["organizer"]["name"],
-            started_at: res["datetime"].to_s
-          })
-          dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: {:follow_redirect => true})
+                                                title: res["name"].to_s,
+                                                url: tracking_url.origin.to_s + tracking_url.path.to_s,
+                                                address: res["address"].to_s,
+                                                place: res["venue_name"].to_s,
+                                                lat: lat,
+                                                lon: lng,
+                                                attend_number: -1,
+                                                max_prize: 0,
+                                                currency_unit: "JPY",
+                                                owner_id: res["organizer"]["id"],
+                                                owner_nickname: res["organizer"]["name"],
+                                                owner_name: res["organizer"]["name"],
+                                                started_at: res["datetime"].to_s,
+                                              })
+          dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: { :follow_redirect => true })
           peatix_event.description = Sanitizer.basic_sanitize(dom.css("#field-event-description").to_html)
-          price_dom = dom.css("meta[@itemprop = 'price']").min_by{|price_dom| price_dom["content"].to_i }
+          price_dom = dom.css("meta[@itemprop = 'price']").min_by { |price_dom| price_dom["content"].to_i }
           if price_dom.present?
             peatix_event.cost = price_dom["content"].to_i
           else

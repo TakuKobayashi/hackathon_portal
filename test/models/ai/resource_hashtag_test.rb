@@ -13,7 +13,7 @@
 #  index_ai_resource_hashtags_on_hashtag_id  (hashtag_id)
 #
 
-require 'test_helper'
+require "test_helper"
 
 class Ai::ResourceHashtagTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -15,7 +15,7 @@
 #  index_event_calendar_bots_on_from_type_and_from_id  (from_type,from_id)
 #
 
-require 'google/apis/calendar_v3'
+require "google/apis/calendar_v3"
 
 class EventCalendarBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
@@ -35,13 +35,13 @@ class EventCalendarBot < ApplicationRecord
         location: [event.address, event.place].join(" "),
         description: event.description,
         start: {
-          date_time: event.started_at.to_datetime.rfc3339
+          date_time: event.started_at.to_datetime.rfc3339,
         },
         source: {
           url: event.url,
-          title: event.title
-        }
-       })
+          title: event.title,
+        },
+      })
       if event.ended_at.present?
         calender_event.end = { date_time: event.ended_at.to_datetime.rfc3339 }
       else
@@ -83,8 +83,8 @@ class EventCalendarBot < ApplicationRecord
     else
       service = self.google_calender_client
       calenders = service.list_calendar_lists
-      target_calender = calenders.items.detect{|item| item.summary == POST_CALENDER_NAME}
-      ExtraInfo.update({"target_post_calender_id" => target_calender.try(:id)})
+      target_calender = calenders.items.detect { |item| item.summary == POST_CALENDER_NAME }
+      ExtraInfo.update({ "target_post_calender_id" => target_calender.try(:id) })
       return target_calender.try(:id)
     end
   end

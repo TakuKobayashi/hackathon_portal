@@ -15,7 +15,7 @@
 #  index_ai_appear_words_on_word_and_part  (word,part) UNIQUE
 #
 
-require 'test_helper'
+require "test_helper"
 
 class Ai::AppearWordTest < ActiveSupport::TestCase
   # test "the truth" do

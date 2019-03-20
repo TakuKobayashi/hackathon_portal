@@ -2,8 +2,8 @@ module GoogleOauth2Client
   AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
   TOKEN_URL = "https://accounts.google.com/o/oauth2/token"
 
-  def self.record_access_token(refresh_token: ,authorization:)
-    ExtraInfo.update({"google_oauth" => {refresh_token => {"access_token" => authorization.access_token, "expires_at" => authorization.expires_at.to_s}}})
+  def self.record_access_token(refresh_token:, authorization:)
+    ExtraInfo.update({ "google_oauth" => { refresh_token => { "access_token" => authorization.access_token, "expires_at" => authorization.expires_at.to_s } } })
   end
 
   def self.oauth2_client(refresh_token:, access_token: nil)

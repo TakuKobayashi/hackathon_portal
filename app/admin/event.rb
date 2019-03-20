@@ -9,8 +9,8 @@ ActiveAdmin.register Event do
     id_column
     column(:title)
     column(:type)
-    column(:url){|a| link_to(a.url, a.url) }
-    column("開催期間") {|a|
+    column(:url) { |a| link_to(a.url, a.url) }
+    column("開催期間") { |a|
       message = a.started_at.strftime("%Y年%m月%d日 %H:%M") + " ~ "
       if a.ended_at.present?
         message += a.ended_at.strftime("%Y年%m月%d日 %H:%M")
@@ -20,9 +20,9 @@ ActiveAdmin.register Event do
     column(:limit_number)
     column(:address)
     column(:place)
-    column("緯度経度"){|a| [a.lat, a.lon].join(",")}
-    column(:cost) {|a| a.cost.to_s + a.currency_unit }
-    column(:max_prize) {|a| a.max_prize.to_s + a.currency_unit }
+    column("緯度経度") { |a| [a.lat, a.lon].join(",") }
+    column(:cost) { |a| a.cost.to_s + a.currency_unit }
+    column(:max_prize) { |a| a.max_prize.to_s + a.currency_unit }
     column(:attend_number)
     column(:substitute_number)
     actions
@@ -64,16 +64,16 @@ ActiveAdmin.register Event do
     end
     event.build_location_data
     event.save!
-    event.import_hashtags!(hashtag_strings: hashtags_attr.values.map{|hash| hash.values }.flatten)
+    event.import_hashtags!(hashtag_strings: hashtags_attr.values.map { |hash| hash.values }.flatten)
     if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
-      TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: {lat: event.lat, long: event.lon})
+      TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: { lat: event.lat, long: event.lon })
     end
-    redirect_to({action: :index}, notice: "event is created!!")
+    redirect_to({ action: :index }, notice: "event is created!!")
   end
 
   collection_action :update, method: :post do
     attributes = params.require(:event).permit!
     SelfPostEvent.find_by!(id: params[:id]).update!(attributes)
-    redirect_to({action: :index}, notice: "event is updated!!")
+    redirect_to({ action: :index }, notice: "event is updated!!")
   end
 end

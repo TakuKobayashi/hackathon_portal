@@ -1,10 +1,10 @@
-require 'google/apis/sheets_v4'
-require 'google/apis/drive_v3'
-require 'google/apis/blogger_v3'
+require "google/apis/sheets_v4"
+require "google/apis/drive_v3"
+require "google/apis/blogger_v3"
 
 module BackupToGoogleServices
   SPREADSHEET_ID = "1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ"
-  BACKUP_ROOT_DIRECTORY_NAME = 'backup'
+  BACKUP_ROOT_DIRECTORY_NAME = "backup"
 
   def self.get_google_sheet_service
     sheet_service = Google::Apis::SheetsV4::SheetsService.new
@@ -20,53 +20,53 @@ module BackupToGoogleServices
 
   def self.backup_and_upload_and_clear_data!(backup_models: [])
     drive = self.get_google_drive_service
-    backup_folder =  drive.list_files({q: "name='#{BACKUP_ROOT_DIRECTORY_NAME}' and mimeType='application/vnd.google-apps.folder'"}).files.first
+    backup_folder = drive.list_files({ q: "name='#{BACKUP_ROOT_DIRECTORY_NAME}' and mimeType='application/vnd.google-apps.folder'" }).files.first
     if backup_folder.blank?
       backup_folder = drive.create_file({
         name: BACKUP_ROOT_DIRECTORY_NAME,
-        mime_type: 'application/vnd.google-apps.folder'
+        mime_type: "application/vnd.google-apps.folder",
       },
-      {
-        fields: '*',
-        supports_team_drives: true
+                                        {
+        fields: "*",
+        supports_team_drives: true,
       })
     end
-    exists_table_name_folders = drive.list_files({q: "mimeType='application/vnd.google-apps.folder' and parents in '#{backup_folder.id}'"}).files.index_by(&:name)
+    exists_table_name_folders = drive.list_files({ q: "mimeType='application/vnd.google-apps.folder' and parents in '#{backup_folder.id}'" }).files.index_by(&:name)
     backup_models.each do |clazz|
       table_name = clazz.table_name
       root_folder = exists_table_name_folders[table_name]
       if root_folder.blank?
         root_folder = drive.create_file({
           name: table_name,
-          mime_type: 'application/vnd.google-apps.folder',
+          mime_type: "application/vnd.google-apps.folder",
           parents: [backup_folder.id],
         },
-        {
-          fields: '*',
+                                        {
+          fields: "*",
           supports_team_drives: true,
         })
       end
       local_sql_file_path = Dumpdb.dump_table!(
         table_name: table_name,
-        output_root_path: Rails.root.join("tmp").to_s
+        output_root_path: Rails.root.join("tmp").to_s,
       )
       #s3 = Aws::S3::Client.new
       sql_filename = "#{Time.current.strftime("%Y%m%d_%H%M%S")}_#{table_name}.sql"
       result = drive.create_file(
         {
           name: sql_filename,
-          parents: [root_folder.id]
+          parents: [root_folder.id],
         },
         {
           upload_source: local_sql_file_path,
-          content_type: 'application/octet-stream',
-          fields: '*',
-          supports_team_drives: true
+          content_type: "application/octet-stream",
+          fields: "*",
+          supports_team_drives: true,
         }
       )
-#      File.open(local_sql_file_path, 'rb') do |sql_file|
-#        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
-#      end
+      #      File.open(local_sql_file_path, 'rb') do |sql_file|
+      #        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
+      #      end
       File.delete(local_sql_file_path)
       self.clear_and_restart_table!(clazz: clazz)
     end
@@ -90,15 +90,15 @@ module BackupToGoogleServices
       end_column = start_column + column_names.size - 1
 
       sheet_name = model_class.table_name
-      if target_spreadsheet.sheets.all?{|sheet| sheet.properties.title != sheet_name }
+      if target_spreadsheet.sheets.all? { |sheet| sheet.properties.title != sheet_name }
         sheet_request_hash = {
           add_sheet: {
             properties: {
-              title: sheet_name
-            }
-          }
+              title: sheet_name,
+            },
+          },
         }
-        batch_update_request = Google::Apis::SheetsV4::BatchUpdateSpreadsheetRequest.new({requests: [sheet_request_hash]})
+        batch_update_request = Google::Apis::SheetsV4::BatchUpdateSpreadsheetRequest.new({ requests: [sheet_request_hash] })
         result = service.batch_update_spreadsheet(SPREADSHEET_ID, batch_update_request)
       end
 
@@ -106,10 +106,10 @@ module BackupToGoogleServices
       cell_rows = []
       cell_rows << column_names
       model_class.find_each do |event|
-        cell_rows << (column_names).map{|column_name| event.send(column_name).to_s }
+        cell_rows << (column_names).map { |column_name| event.send(column_name).to_s }
       end
       value_range = Google::Apis::SheetsV4::ValueRange.new(values: cell_rows)
-      updated = service.update_spreadsheet_value(SPREADSHEET_ID, range, value_range, value_input_option: 'USER_ENTERED')
+      updated = service.update_spreadsheet_value(SPREADSHEET_ID, range, value_range, value_input_option: "USER_ENTERED")
     end
   end
 

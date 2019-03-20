@@ -1,5 +1,5 @@
 module Scaling
   def self.table_name_prefix
-    'scaling_'
+    "scaling_"
   end
 end

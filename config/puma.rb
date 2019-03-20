@@ -1,7 +1,7 @@
 before_fork do
   PumaWorkerKiller.config do |config|
-    config.ram           = 2048
-    config.frequency     = 5
+    config.ram = 2048
+    config.frequency = 5
     config.percent_usage = 0.8
     config.rolling_restart_frequency = 12 * 3600
     config.reaper_status_logs = true
@@ -19,7 +19,7 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 #
-port        ENV.fetch("PORT") { 3200 }
+port ENV.fetch("PORT") { 3200 }
 
 # Specifies the `environment` that Puma will run in.
 #

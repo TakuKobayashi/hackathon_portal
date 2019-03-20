@@ -15,5 +15,5 @@
 
 class Ai::ResourceHashtag < ApplicationRecord
   belongs_to :resource, polymorphic: true, required: false
-  belongs_to :hashtag, class_name: 'Ai::Hashtag', foreign_key: :hashtag_id, required: false
+  belongs_to :hashtag, class_name: "Ai::Hashtag", foreign_key: :hashtag_id, required: false
 end

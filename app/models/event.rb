@@ -35,7 +35,7 @@
 #  index_events_on_title                    (title)
 #
 
-require 'google/apis/urlshortener_v1'
+require "google/apis/urlshortener_v1"
 
 class Event < ApplicationRecord
   include EventCommon
@@ -48,8 +48,8 @@ class Event < ApplicationRecord
     unknown: 9,
   }
 
-  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
-  has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+  has_many :summaries, as: :resource, class_name: "Ai::ResourceSummary"
+  has_many :resource_hashtags, as: :resource, class_name: "Ai::ResourceHashtag"
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
@@ -66,7 +66,7 @@ class Event < ApplicationRecord
     "gamejam" => 2,
     "game jam" => 2,
     "合宿" => 2,
-    "ハック" => 1
+    "ハック" => 1,
   }
 
   HACKATHON_KEYWORD_CALENDER_INDEX = {
@@ -80,7 +80,7 @@ class Event < ApplicationRecord
     "gamejam" => 3,
     "game jam" => 3,
     "合宿" => 4,
-    "ハック" => 1
+    "ハック" => 1,
   }
 
   before_save do
@@ -128,7 +128,7 @@ class Event < ApplicationRecord
     if keyword.present?
       check_word = keyword
     else
-      check_word = Event::HACKATHON_KEYWORDS.detect{|word| sanitized_title.include?(word)}
+      check_word = Event::HACKATHON_KEYWORDS.detect { |word| sanitized_title.include?(word) }
     end
     if check_word == "合宿"
       sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
@@ -148,7 +148,7 @@ class Event < ApplicationRecord
     if self.limit_number.present?
       tweet_words << "定員#{self.limit_number}人"
     end
-    hs = self.hashtags.map(&:hashtag).map{|hashtag| "#" + hashtag.to_s }
+    hs = self.hashtags.map(&:hashtag).map { |hashtag| "#" + hashtag.to_s }
     tweet_words += hs
     if development_camp?
       tweet_words += ["#開発合宿", "#合宿"]

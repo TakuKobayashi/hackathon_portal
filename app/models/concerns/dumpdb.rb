@@ -1,10 +1,10 @@
 module Dumpdb
-  def self.to_dump_command(table_name: ,output_root_path:)
+  def self.to_dump_command(table_name:, output_root_path:)
     environment = Rails.env
     configuration = ActiveRecord::Base.configurations[environment]
-    database = Shellwords.escape(Regexp.escape(configuration['database'].to_s))
-    username = Shellwords.escape(Regexp.escape(configuration['username'].to_s))
-    password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))
+    database = Shellwords.escape(Regexp.escape(configuration["database"].to_s))
+    username = Shellwords.escape(Regexp.escape(configuration["username"].to_s))
+    password = Shellwords.escape(Regexp.escape(configuration["password"].to_s))
 
     commands = []
     if password.present?
@@ -22,7 +22,7 @@ module Dumpdb
     return commands.join(" ")
   end
 
-  def self.dump_table!(table_name: ,output_root_path:, is_export_log: true)
+  def self.dump_table!(table_name:, output_root_path:, is_export_log: true)
     command = to_dump_command(table_name: table_name, output_root_path: output_root_path)
     if is_export_log
       self.record_log(command: command)
@@ -37,7 +37,7 @@ module Dumpdb
     logger.extend ActiveSupport::Logger.broadcast(console)
     messages = [
       "Time:" + Time.current.to_s,
-      "dump command:" + command
+      "dump command:" + command,
     ]
     message = messages.join("\n")
     message << "\n\n"

@@ -21,7 +21,7 @@
 #  index_blogger_bots_on_date_number                          (date_number)
 #
 
-require 'test_helper'
+require "test_helper"
 
 class BloggerBotTest < ActiveSupport::TestCase
   # test "the truth" do

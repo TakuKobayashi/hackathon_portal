@@ -25,7 +25,7 @@ class Ai::TwitterResource < Ai::TweetResource
     crawl_ids = Log::Crawl.where("crawled_at > ?", 6.day.ago).where(from_type: "Ai::Hashtag").pluck(:from_id)
     events = []
     Event.preload(:hashtags).find_each do |event|
-      if event.hackathon_event? && event.hashtags.all?{|hashtag| !crawl_ids.include?(hashtag.id)}
+      if event.hackathon_event? && event.hashtags.all? { |hashtag| !crawl_ids.include?(hashtag.id) }
         events << event
       end
     end
@@ -48,7 +48,7 @@ class Ai::TwitterResource < Ai::TweetResource
               resource_user_id: tweet.user.id.to_s,
               resource_user_name: tweet.user.screen_name,
               body: Sanitizer.basic_sanitize(tweet.text),
-              published_at: tweet.created_at
+              published_at: tweet.created_at,
             )
             if tweet.in_reply_to_tweet_id.present?
               ai_resource.reply_id = tweet.in_reply_to_tweet_id
@@ -57,7 +57,7 @@ class Ai::TwitterResource < Ai::TweetResource
               ai_resource.quote_id = tweet.quoted_tweet.id
             end
             ai_resource.options = {
-              mentions: tweet.user_mentions.map{|m| {user_id: m.id, user_name: m.screen_name} }
+              mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } },
             }
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
@@ -76,7 +76,7 @@ class Ai::TwitterResource < Ai::TweetResource
   end
 
   def register_hashtags!(tweet:)
-    sanitized_hashtags = tweet.hashtags.map{|hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select{|hashtag_text| hashtag_text.present? }
+    sanitized_hashtags = tweet.hashtags.map { |hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select { |hashtag_text| hashtag_text.present? }
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     import_ai_hashtags = []
     sanitized_hashtags.each do |ht|
@@ -107,7 +107,7 @@ class Ai::TwitterResource < Ai::TweetResource
         attachments << attachment
       when Twitter::Media::Video
         attachment = self.attachments.new
-        max_bitrate_variant = m.video_info.variants.max_by{|variant| variant.bitrate.to_i }
+        max_bitrate_variant = m.video_info.variants.max_by { |variant| variant.bitrate.to_i }
         if max_bitrate_variant.present?
           attachment.category = :image
           attachment.src = m.media_url.to_s

@@ -11,5 +11,5 @@
 #
 
 class Ai::Hashtag < ApplicationRecord
-  has_many :resource_hashtags, class_name: 'Ai::ResourceHashtag', foreign_key: :hashtag_id
+  has_many :resource_hashtags, class_name: "Ai::ResourceHashtag", foreign_key: :hashtag_id
 end
