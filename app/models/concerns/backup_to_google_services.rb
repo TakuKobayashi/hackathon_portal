@@ -26,7 +26,7 @@ module BackupToGoogleServices
         name: BACKUP_ROOT_DIRECTORY_NAME,
         mime_type: "application/vnd.google-apps.folder",
       },
-                                        {
+      {
         fields: "*",
         supports_team_drives: true,
       })
