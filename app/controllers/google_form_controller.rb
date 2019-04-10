@@ -3,7 +3,7 @@ class GoogleFormController < ApplicationController
 
   def input
     input = JSON.parse(request.body.read, {:symbolize_names => true})
-    logger.info(input)
+    logger.warn(input)
     head(:ok)
   end
 end
