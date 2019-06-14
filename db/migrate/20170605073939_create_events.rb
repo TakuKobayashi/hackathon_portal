@@ -16,7 +16,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.float :lon
       t.integer :cost, null: false, default: 0
       t.integer :max_prize, null: false, default: 0
-      t.string :currency_unit, null: false, default: "円"
+      t.string :currency_unit, null: false, default: '円'
       t.string :owner_id
       t.string :owner_nickname
       t.string :owner_name
@@ -24,8 +24,8 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.integer :substitute_number, null: false, default: 0
       t.timestamps
     end
-    add_index :events, [:event_id, :type], unique: true
-    add_index :events, [:started_at, :ended_at]
+    add_index :events, %i[event_id type], unique: true
+    add_index :events, %i[started_at ended_at]
     add_index :events, :title
   end
 end

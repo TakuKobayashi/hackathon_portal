@@ -35,7 +35,7 @@
 #  index_events_on_title                    (title)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class EventTest < ActiveSupport::TestCase
   # test "the truth" do

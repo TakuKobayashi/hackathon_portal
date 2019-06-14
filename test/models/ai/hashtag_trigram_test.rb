@@ -12,7 +12,7 @@
 #  index_ai_hashtag_trigrams_on_trigram_id  (trigram_id)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Ai::HashtagTrigramTest < ActiveSupport::TestCase
   # test "the truth" do

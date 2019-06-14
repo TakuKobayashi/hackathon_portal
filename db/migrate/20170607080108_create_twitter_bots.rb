@@ -9,6 +9,6 @@ class CreateTwitterBots < ActiveRecord::Migration[5.0]
       t.timestamps
     end
     add_index :twitter_bots, :tweet_id
-    add_index :twitter_bots, [:from_type, :from_id]
+    add_index :twitter_bots, %i[from_type from_id]
   end
 end

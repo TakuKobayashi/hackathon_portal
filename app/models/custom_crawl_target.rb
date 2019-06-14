@@ -24,7 +24,7 @@
 #
 
 class CustomCrawlTarget < ApplicationRecord
-  enum parse_genre: [:html, :json, :xml]
+  enum parse_genre: %i[html json xml]
   serialize :query_hash, JSON
   serialize :filter_words, JSON
   serialize :correspond_column_filter_json, JSON

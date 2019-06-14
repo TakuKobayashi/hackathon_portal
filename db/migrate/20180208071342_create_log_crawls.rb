@@ -7,6 +7,6 @@ class CreateLogCrawls < ActiveRecord::Migration[5.1]
       t.timestamps
     end
     add_index :log_crawls, :crawled_at
-    add_index :log_crawls, [:from_type, :from_id]
+    add_index :log_crawls, %i[from_type from_id]
   end
 end

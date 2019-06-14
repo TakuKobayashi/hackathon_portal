@@ -12,6 +12,9 @@
 #
 
 class Ai::ResourceSentence < ApplicationRecord
-  belongs_to :tweet_resource, class_name: "Ai::TweetResource", foreign_key: :tweet_resource_id, required: false
-  has_many :trigrams, class_name: "Ai::Trigram", foreign_key: :sentence_id
+  belongs_to :tweet_resource,
+             class_name: 'Ai::TweetResource',
+             foreign_key: :tweet_resource_id,
+             required: false
+  has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :sentence_id
 end

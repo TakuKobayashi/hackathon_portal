@@ -2,7 +2,7 @@ class CreateCustomCrawlTargets < ActiveRecord::Migration[5.0]
   def change
     create_table :custom_crawl_targets do |t|
       t.integer :parse_genre, null: false, default: 0
-      t.string :title, null: false, default: ""
+      t.string :title, null: false, default: ''
       t.string :root_url, null: false
       t.string :path
       t.text :query_hash

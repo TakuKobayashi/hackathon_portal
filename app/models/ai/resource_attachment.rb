@@ -18,13 +18,12 @@
 class Ai::ResourceAttachment < ApplicationRecord
   serialize :options, JSON
 
-  enum category: {
-    website: 0,
-    image: 1,
-    video: 2,
-  }
+  enum category: { website: 0, image: 1, video: 2 }
 
-  belongs_to :tweet_resource, class_name: "Ai::TweetResource", foreign_key: :tweet_resource_id, required: false
+  belongs_to :tweet_resource,
+             class_name: 'Ai::TweetResource',
+             foreign_key: :tweet_resource_id,
+             required: false
 
   def src
     url = Addressable::URI.parse(self.origin_src)
@@ -45,11 +44,12 @@ class Ai::ResourceAttachment < ApplicationRecord
     pure_url = aurl.origin.to_s + aurl.path.to_s
     if pure_url.size > 255
       word_counter = 0
-      srces, other_pathes = pure_url.split("/").partition do |word|
-        word_counter = word_counter + word.size + 1
-        word_counter <= 255
-      end
-      return srces.join("/"), other_pathes.join("/")
+      srces, other_pathes =
+        pure_url.split('/').partition do |word|
+          word_counter = word_counter + word.size + 1
+          word_counter <= 255
+        end
+      return srces.join('/'), other_pathes.join('/')
     else
       return pure_url, aurl.query
     end

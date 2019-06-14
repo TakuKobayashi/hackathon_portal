@@ -35,7 +35,7 @@
 #  index_scaling_unity_events_on_title                    (title)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Scaling::UnityEventTest < ActiveSupport::TestCase
   # test "the truth" do

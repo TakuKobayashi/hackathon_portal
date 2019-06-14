@@ -35,52 +35,71 @@
 #  index_events_on_title                    (title)
 #
 
-require "google/apis/urlshortener_v1"
+require 'google/apis/urlshortener_v1'
 
 class Event < ApplicationRecord
   include EventCommon
 
   enum judge_state: {
-    before_judge: 0,
-    maybe_hackathon: 1,
-    maybe_development_camp: 2,
-    another_development_event: 3,
-    unknown: 9,
-  }
+         before_judge: 0,
+         maybe_hackathon: 1,
+         maybe_development_camp: 2,
+         another_development_event: 3,
+         unknown: 9
+       }
 
-  has_many :summaries, as: :resource, class_name: "Ai::ResourceSummary"
-  has_many :resource_hashtags, as: :resource, class_name: "Ai::ResourceHashtag"
+  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
+  has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
-  HACKATHON_KEYWORDS = ["hackathon", "ッカソン", "jam", "ジャム", "アイディアソン", "アイデアソン", "ideathon", "合宿"]
-  DEVELOPMENT_CAMP_KEYWORDS = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
+  HACKATHON_KEYWORDS = %w[
+    hackathon
+    ッカソン
+    jam
+    ジャム
+    アイディアソン
+    アイデアソン
+    ideathon
+    合宿
+  ]
+  DEVELOPMENT_CAMP_KEYWORDS = %w[
+    開発
+    プログラム
+    プログラミング
+    ハンズオン
+    勉強会
+    エンジニア
+    デザイナ
+    デザイン
+    ゲーム
+  ]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
-    "hackathon" => 2,
-    "ハッカソン" => 2,
-    "hack day" => 2,
-    "アイディアソン" => 2,
-    "アイデアソン" => 2,
-    "ideathon" => 2,
-    "ゲームジャム" => 2,
-    "gamejam" => 2,
-    "game jam" => 2,
-    "合宿" => 2,
-    "ハック" => 1,
+    'hackathon' => 2,
+    'ハッカソン' => 2,
+    'hack day' => 2,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 2,
+    'gamejam' => 2,
+    'game jam' => 2,
+    '合宿' => 2,
+    'ハック' => 1
   }
 
   HACKATHON_KEYWORD_CALENDER_INDEX = {
-    "hackathon" => 1,
-    "ハッカソン" => 1,
-    "hack day" => 1,
-    "アイディアソン" => 2,
-    "アイデアソン" => 2,
-    "ideathon" => 2,
-    "ゲームジャム" => 3,
-    "gamejam" => 3,
-    "game jam" => 3,
-    "合宿" => 4,
-    "ハック" => 1,
+    'hackathon' => 1,
+    'ハッカソン' => 1,
+    'hack day' => 1,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 3,
+    'gamejam' => 3,
+    'game jam' => 3,
+    '合宿' => 4,
+    'ハック' => 1
   }
 
   before_save do
@@ -100,9 +119,7 @@ class Event < ApplicationRecord
   end
 
   def hackathon_event?
-    if self.type == "SelfPostEvent"
-      return true
-    end
+    return true if self.type == 'SelfPostEvent'
     return hackathon_event_hit_keyword.present?
   end
 
@@ -111,12 +128,12 @@ class Event < ApplicationRecord
     Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
       sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
       appear_count += sanitized_title.scan(keyword).size * point * 3
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+      sanitized_description =
+        Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count += sanitized_description.scan(keyword).size * point
+
       if appear_count >= 6
-        if keyword == "合宿" && !development_camp?(keyword: keyword)
-          return nil
-        end
+        return nil if keyword == '合宿' && !development_camp?(keyword: keyword)
         return keyword
       end
     end
@@ -128,10 +145,14 @@ class Event < ApplicationRecord
     if keyword.present?
       check_word = keyword
     else
-      check_word = Event::HACKATHON_KEYWORDS.detect { |word| sanitized_title.include?(word) }
+      check_word =
+        Event::HACKATHON_KEYWORDS.detect do |word|
+          sanitized_title.include?(word)
+        end
     end
-    if check_word == "合宿"
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+    if check_word == '合宿'
+      sanitized_description =
+        Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count = 0
       Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
         appear_count += sanitized_title.scan(keyword).size * 2
@@ -144,16 +165,18 @@ class Event < ApplicationRecord
   end
 
   def generate_tweet_text
-    tweet_words = [self.title, self.short_url, self.started_at.strftime("%Y年%m月%d日")]
-    if self.limit_number.present?
-      tweet_words << "定員#{self.limit_number}人"
-    end
-    hs = self.hashtags.map(&:hashtag).map { |hashtag| "#" + hashtag.to_s }
+    tweet_words = [
+      self.title,
+      self.short_url,
+      self.started_at.strftime('%Y年%m月%d日')
+    ]
+    tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
+    hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
     if development_camp?
-      tweet_words += ["#開発合宿", "#合宿"]
+      tweet_words += %w[#開発合宿 #合宿]
     else
-      tweet_words += ["#hackathon", "#ハッカソン"]
+      tweet_words += %w[#hackathon #ハッカソン]
     end
     text_size = 0
     tweet_words.select! do |text|

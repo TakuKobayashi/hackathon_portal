@@ -6,7 +6,7 @@ class CreateEventCalendarBots < ActiveRecord::Migration[5.1]
       t.string :calender_event_id, null: false
       t.timestamps
     end
-    add_index :event_calendar_bots, [:from_type, :from_id]
+    add_index :event_calendar_bots, %i[from_type from_id]
     add_index :event_calendar_bots, :calender_event_id
   end
 end

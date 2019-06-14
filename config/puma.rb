@@ -1,9 +1,9 @@
 before_fork do
   PumaWorkerKiller.config do |config|
-    config.ram = 2048
+    config.ram = 2_048
     config.frequency = 5
     config.percent_usage = 0.8
-    config.rolling_restart_frequency = 12 * 3600
+    config.rolling_restart_frequency = 12 * 3_600
     config.reaper_status_logs = true
   end
   PumaWorkerKiller.start
@@ -14,16 +14,16 @@ end
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 #
-threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
+threads_count = ENV.fetch('RAILS_MAX_THREADS') { 5 }
 threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 #
-port ENV.fetch("PORT") { 3200 }
+port ENV.fetch('PORT') { 3_200 }
 
 # Specifies the `environment` that Puma will run in.
 #
-environment ENV.fetch("RAILS_ENV") { "development" }
+environment ENV.fetch('RAILS_ENV') { 'development' }
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together

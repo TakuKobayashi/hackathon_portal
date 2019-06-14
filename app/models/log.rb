@@ -1,5 +1,5 @@
 module Log
   def self.table_name_prefix
-    "log_"
+    'log_'
   end
 end

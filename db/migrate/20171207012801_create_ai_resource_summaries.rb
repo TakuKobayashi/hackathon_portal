@@ -7,6 +7,6 @@ class CreateAiResourceSummaries < ActiveRecord::Migration[5.1]
       t.integer :order_number, null: false, default: 0
     end
 
-    add_index :ai_resource_summaries, [:resource_type, :resource_id]
+    add_index :ai_resource_summaries, %i[resource_type resource_id]
   end
 end

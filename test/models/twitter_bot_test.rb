@@ -17,7 +17,7 @@
 #  index_twitter_bots_on_tweet_id               (tweet_id)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class TwitterBotTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -12,7 +12,7 @@ class CreateAiTweetResources < ActiveRecord::Migration[5.1]
       t.datetime :published_at, null: false
       t.text :options
     end
-    add_index :ai_tweet_resources, [:resource_id, :type], unique: true
+    add_index :ai_tweet_resources, %i[resource_id type], unique: true
     add_index :ai_tweet_resources, :published_at
   end
 end

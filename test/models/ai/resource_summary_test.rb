@@ -13,7 +13,7 @@
 #  index_ai_resource_summaries_on_resource_type_and_resource_id  (resource_type,resource_id)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Ai::ResourceSummaryTest < ActiveSupport::TestCase
   # test "the truth" do

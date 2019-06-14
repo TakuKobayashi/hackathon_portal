@@ -22,7 +22,7 @@
 #  index_admin_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 
-require "test_helper"
+require 'test_helper'
 
 class AdminUserTest < ActiveSupport::TestCase
   # test "the truth" do

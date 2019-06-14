@@ -6,7 +6,9 @@ class CreateAiResourceHashtags < ActiveRecord::Migration[5.1]
       t.integer :hashtag_id, null: false
     end
 
-    add_index :ai_resource_hashtags, [:resource_type, :resource_id, :hashtag_id], unique: true, name: "ai_resource_hashtags_unique_index"
+    add_index :ai_resource_hashtags,
+              %i[resource_type resource_id hashtag_id],
+              unique: true, name: 'ai_resource_hashtags_unique_index'
     add_index :ai_resource_hashtags, :hashtag_id
   end
 end

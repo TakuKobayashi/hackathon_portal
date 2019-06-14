@@ -22,10 +22,15 @@
 
 class Ai::TwitterResource < Ai::TweetResource
   def self.crawl_hashtag_tweets!
-    crawl_ids = Log::Crawl.where("crawled_at > ?", 6.day.ago).where(from_type: "Ai::Hashtag").pluck(:from_id)
+    crawl_ids =
+      Log::Crawl.where('crawled_at > ?', 6.day.ago).where(
+        from_type: 'Ai::Hashtag'
+      )
+        .pluck(:from_id)
     events = []
     Event.preload(:hashtags).find_each do |event|
-      if event.hackathon_event? && event.hashtags.all? { |hashtag| !crawl_ids.include?(hashtag.id) }
+      if event.hackathon_event? &&
+         event.hashtags.all? { |hashtag| !crawl_ids.include?(hashtag.id) }
         events << event
       end
     end
@@ -34,22 +39,30 @@ class Ai::TwitterResource < Ai::TweetResource
     hashtags.each do |hashtag|
       tweets = []
       begin
-        tweets = twitter_client.search("#" + hashtag.hashtag, lang: "ja")
-      rescue Twitter::Error::Forbidden, Twitter::Error::ServiceUnavailable, Twitter::Error::ClientError, Twitter::Error::ServerError, Twitter::Error::TooManyRequests => error
+        tweets = twitter_client.search('#' + hashtag.hashtag, lang: 'ja')
+      rescue Twitter::Error::Forbidden,
+             Twitter::Error::ServiceUnavailable,
+             Twitter::Error::ClientError,
+             Twitter::Error::ServerError,
+             Twitter::Error::TooManyRequests => error
         break
       end
       transaction do
-        rid_resources = Ai::TwitterResource.where(resource_id: tweets.map(&:id)).index_by(&:resource_id)
+        rid_resources =
+          Ai::TwitterResource.where(resource_id: tweets.map(&:id)).index_by(
+            &:resource_id
+          )
         tweets.each do |tweet|
           next if rid_resources[tweet.id.to_s].present?
           Ai::TwitterResource.transaction do
-            ai_resource = Ai::TwitterResource.new(
-              resource_id: tweet.id,
-              resource_user_id: tweet.user.id.to_s,
-              resource_user_name: tweet.user.screen_name,
-              body: Sanitizer.basic_sanitize(tweet.text),
-              published_at: tweet.created_at,
-            )
+            ai_resource =
+              Ai::TwitterResource.new(
+                resource_id: tweet.id,
+                resource_user_id: tweet.user.id.to_s,
+                resource_user_name: tweet.user.screen_name,
+                body: Sanitizer.basic_sanitize(tweet.text),
+                published_at: tweet.created_at
+              )
             if tweet.in_reply_to_tweet_id.present?
               ai_resource.reply_id = tweet.in_reply_to_tweet_id
             end
@@ -57,7 +70,10 @@ class Ai::TwitterResource < Ai::TweetResource
               ai_resource.quote_id = tweet.quoted_tweet.id
             end
             ai_resource.options = {
-              mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } },
+              mentions:
+                tweet.user_mentions.map do |m|
+                  { user_id: m.id, user_name: m.screen_name }
+                end
             }
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
@@ -76,8 +92,14 @@ class Ai::TwitterResource < Ai::TweetResource
   end
 
   def register_hashtags!(tweet:)
-    sanitized_hashtags = tweet.hashtags.map { |hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select { |hashtag_text| hashtag_text.present? }
-    ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
+    sanitized_hashtags =
+      tweet.hashtags.map do |hashtag|
+        Sanitizer.basic_sanitize(hashtag.text).strip
+      end.select(
+        &:present?
+      )
+    ai_hashtags =
+      Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     import_ai_hashtags = []
     sanitized_hashtags.each do |ht|
       if ai_hashtags[ht].present?
@@ -88,7 +110,10 @@ class Ai::TwitterResource < Ai::TweetResource
       end
     end
     if import_ai_hashtags.present?
-      Ai::ResourceHashtag.import!(import_ai_hashtags, on_duplicate_key_update: [:hashtag_id])
+      Ai::ResourceHashtag.import!(
+        import_ai_hashtags,
+        on_duplicate_key_update: %i[hashtag_id]
+      )
     end
   end
 
@@ -107,7 +132,8 @@ class Ai::TwitterResource < Ai::TweetResource
         attachments << attachment
       when Twitter::Media::Video
         attachment = self.attachments.new
-        max_bitrate_variant = m.video_info.variants.max_by { |variant| variant.bitrate.to_i }
+        max_bitrate_variant =
+          m.video_info.variants.max_by { |variant| variant.bitrate.to_i }
         if max_bitrate_variant.present?
           attachment.category = :image
           attachment.src = m.media_url.to_s
@@ -119,7 +145,10 @@ class Ai::TwitterResource < Ai::TweetResource
       end
     end
     if attachments.present?
-      Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: [:options])
+      Ai::ResourceAttachment.import!(
+        attachments,
+        on_duplicate_key_update: %i[options]
+      )
     end
   end
 end

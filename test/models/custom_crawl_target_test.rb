@@ -23,7 +23,7 @@
 #  index_custom_crawl_targets_on_root_url  (root_url)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class CustomCrawlTargetTest < ActiveSupport::TestCase
   # test "the truth" do

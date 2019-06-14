@@ -20,7 +20,7 @@
 #  index_ai_tweet_resources_on_resource_id_and_type  (resource_id,type) UNIQUE
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Ai::TweetResourceTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -7,7 +7,7 @@ class CreateAiAppearWords < ActiveRecord::Migration[5.1]
       t.integer :appear_count, null: false, default: 0
       t.integer :sentence_count, null: false, default: 0
     end
-    add_index :ai_appear_words, [:word, :part], unique: true
+    add_index :ai_appear_words, %i[word part], unique: true
     add_index :ai_appear_words, :reading
   end
 end

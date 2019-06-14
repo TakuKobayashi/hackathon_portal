@@ -23,11 +23,13 @@
 class Ai::TweetResource < ApplicationRecord
   serialize :options, JSON
 
-  has_many :summaries, as: :resource, class_name: "Ai::ResourceSummary"
-  has_many :hashtags, as: :resource, class_name: "Ai::ResourceHashtag"
-  has_many :trigrams, class_name: "Ai::Trigram", foreign_key: :tweet_resource_id
-  has_many :sentences, class_name: "Ai::ResourceSentence", foreign_key: :tweet_resource_id
-  has_many :attachments, class_name: "Ai::ResourceAttachment", foreign_key: :tweet_resource_id
+  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
+  has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
+  has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :tweet_resource_id
+  has_many :sentences,
+           class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
+  has_many :attachments,
+           class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
 
   def plane_text_body
     sanitized_body = Sanitizer.delete_urls(self.body)
@@ -35,9 +37,7 @@ class Ai::TweetResource < ApplicationRecord
   end
 
   def regist_split_sentence!
-    if self.sentences.present?
-      return self.sentences
-    end
+    return self.sentences if self.sentences.present?
     import_sentences = []
     split_sentences = plane_text_body.split(/[。．.？！!?\n\r]/)
     transaction do
@@ -51,22 +51,26 @@ class Ai::TweetResource < ApplicationRecord
   end
 
   def split_and_sanitize_morphological_analysis
-    xml_hash = RequestParser.request_and_parse_xml(
-      url: "https://jlp.yahooapis.jp/MAService/V1/parse",
-      params: {
-        appid: ENV.fetch("YAHOO_API_CLIENT_ID", ""),
-        sentence: plane_text_body,
-      },
-      options: { :follow_redirect => true },
-    )
-    words = xml_hash["ma_result"].first["word_list"].first["word"].map { |hash| hash["surface"] }.flatten.select { |word| word.present? }
+    xml_hash =
+      RequestParser.request_and_parse_xml(
+        url: 'https://jlp.yahooapis.jp/MAService/V1/parse',
+        params: {
+          appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''), sentence: plane_text_body
+        },
+        options: { follow_redirect: true }
+      )
+    words =
+      xml_hash['ma_result'].first['word_list'].first['word'].map do |hash|
+        hash['surface']
+      end.flatten
+        .select(
+        &:present?
+      )
     return words
   end
 
   def regist_split_trigrams!(words: [])
-    if self.trigrams.present?
-      return self.trigrams
-    end
+    return self.trigrams if self.trigrams.present?
     import_trigrams = []
     transaction do
       words.each_cons(3).with_index do |emu_cons_words, index|
@@ -80,7 +84,11 @@ class Ai::TweetResource < ApplicationRecord
           trigram = self.trigrams.new(position_genre: :general)
         end
         if trigram.present?
-          trigram.update!(first_word: cons_words[0], second_word: cons_words[1], third_word: cons_words[2])
+          trigram.update!(
+            first_word: cons_words[0],
+            second_word: cons_words[1],
+            third_word: cons_words[2]
+          )
           import_trigrams << trigram
         end
       end

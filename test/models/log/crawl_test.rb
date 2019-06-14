@@ -15,7 +15,7 @@
 #  index_log_crawls_on_from_type_and_from_id  (from_type,from_id)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Log::CrawlTest < ActiveSupport::TestCase
   # test "the truth" do

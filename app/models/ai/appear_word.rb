@@ -15,5 +15,4 @@
 #  index_ai_appear_words_on_word_and_part  (word,part) UNIQUE
 #
 
-class Ai::AppearWord < ApplicationRecord
-end
+class Ai::AppearWord < ApplicationRecord; end

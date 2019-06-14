@@ -21,7 +21,7 @@
 #  index_qiita_bots_on_season_number  (season_number)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class QiitaBotTest < ActiveSupport::TestCase
   # test "the truth" do

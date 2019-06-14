@@ -10,7 +10,7 @@
 #  index_ai_hashtags_on_hashtag  (hashtag)
 #
 
-require "test_helper"
+require 'test_helper'
 
 class Ai::HashtagTest < ActiveSupport::TestCase
   # test "the truth" do
