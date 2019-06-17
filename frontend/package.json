@@ -2,11 +2,13 @@
   "name": "hackathon_portal",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@babel/core": "7.4.3",
     "@svgr/webpack": "4.1.0",
     "@typescript-eslint/eslint-plugin": "1.6.0",
     "@typescript-eslint/parser": "1.6.0",
+    "axios": "^0.19.0",
     "babel-eslint": "10.0.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.5",
@@ -42,6 +44,7 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
+    "purecss": "^1.0.0",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
     "react-dev-utils": "^9.0.1",
@@ -127,5 +130,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
   }
 }
