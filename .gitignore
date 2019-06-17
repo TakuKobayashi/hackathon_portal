@@ -37,3 +37,5 @@ public/assets/
 
 .byebug_history
 .gitconfig
+
+node_modules/
