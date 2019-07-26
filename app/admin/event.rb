@@ -12,9 +12,7 @@ ActiveAdmin.register Event do
     column(:url) { |a| link_to(a.url, a.url) }
     column('開催期間') do |a|
       message = a.started_at.strftime('%Y年%m月%d日 %H:%M') + ' ~ '
-      if a.ended_at.present?
-        message += a.ended_at.strftime('%Y年%m月%d日 %H:%M')
-      end
+      message += a.ended_at.strftime('%Y年%m月%d日 %H:%M') if a.ended_at.present?
       message
     end
     column(:limit_number)
@@ -35,17 +33,11 @@ ActiveAdmin.register Event do
       f.input :url, as: :string
       li do
         label :started_at
-        f.datetime_select(
-          :started_at,
-          include_seconds: false, default: 7.day.since.change(hour: 10)
-        )
+        f.datetime_select(:started_at, include_seconds: false, default: 7.day.since.change(hour: 10))
       end
       li do
         label :ended_at
-        f.datetime_select(
-          :ended_at,
-          include_seconds: false, default: 8.day.since.change(hour: 20)
-        )
+        f.datetime_select(:ended_at, include_seconds: false, default: 8.day.since.change(hour: 20))
       end
       f.input :description, as: :text
       f.input :limit_number, as: :number
@@ -68,16 +60,9 @@ ActiveAdmin.register Event do
     event.event_id = SecureRandom.hex if event.event_id.blank?
     event.build_location_data
     event.save!
-    event.import_hashtags!(
-      hashtag_strings: hashtags_attr.values.map(&:values).flatten
-    )
-    if (Time.current..1.year.since).cover?(event.started_at) &&
-       event.hackathon_event?
-      TwitterBot.tweet!(
-        text: event.generate_tweet_text,
-        from: event,
-        options: { lat: event.lat, long: event.lon }
-      )
+    event.import_hashtags!(hashtag_strings: hashtags_attr.values.map(&:values).flatten)
+    if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
+      TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: { lat: event.lat, long: event.lon })
     end
     redirect_to({ action: :index }, notice: 'event is created!!')
   end

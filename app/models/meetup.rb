@@ -43,26 +43,15 @@ class Meetup < Event
   def self.find_event(keywords: [])
     return RequestParser.request_and_parse_json(
       url: MEETUP_SEARCH_URL,
-      params: {
-        key: ENV.fetch('MEETUP_API_KEY', ''),
-        text: keywords.join('|'),
-        sign: true,
-        page: PAGE_PER
-      },
+      params: { key: ENV.fetch('MEETUP_API_KEY', ''), text: keywords.join('|'), sign: true, page: PAGE_PER },
       options: { follow_redirect: true }
     )
   end
 
   def self.import_events!
-    update_columns =
-      Meetup.column_names - %w[id type shortener_url event_id created_at]
-    events_response =
-      Meetup.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
-    current_events =
-      Meetup.where(
-        event_id: events_response['events'].map { |res| res['id'] }.compact
-      )
-        .index_by(&:event_id)
+    update_columns = Meetup.column_names - %w[id type shortener_url event_id created_at]
+    events_response = Meetup.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    current_events = Meetup.where(event_id: events_response['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
     transaction do
       events_response['events'].each do |res|
         if current_events[res['id'].to_s].present?
@@ -103,9 +92,7 @@ class Meetup < Event
             }
           )
         meetup_event.save!
-        meetup_event.import_hashtags!(
-          hashtag_strings: meetup_event.search_hashtags
-        )
+        meetup_event.import_hashtags!(hashtag_strings: meetup_event.search_hashtags)
       end
     end
   end

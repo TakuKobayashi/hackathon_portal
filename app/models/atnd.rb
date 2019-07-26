@@ -41,8 +41,7 @@ class Atnd < Event
 
   def self.find_event(keywords:, start: 1)
     return RequestParser.request_and_parse_json(
-      url: ATND_API_URL,
-      params: { keyword_or: keywords, count: 100, start: start, format: :json }
+      url: ATND_API_URL, params: { keyword_or: keywords, count: 100, start: start, format: :json }
     )
   end
 
@@ -50,19 +49,9 @@ class Atnd < Event
     start = 1
     while events_response['events'].present?
       begin
-        events_response =
-          Atnd.find_event(
-            keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], start: start
-          )
+        events_response = Atnd.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], start: start)
         start += events_response['results_returned']
-        current_events =
-          Atnd.where(
-            event_id:
-              events_response['events'].map do |res|
-                res['event']['event_id']
-              end.compact
-          )
-            .index_by(&:event_id)
+        current_events = Atnd.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
         transaction do
           events_response['events'].each do |res|
             event = res['event']
@@ -75,8 +64,7 @@ class Atnd < Event
               attrs: {
                 title: event['title'].to_s,
                 url: ATND_EVENTPAGE_URL + event['event_id'].to_s,
-                description:
-                  Sanitizer.basic_sanitize(event['description'].to_s),
+                description: Sanitizer.basic_sanitize(event['description'].to_s),
                 limit_number: event['limit'],
                 address: event['address'].to_s,
                 place: event['place'].to_s,
@@ -94,19 +82,9 @@ class Atnd < Event
               }
             )
             atnd_event.save!
-            dom =
-              RequestParser.request_and_parse_html(
-                url: atnd_event.url, options: { follow_redirect: true }
-              )
-            hashtag_dom =
-              dom.css('dl.clearfix').detect do |label|
-                label.text.include?('ハッシュタグ')
-              end
-            if hashtag_dom.present?
-              atnd_event.import_hashtags!(
-                hashtag_strings: hashtag_dom.css('a').text.strip.split(/\s/)
-              )
-            end
+            dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: { follow_redirect: true })
+            hashtag_dom = dom.css('dl.clearfix').detect { |label| label.text.include?('ハッシュタグ') }
+            atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css('a').text.strip.split(/\s/)) if hashtag_dom.present?
           end
         end
       end

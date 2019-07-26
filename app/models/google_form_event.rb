@@ -39,8 +39,7 @@ class GoogleFormEvent < Event
   before_create do
     if self.url.present? && self.description.blank?
       doc = RequestParser.request_and_parse_html(url: self.url)
-      sanitized_html =
-        Sanitizer.delete_javascript_in_html(doc.css('body').children.to_html)
+      sanitized_html = Sanitizer.delete_javascript_in_html(doc.css('body').children.to_html)
       sanitized_html = Sanitizer.delete_html_comment(sanitized_html)
       sanitized_html = Sanitizer.delete_empty_words(sanitized_html)
       self.description = Sanitizer.basic_sanitize(sanitized_html).strip

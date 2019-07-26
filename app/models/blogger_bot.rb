@@ -32,41 +32,23 @@ class BloggerBot < ApplicationRecord
     service = BackupToGoogleServices.get_google_blogger_service
     blogger_blog = service.get_blog_by_url(BloggerBot::BLOGGER_BLOG_URL)
 
-    events_group =
-      events.group_by { |e| e.started_at.year * 10_000 + e.started_at.month }
+    events_group = events.group_by { |e| e.started_at.year * 10_000 + e.started_at.month }
     events_group.each do |date_number, event_arr|
-      blogger_bot =
-        BloggerBot.find_or_initialize_by(
-          date_number: date_number, blogger_blog_id: blogger_blog.id
-        )
+      blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
       blogger_bot.event_type = event_type
-      blogger_bot.event_ids =
-        [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
+      blogger_bot.event_ids = [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
       before_events, after_events =
-        event_type.classify.constantize.where(id: blogger_bot.event_ids).order(
-          'started_at ASC'
-        )
-          .partition do |e|
-          if e.ended_at.present?
-            e.ended_at > Time.current
-          else
-            (e.started_at + 2.day) > Time.current
-          end
+        event_type.classify.constantize.where(id: blogger_bot.event_ids).order('started_at ASC').partition do |e|
+          e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
         end
       start_month = date_number % 10_000
       year_number = (date_number / 10_000).to_i
-      blogger_bot.title =
-        "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
+      blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
       blogger_bot.body =
         action_view_renderer.render(
           template: 'blogger/publish',
           format: 'html',
-          locals: {
-            before_events: before_events,
-            after_events: after_events,
-            year_number: year_number,
-            start_month: start_month
-          }
+          locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
         )
       blogger_bot.update_blogger!(google_api_service: service)
     end
@@ -78,15 +60,9 @@ class BloggerBot < ApplicationRecord
     blogger_post.title = self.title
     blogger_post.content = self.body
     if self.new_record?
-      result_blogger_post =
-        google_api_service.insert_post(self.blogger_blog_id, blogger_post)
+      result_blogger_post = google_api_service.insert_post(self.blogger_blog_id, blogger_post)
     else
-      result_blogger_post =
-        google_api_service.patch_post(
-          self.blogger_blog_id,
-          self.blogger_post_id,
-          blogger_post
-        )
+      result_blogger_post = google_api_service.patch_post(self.blogger_blog_id, self.blogger_post_id, blogger_post)
     end
     self.update!(
       {

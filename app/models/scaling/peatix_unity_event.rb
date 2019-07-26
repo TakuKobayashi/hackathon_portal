@@ -52,21 +52,13 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
 
   def self.import_events!
     page = 1
-    update_columns =
-      self.column_names - %w[id type shortener_url event_id created_at]
+    update_columns = self.column_names - %w[id type shortener_url event_id created_at]
     while json_data['events'].present?
       begin
-        events_response =
-          self.find_event(
-            keywords: Scaling::UnityEvent::UNITY_KEYWORDS, page: page
-          )
+        events_response = self.find_event(keywords: Scaling::UnityEvent::UNITY_KEYWORDS, page: page)
         json_data = events_response['json_data']
         page += 1
-        current_events =
-          Scaling::PeatixUnityEvent.where(
-            event_id: json_data['events'].map { |res| res['id'] }.compact
-          )
-            .index_by(&:event_id)
+        current_events = Scaling::PeatixUnityEvent.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
         transaction do
           json_data['events'].each do |res|
             tracking_url = Addressable::URI.parse(res['tracking_url'])
@@ -74,8 +66,7 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
             if current_events[res['id'].to_s].present?
               peatix_event = current_events[res['id'].to_s]
             else
-              peatix_event =
-                Scaling::PeatixUnityEvent.new(event_id: res['id'].to_s)
+              peatix_event = Scaling::PeatixUnityEvent.new(event_id: res['id'].to_s)
             end
             peatix_event.merge_event_attributes(
               attrs: {
@@ -94,27 +85,16 @@ class Scaling::PeatixUnityEvent < Scaling::UnityEvent
                 started_at: res['datetime'].to_s
               }
             )
-            dom =
-              RequestParser.request_and_parse_html(
-                url: peatix_event.url, options: { follow_redirect: true }
-              )
-            peatix_event.description =
-              Sanitizer.basic_sanitize(
-                dom.css('#field-event-description').to_html
-              )
-            price_dom =
-              dom.css("meta[@itemprop = 'price']").min_by do |price_dom|
-                price_dom['content'].to_i
-              end
+            dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: { follow_redirect: true })
+            peatix_event.description = Sanitizer.basic_sanitize(dom.css('#field-event-description').to_html)
+            price_dom = dom.css("meta[@itemprop = 'price']").min_by { |price_dom| price_dom['content'].to_i }
             if price_dom.present?
               peatix_event.cost = price_dom['content'].to_i
             else
               peatix_event.cost = 0
             end
             peatix_event.save!
-            peatix_event.import_hashtags!(
-              hashtag_strings: peatix_event.search_hashtags
-            )
+            peatix_event.import_hashtags!(hashtag_strings: peatix_event.search_hashtags)
             sleep 1
           end
         end

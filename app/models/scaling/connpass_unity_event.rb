@@ -39,10 +39,7 @@ class Scaling::ConnpassUnityEvent < Scaling::UnityEvent
   CONNPASS_URL = 'https://connpass.com/api/v1/event/'
 
   def self.find_event(keywords:, start: 1)
-    return RequestParser.request_and_parse_json(
-      url: CONNPASS_URL,
-      params: { keyword_or: keywords, count: 100, start: start, order: 1 }
-    )
+    return RequestParser.request_and_parse_json(url: CONNPASS_URL, params: { keyword_or: keywords, count: 100, start: start, order: 1 })
   end
 
   def self.import_events!
@@ -50,27 +47,17 @@ class Scaling::ConnpassUnityEvent < Scaling::UnityEvent
     start = 1
     while start < results_available
       begin
-        events_response =
-          self.find_event(
-            keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], start: start
-          )
-        if events_response['results_available'].present?
-          results_available = events_response['results_available']
-        end
+        events_response = self.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], start: start)
+        results_available = events_response['results_available'] if events_response['results_available'].present?
         start += events_response['results_returned'].to_i
         res_events = events_response['events'] || []
-        current_events =
-          Scaling::ConnpassUnityEvent.where(
-            event_id: res_events.map { |res| res['event_id'] }.compact
-          )
-            .index_by(&:event_id)
+        current_events = Scaling::ConnpassUnityEvent.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
         transaction do
           res_events.each do |res|
             if current_events[res['event_id'].to_s].present?
               connpass_event = current_events[res['event_id'].to_s]
             else
-              connpass_event =
-                Scaling::ConnpassUnityEvent.new(event_id: res['event_id'].to_s)
+              connpass_event = Scaling::ConnpassUnityEvent.new(event_id: res['event_id'].to_s)
             end
             connpass_event.merge_event_attributes(
               attrs: {
@@ -95,9 +82,7 @@ class Scaling::ConnpassUnityEvent < Scaling::UnityEvent
               }
             )
             connpass_event.save!
-            connpass_event.import_hashtags!(
-              hashtag_strings: res['hash_tag'].to_s.split(/\s/)
-            )
+            connpass_event.import_hashtags!(hashtag_strings: res['hash_tag'].to_s.split(/\s/))
             sleep 1
           end
         end

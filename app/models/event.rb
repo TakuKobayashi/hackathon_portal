@@ -40,40 +40,15 @@ require 'google/apis/urlshortener_v1'
 class Event < ApplicationRecord
   include EventCommon
 
-  enum judge_state: {
-         before_judge: 0,
-         maybe_hackathon: 1,
-         maybe_development_camp: 2,
-         another_development_event: 3,
-         unknown: 9
-       }
+  enum judge_state: { before_judge: 0, maybe_hackathon: 1, maybe_development_camp: 2, another_development_event: 3, unknown: 9 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
-  HACKATHON_KEYWORDS = %w[
-    hackathon
-    ッカソン
-    jam
-    ジャム
-    アイディアソン
-    アイデアソン
-    ideathon
-    合宿
-  ]
-  DEVELOPMENT_CAMP_KEYWORDS = %w[
-    開発
-    プログラム
-    プログラミング
-    ハンズオン
-    勉強会
-    エンジニア
-    デザイナ
-    デザイン
-    ゲーム
-  ]
+  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
+  DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
     'hackathon' => 2,
     'ハッカソン' => 2,
@@ -128,8 +103,7 @@ class Event < ApplicationRecord
     Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
       sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
       appear_count += sanitized_title.scan(keyword).size * point * 3
-      sanitized_description =
-        Sanitizer.basic_sanitize(self.description.to_s).downcase
+      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count += sanitized_description.scan(keyword).size * point
 
       if appear_count >= 6
@@ -145,14 +119,10 @@ class Event < ApplicationRecord
     if keyword.present?
       check_word = keyword
     else
-      check_word =
-        Event::HACKATHON_KEYWORDS.detect do |word|
-          sanitized_title.include?(word)
-        end
+      check_word = Event::HACKATHON_KEYWORDS.detect { |word| sanitized_title.include?(word) }
     end
     if check_word == '合宿'
-      sanitized_description =
-        Sanitizer.basic_sanitize(self.description.to_s).downcase
+      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
       appear_count = 0
       Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
         appear_count += sanitized_title.scan(keyword).size * 2
@@ -165,11 +135,7 @@ class Event < ApplicationRecord
   end
 
   def generate_tweet_text
-    tweet_words = [
-      self.title,
-      self.short_url,
-      self.started_at.strftime('%Y年%m月%d日')
-    ]
+    tweet_words = [self.title, self.short_url, self.started_at.strftime('%Y年%m月%d日')]
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs

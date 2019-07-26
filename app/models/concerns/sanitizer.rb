@@ -18,9 +18,7 @@ module Sanitizer
   end
 
   def self.scan_hash_tags(text)
-    return text.scan(/[#＃][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー]+/).map(
-      &:strip
-    )
+    return text.scan(/[#＃][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー]+/).map(&:strip)
   end
 
   def self.delete_hashtag_and_replyes(text)
@@ -28,10 +26,7 @@ module Sanitizer
   end
 
   def self.delete_urls(text)
-    return text.gsub(
-      %r{(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)},
-      ''
-    )
+    return text.gsub(%r{(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)}, '')
   end
 
   def self.delete_sharp(text)
@@ -42,13 +37,7 @@ module Sanitizer
     #全角半角をいい感じに整える
     sanitized_word = Charwidth.normalize(text)
     #絵文字を除去
-    sanitized_word =
-      sanitized_word.encode(
-        'SJIS',
-        'UTF-8',
-        invalid: :replace, undef: :replace, replace: ''
-      )
-        .encode('UTF-8')
+    sanitized_word = sanitized_word.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     # 余分な空欄を除去
     sanitized_word.strip!
     return sanitized_word

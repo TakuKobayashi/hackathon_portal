@@ -39,39 +39,29 @@ class Scaling::DoorkeeperUnityEvent < Scaling::UnityEvent
   DOORKEEPER_URL = 'https://api.doorkeeper.jp/events'
 
   def self.find_event(keywords:, page: 1)
-    return RequestParser.request_and_parse_json(
-      url: DOORKEEPER_URL, params: { q: keywords.join('|'), page: page }
-    )
+    return RequestParser.request_and_parse_json(url: DOORKEEPER_URL, params: { q: keywords.join('|'), page: page })
   end
 
   def self.import_events!
     page = 1
     while events_response.present?
       begin
-        events_response =
-          self.find_event(
-            keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page
-          )
+        events_response = self.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page)
         current_events =
-          Scaling::DoorkeeperUnityEvent.where(
-            event_id: events_response.map { |res| res['event']['id'] }.compact
-          )
-            .index_by(&:event_id)
+          Scaling::DoorkeeperUnityEvent.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
         transaction do
           events_response.each do |res|
             event = res['event']
             if current_events[event['id'].to_s].present?
               doorkeeper_event = current_events[event['id'].to_s]
             else
-              doorkeeper_event =
-                Scaling::DoorkeeperUnityEvent.new(event_id: event['id'].to_s)
+              doorkeeper_event = Scaling::DoorkeeperUnityEvent.new(event_id: event['id'].to_s)
             end
             doorkeeper_event.merge_event_attributes(
               attrs: {
                 title: event['title'].to_s,
                 url: event['public_url'].to_s,
-                description:
-                  Sanitizer.basic_sanitize(event['description'].to_s),
+                description: Sanitizer.basic_sanitize(event['description'].to_s),
                 limit_number: event['ticket_limit'],
                 address: event['address'].to_s,
                 place: event['venue_name'].to_s,
@@ -88,9 +78,7 @@ class Scaling::DoorkeeperUnityEvent < Scaling::UnityEvent
               }
             )
             doorkeeper_event.save!
-            doorkeeper_event.import_hashtags!(
-              hashtag_strings: doorkeeper_event.search_hashtags
-            )
+            doorkeeper_event.import_hashtags!(hashtag_strings: doorkeeper_event.search_hashtags)
           end
         end
         page += 1

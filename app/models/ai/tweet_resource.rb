@@ -26,10 +26,8 @@ class Ai::TweetResource < ApplicationRecord
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :trigrams, class_name: 'Ai::Trigram', foreign_key: :tweet_resource_id
-  has_many :sentences,
-           class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
-  has_many :attachments,
-           class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
+  has_many :sentences, class_name: 'Ai::ResourceSentence', foreign_key: :tweet_resource_id
+  has_many :attachments, class_name: 'Ai::ResourceAttachment', foreign_key: :tweet_resource_id
 
   def plane_text_body
     sanitized_body = Sanitizer.delete_urls(self.body)
@@ -40,13 +38,7 @@ class Ai::TweetResource < ApplicationRecord
     return self.sentences if self.sentences.present?
     import_sentences = []
     split_sentences = plane_text_body.split(/[。．.？！!?\n\r]/)
-    transaction do
-      split_sentences.each do |sentence|
-        if sentence.present?
-          import_sentences << self.sentences.create!(body: sentence)
-        end
-      end
-    end
+    transaction { split_sentences.each { |sentence| import_sentences << self.sentences.create!(body: sentence) if sentence.present? } }
     return import_sentences
   end
 
@@ -54,18 +46,10 @@ class Ai::TweetResource < ApplicationRecord
     xml_hash =
       RequestParser.request_and_parse_xml(
         url: 'https://jlp.yahooapis.jp/MAService/V1/parse',
-        params: {
-          appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''), sentence: plane_text_body
-        },
+        params: { appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''), sentence: plane_text_body },
         options: { follow_redirect: true }
       )
-    words =
-      xml_hash['ma_result'].first['word_list'].first['word'].map do |hash|
-        hash['surface']
-      end.flatten
-        .select(
-        &:present?
-      )
+    words = xml_hash['ma_result'].first['word_list'].first['word'].map { |hash| hash['surface'] }.flatten.select(&:present?)
     return words
   end
 
@@ -84,11 +68,7 @@ class Ai::TweetResource < ApplicationRecord
           trigram = self.trigrams.new(position_genre: :general)
         end
         if trigram.present?
-          trigram.update!(
-            first_word: cons_words[0],
-            second_word: cons_words[1],
-            third_word: cons_words[2]
-          )
+          trigram.update!(first_word: cons_words[0], second_word: cons_words[1], third_word: cons_words[2])
           import_trigrams << trigram
         end
       end

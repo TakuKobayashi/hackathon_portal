@@ -13,12 +13,6 @@
 #
 
 class Ai::HashtagTrigram < ApplicationRecord
-  belongs_to :trigram,
-             class_name: 'Ai::Trigram',
-             foreign_key: :trigram_id,
-             required: false
-  belongs_to :hashtag,
-             class_name: 'Ai::Hashtag',
-             foreign_key: :hashtag_id,
-             required: false
+  belongs_to :trigram, class_name: 'Ai::Trigram', foreign_key: :trigram_id, required: false
+  belongs_to :hashtag, class_name: 'Ai::Hashtag', foreign_key: :hashtag_id, required: false
 end

@@ -52,21 +52,13 @@ class Peatix < Event
 
   def self.import_events!
     page = 1
-    update_columns =
-      Peatix.column_names - %w[id type shortener_url event_id created_at]
+    update_columns = Peatix.column_names - %w[id type shortener_url event_id created_at]
     while json_data['events'].present?
       begin
-        events_response =
-          Peatix.find_event(
-            keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page
-          )
+        events_response = Peatix.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page)
         json_data = events_response['json_data']
         page += 1
-        current_events =
-          Peatix.where(
-            event_id: json_data['events'].map { |res| res['id'] }.compact
-          )
-            .index_by(&:event_id)
+        current_events = Peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
         transaction do
           json_data['events'].each do |res|
             tracking_url = Addressable::URI.parse(res['tracking_url'])
@@ -93,27 +85,16 @@ class Peatix < Event
                 started_at: res['datetime'].to_s
               }
             )
-            dom =
-              RequestParser.request_and_parse_html(
-                url: peatix_event.url, options: { follow_redirect: true }
-              )
-            peatix_event.description =
-              Sanitizer.basic_sanitize(
-                dom.css('#field-event-description').to_html
-              )
-            price_dom =
-              dom.css("meta[@itemprop = 'price']").min_by do |price_dom|
-                price_dom['content'].to_i
-              end
+            dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: { follow_redirect: true })
+            peatix_event.description = Sanitizer.basic_sanitize(dom.css('#field-event-description').to_html)
+            price_dom = dom.css("meta[@itemprop = 'price']").min_by { |price_dom| price_dom['content'].to_i }
             if price_dom.present?
               peatix_event.cost = price_dom['content'].to_i
             else
               peatix_event.cost = 0
             end
             peatix_event.save!
-            peatix_event.import_hashtags!(
-              hashtag_strings: peatix_event.search_hashtags
-            )
+            peatix_event.import_hashtags!(hashtag_strings: peatix_event.search_hashtags)
             sleep 1
           end
         end

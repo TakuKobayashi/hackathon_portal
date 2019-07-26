@@ -20,10 +20,7 @@ class Ai::ResourceAttachment < ApplicationRecord
 
   enum category: { website: 0, image: 1, video: 2 }
 
-  belongs_to :tweet_resource,
-             class_name: 'Ai::TweetResource',
-             foreign_key: :tweet_resource_id,
-             required: false
+  belongs_to :tweet_resource, class_name: 'Ai::TweetResource', foreign_key: :tweet_resource_id, required: false
 
   def src
     url = Addressable::URI.parse(self.origin_src)

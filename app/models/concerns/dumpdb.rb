@@ -21,10 +21,7 @@ module Dumpdb
   end
 
   def self.dump_table!(table_name:, output_root_path:, is_export_log: true)
-    command =
-      to_dump_command(
-        table_name: table_name, output_root_path: output_root_path
-      )
+    command = to_dump_command(table_name: table_name, output_root_path: output_root_path)
     self.record_log(command: command) if is_export_log
     system(command)
     return [output_root_path, "#{table_name}.sql"].join('/')

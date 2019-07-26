@@ -31,18 +31,10 @@ class QiitaBot < ApplicationRecord
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_type = event_type
-      qiita_bot.event_ids =
-        [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
+      qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
       before_events_from_qiita, after_events_from_qiita =
-        event_type.classify.constantize.where(id: qiita_bot.event_ids).order(
-          'started_at ASC'
-        )
-          .partition do |e|
-          if e.ended_at.present?
-            e.ended_at > Time.current
-          else
-            (e.started_at + 2.day) > Time.current
-          end
+        event_type.classify.constantize.where(id: qiita_bot.event_ids).order('started_at ASC').partition do |e|
+          e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
         end
 
       month_range = date_number % 10_000
@@ -55,27 +47,16 @@ class QiitaBot < ApplicationRecord
           end_month
         }月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
       body += "# これから開催されるイベント\n\n"
-      body +=
-        before_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
+      body += before_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
       if after_events_from_qiita.present?
         body += "\n\n---------------------------------------\n\n"
         body += "# すでに終了したイベント\n\n"
-        body +=
-          after_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
+        body += after_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
       end
       send_params = {
-        title:
-          "#{year_number}年#{start_month}月〜#{year_number}年#{
-            end_month
-          }月のハッカソン開催情報まとめ!",
+        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
         body: body,
-        tags: [
-          { name: 'hackathon' },
-          { name: 'ハッカソン' },
-          { name: 'アイディアソン' },
-          { name: '合宿' },
-          { name: year_number.to_s }
-        ]
+        tags: [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
       }
 
       if qiita_bot.new_record?
@@ -100,8 +81,7 @@ class QiitaBot < ApplicationRecord
   private
 
   def self.get_qiita_client
-    client =
-      Qiita::Client.new(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+    client = Qiita::Client.new(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     return client
   end
 end

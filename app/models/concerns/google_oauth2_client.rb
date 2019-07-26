@@ -6,10 +6,7 @@ module GoogleOauth2Client
     ExtraInfo.update(
       {
         'google_oauth' => {
-          refresh_token => {
-            'access_token' => authorization.access_token,
-            'expires_at' => authorization.expires_at.to_s
-          }
+          refresh_token => { 'access_token' => authorization.access_token, 'expires_at' => authorization.expires_at.to_s }
         }
       }
     )
@@ -26,12 +23,9 @@ module GoogleOauth2Client
     if access_token.present?
       oauth_client.access_token = access_token
     else
-      if google_oauth_config[refresh_token].present? &&
-         google_oauth_config[refresh_token]['expires_at'].present? &&
-         Time.parse(google_oauth_config[refresh_token]['expires_at']) <
-           Time.current
-        oauth_client.access_token =
-          google_oauth_config[refresh_token]['access_token']
+      if google_oauth_config[refresh_token].present? && google_oauth_config[refresh_token]['expires_at'].present? &&
+         Time.parse(google_oauth_config[refresh_token]['expires_at']) < Time.current
+        oauth_client.access_token = google_oauth_config[refresh_token]['access_token']
       end
     end
     oauth_client.refresh_token = refresh_token

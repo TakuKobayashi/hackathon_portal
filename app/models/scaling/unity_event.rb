@@ -38,12 +38,7 @@
 class Scaling::UnityEvent < ApplicationRecord
   include EventCommon
 
-  enum judge_state: {
-         before_judge: 0,
-         maybe_unity: 1,
-         another_development_event: 2,
-         unknown: 9
-       }
+  enum judge_state: { before_judge: 0, maybe_unity: 1, another_development_event: 2, unknown: 9 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'

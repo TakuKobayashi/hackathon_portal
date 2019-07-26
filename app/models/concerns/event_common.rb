@@ -3,12 +3,8 @@ module EventCommon
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
-    if ops.started_at.present? && ops.started_at.is_a?(String)
-      ops.started_at = DateTime.parse(ops.started_at)
-    end
-    if ops.ended_at.present? && ops.ended_at.is_a?(String)
-      ops.ended_at = DateTime.parse(ops.ended_at)
-    end
+    ops.started_at = DateTime.parse(ops.started_at) if ops.started_at.present? && ops.started_at.is_a?(String)
+    ops.ended_at = DateTime.parse(ops.ended_at) if ops.ended_at.present? && ops.ended_at.is_a?(String)
     self.attributes = self.attributes.merge(ops.to_h)
     self.build_location_data
   end
@@ -20,11 +16,7 @@ module EventCommon
       geo_result =
         RequestParser.request_and_parse_json(
           url: 'https://maps.googleapis.com/maps/api/geocode/json',
-          params: {
-            address: self.address,
-            language: 'ja',
-            key: ENV.fetch('GOOGLE_API_KEY', '')
-          }
+          params: { address: self.address, language: 'ja', key: ENV.fetch('GOOGLE_API_KEY', '') }
         )[
           'results'
         ]
@@ -40,11 +32,7 @@ module EventCommon
       geo_result =
         RequestParser.request_and_parse_json(
           url: 'https://maps.googleapis.com/maps/api/geocode/json',
-          params: {
-            latlng: [self.lat, self.lon].join(','),
-            language: 'ja',
-            key: ENV.fetch('GOOGLE_API_KEY', '')
-          }
+          params: { latlng: [self.lat, self.lon].join(','), language: 'ja', key: ENV.fetch('GOOGLE_API_KEY', '') }
         )[
           'results'
         ]
@@ -53,10 +41,7 @@ module EventCommon
 
       if geo_result.present?
         searched_address =
-          Charwidth.normalize(
-            Sanitizer.scan_japan_address(geo_result['formatted_address']).join
-          )
-            .gsub(
+          Charwidth.normalize(Sanitizer.scan_japan_address(geo_result['formatted_address']).join).gsub(
             %r{^[0-9【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]},
             ''
           )
@@ -67,9 +52,7 @@ module EventCommon
         #self.address = Sanitizer.scan_japan_address(geo_result.address).join
       end
     end
-    if self.address.present?
-      self.address = Charwidth.normalize(self.address).strip
-    end
+    self.address = Charwidth.normalize(self.address).strip if self.address.present?
   end
 
   def build_location_map_image
@@ -83,8 +66,7 @@ module EventCommon
         Sanitizer.delete_sharp(htag).split(/[\s　,]/).select(&:present?)
       end.flatten
     return false if sanitized_hashtags.blank?
-    ai_hashtags =
-      Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
+    ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     sanitized_hashtags.each do |h|
       if ai_hashtags[h].present?
         aih = ai_hashtags[h]
@@ -97,10 +79,7 @@ module EventCommon
   end
 
   def search_hashtags
-    return Sanitizer.scan_hash_tags(
-      Nokogiri::HTML.parse(self.description.to_s).text
-    )
-      .join(' ')
+    return Sanitizer.scan_hash_tags(Nokogiri::HTML.parse(self.description.to_s).text).join(' ')
   end
 
   def generate_qiita_cell_text
@@ -108,35 +87,21 @@ module EventCommon
     image_html = self.og_image_html
     words << (image_html + "\n") if image_html.present?
 
-    words +=
-      [
-        self.started_at.strftime('%Y年%m月%d日'),
-        self.place,
-        "[#{self.address}](#{self.generate_google_map_url})"
-      ]
+    words += [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
     words << "定員#{self.limit_number}人" if self.limit_number.present?
 
     if self.attend_number >= 0
       if self.ended_at.present? && self.ended_at < Time.current
         words << "#{self.attend_number}人が参加しました"
       else
-        words <<
-          "#{Time.now.strftime('%Y年%m月%d日 %H:%M')}現在 #{
-            self.attend_number
-          }人参加中"
+        words << "#{Time.now.strftime('%Y年%m月%d日 %H:%M')}現在 #{self.attend_number}人参加中"
 
         if self.limit_number.present?
           remain_number = self.limit_number - self.attend_number
           if remain_number > 0
-            words <<
-              "<font color=\"#FF0000;\">あと残り#{
-                remain_number
-              }人</font> 参加可能"
+            words << "<font color=\"#FF0000;\">あと残り#{remain_number}人</font> 参加可能"
           else
-            words <<
-              "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{
-                self.substitute_number
-              }人が補欠登録中)</font>"
+            words << "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
           end
         end
       end
@@ -149,15 +114,9 @@ module EventCommon
     if image_url.present?
       fi = FastImage.new(image_url.to_s)
       width, height = fi.size
-      size_text =
-        AdjustImage.calc_resize_text(
-          width: width, height: height, max_length: 300
-        )
+      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
       resize_width, resize_height = size_text.split('x')
-      return ActionController::Base.helpers.image_tag(
-        image_url,
-        { width: resize_width, height: resize_height, alt: self.title }
-      )
+      return ActionController::Base.helpers.image_tag(image_url, { width: resize_width, height: resize_height, alt: self.title })
     end
     return ''
   end
@@ -167,9 +126,9 @@ module EventCommon
   end
 
   def generate_google_map_static_image_url
-    return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{
-      self.lat
-    },#{self.lon}&key=#{ENV.fetch('GOOGLE_API_KEY', '')}&size=185x185"
+    return "https://maps.googleapis.com/maps/api/staticmap?zoom=15&center=#{self.lat},#{self.lon}&key=#{
+      ENV.fetch('GOOGLE_API_KEY', '')
+    }&size=185x185"
   end
 
   def generate_google_map_embed_tag
@@ -189,10 +148,7 @@ module EventCommon
   end
 
   def get_og_image_url
-    dom =
-      RequestParser.request_and_parse_html(
-        url: self.url, options: { follow_redirect: true }
-      )
+    dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
     og_image_dom = dom.css("meta[@property = 'og:image']").first
 
     # 画像じゃないものも含まれていることもあるので分別する
@@ -239,10 +195,7 @@ module EventCommon
       RequestParser.request_and_parse_json(
         url: BITLY_SHORTEN_API_URL,
         method: :post,
-        header: {
-          'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}",
-          'Content-Type' => 'application/json'
-        },
+        header: { 'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}", 'Content-Type' => 'application/json' },
         body: { long_url: self.url }.to_json,
         options: { follow_redirect: true }
       )
