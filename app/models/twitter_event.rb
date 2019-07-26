@@ -36,13 +36,45 @@
 #
 
 class TwitterEvent < Event
-  def self.find_event(keywords:, page: 1)
+  def self.import_events!
+    update_columns = TwitterEvent.column_names - %w[id type shortener_url event_id created_at]
     twitter_client = TwitterBot.get_twitter_client
-    tweets = []
+    tweet_counter = 0
     retry_count = 0
-    options = { count: 100, page: page }
+    request_options = { count: 100, result_type: 'recent', exclude: 'retweets' }
+    tweets = twitter_client.search((%w[hackathon ハッカソン アイディアソン アイデアソン ideathon 開発合宿]).join(' OR '), request_options)
     begin
-      tweets = twitter_client.search(keywords, options)
+      tweets.each(tweet_counter) do |tweet|
+        tweet_counter = tweet_counter + 1
+        urls = tweet.urls.map(&:expanded_url)
+        next if urls.blank?
+        exists_events = Event.where(url: urls.map(&:to_s)).index_by(&:url)
+        urls.each do |url|
+          next if exists_events[url].present?
+          extra_info = self.scrape_extra_info(url.to_s)
+
+          #TODO 要ハッカソンイベントかどうかのフィルタリング
+          twitter_event = TwitterEvent.new
+          twitter_event.merge_event_attributes(
+            attrs:
+              extra_info.to_h.merge(
+                {
+                  url: url.to_s,
+                  event_id: tweet.id,
+                  attend_number: 0,
+                  max_prize: 0,
+                  currency_unit: 'JPY',
+                  owner_id: tweet.user.id,
+                  owner_nickname: tweet.user.name,
+                  owner_name: tweet.user.screen_name,
+                  started_at: Time.now
+                }
+              )
+          )
+          twitter_event.save!
+          twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
+        end
+      end
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
       retry_count = retry_count + 1
@@ -53,49 +85,33 @@ class TwitterEvent < Event
         return []
       end
     end
-    return tweets
   end
 
-  def self.import_events!
-    page = 1
-    update_columns = TwitterEvent.column_names - %w[id type shortener_url event_id created_at]
-    while tweets.present?
-      begin
-        tweets = TwitterEvent.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page)
-        tweet_arr = tweets.to_a
-        all_stringurls = tweet_arr.map { |t| t.urls.map { |tu| tu.expanded_url.to_s } }.flatten
-        stringurl_events = Event.where(url: all_stringurls).index_by(:url)
+  private
 
-        transaction do
-          tweets.each do |tweet|
-            tweet.urls.each do |tweet_url|
-              url = tweet_url.expanded_url
-              next if stringurl_events[url.to_s].present?
-              dom = RequestParser.request_and_parse_html(url: url.to_s, options: { follow_redirect: true })
-              twitter_event = TwitterEvent.new
-              twitter_event.merge_event_attributes(
-                attrs: {
-                  title: dom.title,
-                  url: url.to_s,
-                  address: nil,
-                  place: nil,
-                  lat: nil,
-                  lon: nil,
-                  attend_number: 0,
-                  max_prize: 0,
-                  currency_unit: 'JPY',
-                  owner_id: tweet.user.id,
-                  owner_nickname: tweet.user.name,
-                  owner_name: tweet.user.screen_name,
-                  started_at: Time.now
-                }
-              )
-              twitter_event.save!
-              twitter_event.import_hashtags!(hashtag_strings: twitter_event.hashtags)
-            end
-          end
+  def self.scrape_extra_info(url)
+    #TODO 開催日時のスクレイピング
+    dom = RequestParser.request_and_parse_html(url: url.to_s, options: { follow_redirect: true })
+    result = OpenStruct.new({ title: dom.title.truncate(140) })
+    dom.css('meta').each do |meta_dom|
+      dom_attrs = OpenStruct.new(meta_dom.to_h)
+      if result.description.blank?
+        if dom_attrs.name == 'description'
+          result.description = dom_attrs.content
+        elsif dom_attrs.property == 'og:description'
+          result.description = dom_attrs.content
         end
       end
     end
+    #      sanitized_body_html = Sanitizer.basic_sanitize(dom.css("body").to_html)
+    #      scaned_urls = Sanitizer.scan_urls(sanitized_body_html)
+
+    sanitized_body_text = Sanitizer.basic_sanitize(dom.css('body').text)
+    address_canididates = Sanitizer.scan_japan_address(sanitized_body_text)
+
+    result.address = Sanitizer.match_address_text(address_canididates.first.to_s).to_s
+    result.place = result.address
+    Rails.logger.info(result.to_h)
+    return result
   end
 end

@@ -21,6 +21,22 @@ module Sanitizer
     return text.scan(/[#＃][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー]+/).map(&:strip)
   end
 
+  def self.scan_urls(text)
+    return text.scan(%r{(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)}).map(&:join)
+  end
+
+  def self.match_address_text(text)
+    return text.match(/[\p{Hiragana}|\p{Katakana}|[一-龠々]|\-|\ |0-9|a-z]+/).to_s
+  end
+
+  #記号を除去
+  def self.delete_symbols(text)
+    return text.gsub(
+      %r{[【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]},
+      ''
+    )
+  end
+
   def self.delete_hashtag_and_replyes(text)
     return text.gsub(/[#＃@][Ａ-Ｚａ-ｚA-Za-z一-鿆0-9０-９ぁ-ヶｦ-ﾟー_]+/, '')
   end
