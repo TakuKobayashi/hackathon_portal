@@ -1,10 +1,15 @@
 module Sanitizer
+  module RegexParts
+    html_comment = '<!--(.*)-->'
+    html_script_tag = '<script[^>]+?\/>|<script(.|\s)*?\/script>'
+  end
+
   def self.delete_html_comment(text)
-    return text.gsub(/<!--(.*)-->/, '')
+    return text.gsub(/#{RegexParts::html_comment}/, '')
   end
 
   def self.delete_javascript_in_html(text)
-    return text.gsub(%r{<script[^>]+?\/>|<script(.|\s)*?\/script>}, '')
+    return text.gsub(/#{RegexParts::html_script_tag}/, '')
   end
 
   def self.delete_empty_words(text)
