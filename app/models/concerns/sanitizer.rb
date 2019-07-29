@@ -25,6 +25,18 @@ module Sanitizer
     return text.scan(%r{(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)}).map(&:join)
   end
 
+  def self.scan_ymd_date(text)
+    return text.scan(/(\d{4}[.\|\-\/年])(\d{1,2}[.\|\-\/月])(\d{1,2}[日]?)/).map(&:join)
+  end
+
+  def self.scan_md_date(text)
+    return text.scan(/(\d{1,2}[.\|\-\/月])(\d{1,2}[日]?)/).map(&:join)
+  end
+
+  def self.scan_hm_time(text)
+    return text.scan(/(\d{1,2}[:時])(\d{1,2}[分]?)/).map(&:join)
+  end
+
   def self.match_address_text(text)
     return text.match(/[\p{Hiragana}|\p{Katakana}|[一-龠々]|\-|\ |0-9|a-z]+/).to_s
   end
