@@ -37,13 +37,15 @@
 #
 
 class TwitterEvent < Event
+  TWITTER_SEARCH_HACKATHON_KEYWORDS = %w[hackathon ハッカソン アイディアソン アイデアソン ゲームジャム ideathon 開発合宿]
+
   def self.import_events!
     update_columns = TwitterEvent.column_names - %w[id type shortener_url event_id created_at]
     twitter_client = TwitterBot.get_twitter_client
     tweet_counter = 0
     retry_count = 0
     request_options = { count: 100, result_type: 'recent', exclude: 'retweets' }
-    tweets = twitter_client.search((%w[hackathon ハッカソン アイディアソン アイデアソン ideathon 開発合宿]).join(' OR '), request_options)
+    tweets = twitter_client.search((TWITTER_SEARCH_HACKATHON_KEYWORDS).join(' OR '), request_options)
     begin
       tweets.each(tweet_counter) do |tweet|
         tweet_counter = tweet_counter + 1
@@ -54,6 +56,7 @@ class TwitterEvent < Event
         urls.each do |url|
           next if exists_events[url.to_s].present?
           extra_info = self.scrape_extra_info(url.to_s)
+          next if extra_info.title.blank?
 
           #TODO 要ハッカソンイベントかどうかのフィルタリング
           twitter_event = TwitterEvent.new
