@@ -30,9 +30,10 @@
 #
 # Indexes
 #
-#  index_events_on_event_id_and_type        (event_id,type) UNIQUE
+#  index_events_on_event_id_and_type        (event_id,type)
 #  index_events_on_started_at_and_ended_at  (started_at,ended_at)
 #  index_events_on_title                    (title)
+#  index_events_on_url                      (url)
 #
 
 class TwitterEvent < Event
@@ -48,9 +49,10 @@ class TwitterEvent < Event
         tweet_counter = tweet_counter + 1
         urls = tweet.urls.map(&:expanded_url)
         next if urls.blank?
+        next if TwitterEvent.exists?(event_id: tweet.id)
         exists_events = Event.where(url: urls.map(&:to_s)).index_by(&:url)
         urls.each do |url|
-          next if exists_events[url].present?
+          next if exists_events[url.to_s].present?
           extra_info = self.scrape_extra_info(url.to_s)
 
           #TODO 要ハッカソンイベントかどうかのフィルタリング
@@ -92,7 +94,7 @@ class TwitterEvent < Event
   def self.scrape_extra_info(url)
     #TODO 開催日時のスクレイピング
     dom = RequestParser.request_and_parse_html(url: url.to_s, options: { follow_redirect: true })
-    result = OpenStruct.new({ title: dom.title.truncate(140) })
+    result = OpenStruct.new({ title: dom.try(:title).to_s.truncate(140) })
     dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       if result.description.blank?
@@ -111,7 +113,6 @@ class TwitterEvent < Event
 
     result.address = Sanitizer.match_address_text(address_canididates.first.to_s).to_s
     result.place = result.address
-    Rails.logger.info(result.to_h)
     return result
   end
 end

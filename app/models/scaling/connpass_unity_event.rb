@@ -2,7 +2,7 @@
 #
 # Table name: scaling_unity_events
 #
-#  id                :bigint(8)        not null, primary key
+#  id                :bigint           not null, primary key
 #  event_id          :string(255)
 #  type              :string(255)
 #  title             :string(255)      not null
@@ -30,9 +30,10 @@
 #
 # Indexes
 #
-#  index_scaling_unity_events_on_event_id_and_type        (event_id,type) UNIQUE
+#  index_scaling_unity_events_on_event_id_and_type        (event_id,type)
 #  index_scaling_unity_events_on_started_at_and_ended_at  (started_at,ended_at)
 #  index_scaling_unity_events_on_title                    (title)
+#  index_scaling_unity_events_on_url                      (url)
 #
 
 class Scaling::ConnpassUnityEvent < Scaling::UnityEvent

@@ -2,7 +2,7 @@
 #
 # Table name: blogger_bots
 #
-#  id              :bigint(8)        not null, primary key
+#  id              :bigint           not null, primary key
 #  blogger_blog_id :string(255)      not null
 #  blogger_post_id :string(255)      not null
 #  title           :string(255)      not null

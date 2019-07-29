@@ -2,7 +2,7 @@
 #
 # Table name: ai_resource_attachments
 #
-#  id                :bigint(8)        not null, primary key
+#  id                :bigint           not null, primary key
 #  tweet_resource_id :integer          not null
 #  category          :integer          default("website"), not null
 #  origin_src        :string(255)      not null

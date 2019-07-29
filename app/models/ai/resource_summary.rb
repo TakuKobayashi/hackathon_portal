@@ -2,7 +2,7 @@
 #
 # Table name: ai_resource_summaries
 #
-#  id            :bigint(8)        not null, primary key
+#  id            :bigint           not null, primary key
 #  resource_type :string(255)      not null
 #  resource_id   :integer          not null
 #  body          :text(65535)      not null

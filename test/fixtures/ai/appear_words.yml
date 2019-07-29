@@ -2,7 +2,7 @@
 #
 # Table name: ai_appear_words
 #
-#  id             :bigint(8)        not null, primary key
+#  id             :bigint           not null, primary key
 #  word           :string(255)      not null
 #  part           :string(255)      not null
 #  reading        :string(255)      not null

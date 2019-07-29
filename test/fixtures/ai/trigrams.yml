@@ -2,7 +2,7 @@
 #
 # Table name: ai_trigrams
 #
-#  id                :bigint(8)        not null, primary key
+#  id                :bigint           not null, primary key
 #  tweet_resource_id :integer          not null
 #  position_genre    :integer          default("bos"), not null
 #  first_word        :string(255)      default(""), not null
