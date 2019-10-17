@@ -36,8 +36,6 @@
 #  index_events_on_url                      (url)
 #
 
-require 'google/apis/urlshortener_v1'
-
 class Event < ApplicationRecord
   include EventCommon
 

@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.6.3"
+ruby "2.6.2"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0'
@@ -32,6 +32,8 @@ gem 'jbuilder', '~> 2.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
+gem 'rails-i18n', '~> 6.0.0'
+
 gem "annotate"
 gem "activerecord-import"
 gem "httpclient"
@@ -59,8 +61,6 @@ gem "xml-simple"
 gem "addressable"
 
 gem "puma_worker_killer"
-
-gem "rails-i18n", "~> 5.0.0"
 
 gem "geocoder"
 
