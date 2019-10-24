@@ -9,12 +9,36 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: setup ubuntu
+      run: sudo apt-get --quiet update --yes
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
-    - name: Build and test with Rake
+    - name: Bundle install
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bundle exec rake
+    - name: Register .env
+      env:
+        TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+        TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+        TWITTER_BOT_ACCESS_TOKEN: ${{ secrets.TWITTER_BOT_ACCESS_TOKEN }}
+        TWITTER_BOT_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_BOT_ACCESS_TOKEN_SECRET }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+        GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+        GOOGLE_OAUTH_BOT_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_BOT_REFRESH_TOKEN }}
+        MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
+        BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
+      run: |
+        echo "TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}" >> ./.env
+        echo "TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}" >> ./.env
+        echo "TWITTER_BOT_ACCESS_TOKEN=${TWITTER_BOT_ACCESS_TOKEN}" >> ./.env
+        echo "TWITTER_BOT_ACCESS_TOKEN_SECRET=${TWITTER_BOT_ACCESS_TOKEN_SECRET}" >> ./.env
+        echo "GOOGLE_API_KEY=${GOOGLE_API_KEY}" >> ./.env
+        echo "GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}" >> ./.env
+        echo "GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}" >> ./.env
+        echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN=${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}" >> ./.env
+        echo "MEETUP_API_KEY=${MEETUP_API_KEY}" >> ./.env
+        echo "BITLY_ACCESS_TOKEN=${BITLY_ACCESS_TOKEN}" >> ./.env
