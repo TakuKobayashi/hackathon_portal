@@ -1,6 +1,8 @@
 name: Ruby
 
-on: [push]
+on:
+schedule:
+- cron: 40 3 * * *
 
 jobs:
   build:
@@ -42,3 +44,10 @@ jobs:
         echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN=${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}" >> ./.env
         echo "MEETUP_API_KEY=${MEETUP_API_KEY}" >> ./.env
         echo "BITLY_ACCESS_TOKEN=${BITLY_ACCESS_TOKEN}" >> ./.env
+    - name: execute crawl
+      run: |
+        rails batch:event_crawl
+    - uses: actions/upload-artifact@master
+      with:
+        name: result_sqlite
+        path: db/production.sqlite3
