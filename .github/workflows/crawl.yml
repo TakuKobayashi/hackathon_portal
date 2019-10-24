@@ -1,8 +1,8 @@
 name: Ruby
 
 on:
-schedule:
-- cron: 40 3 * * *
+  schedule:
+    - cron: 50 3 * * *
 
 jobs:
   build:
