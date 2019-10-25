@@ -19,18 +19,10 @@ namespace :backup do
     BackupToGoogleServices.backup_table_to_spreadsheet!(backup_models: backup_models)
   end
 
-  task all_models_split_sql_files: :enviroment do
-    Rails.application.eager_load!
-    model_classes = ActiveRecord::Base.descendants.select{|m| m.table_name.present? }.uniq{|m| m.table_name }
-    model_classes.each do |model_class|
-      column_names = model_class.column_names
-      backup_table_directory_name = Rails.root.join("backup", model_class.table_name)
-      unless Dir.exists?(backup_table_directory_name)
-        Dir.mkdir(backup_table_directory_name)
-      end
-      model_class.find_in_batches do |models|
-
-      end
-    end
+  task cd_git_commit_and_push: :environment do
+    git = Git.open(Rails.root.to_s)
+    git.add(Rails.root.join("db", "seeds"))
+    git.commit("update " + Time.current.strftime("%Y%m%d %H:%M:%S") + " crawled data")
+    git.push(git.remote('master'))
   end
 end
