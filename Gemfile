@@ -47,6 +47,7 @@ gem "certified"
 gem "google-api-client"
 
 gem "qiita"
+gem "git"
 
 gem "twitter", ">= 6.0"
 gem "tweetstream"

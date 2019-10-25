@@ -2,12 +2,24 @@ name: Ruby
 
 on:
   schedule:
-    - cron: 15 12 * * *
+    - cron: 00 1 * * *
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        volumes: data:/db_volume
+        env:
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_USER: "root"
+          MYSQL_PASSWORD: ""
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
     steps:
     - uses: actions/checkout@v1
@@ -16,11 +28,20 @@ jobs:
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: 2.6.3
     - name: Bundle install
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
+    - name: MySQL db create
+      run: |
+        RAILS_ENV=production rails db:create
+    - name: MySQL db migrate
+      run: |
+        RAILS_ENV=production rails db:migrate
+    - name: MySQL db seed
+      run: |
+        RAILS_ENV=production rails db:seed
     - name: Register .env
       env:
         TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
@@ -47,7 +68,14 @@ jobs:
     - name: execute crawl
       run: |
         rails batch:event_crawl
-    - uses: actions/upload-artifact@master
-      with:
-        name: result_sqlite
-        path: db/production.sqlite3
+    - name: export dbdump
+      run: |
+        mysqldump -u root hackathon_portal_production --no-create-info -c --order-by-primary --skip-extended-insert --skip-add-locks --skip-comments --compact > hackathon_portal_production.sql
+    - name: reconstruct split dbdump
+      run: |
+        rm -r ./db/seeds/
+        mkdir ./db/seeds/
+        split -l 10000 -d --additional-suffix=.sql hackathon_portal_production.sql ./db/seeds/
+    - name: git commit and push
+      run: |
+        rails backup:cd_git_commit_and_push
