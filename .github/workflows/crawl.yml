@@ -70,12 +70,7 @@ jobs:
         rails batch:event_crawl
     - name: export dbdump
       run: |
-        mysqldump -u root hackathon_portal_production --no-create-info -c --order-by-primary --skip-extended-insert --skip-add-locks --skip-comments --compact > hackathon_portal_production.sql
-    - name: reconstruct split dbdump
-      run: |
-        rm -r ./db/seeds/
-        mkdir ./db/seeds/
-        split -l 10000 -d --additional-suffix=.sql hackathon_portal_production.sql ./db/seeds/
+        RAILS_ENV=production rails backup:export_active_records_data
     - name: git commit and push
       run: |
         rails backup:cd_git_commit_and_push
