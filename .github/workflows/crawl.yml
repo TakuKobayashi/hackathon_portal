@@ -67,10 +67,10 @@ jobs:
         echo "BITLY_ACCESS_TOKEN=${BITLY_ACCESS_TOKEN}" >> ./.env
     - name: execute crawl
       run: |
-        rails batch:event_crawl
+        RAILS_ENV=production rails batch:event_crawl
     - name: export dbdump
       run: |
         RAILS_ENV=production rails backup:export_active_records_data
     - name: git commit and push
       run: |
-        rails backup:cd_git_commit_and_push
+        RAILS_ENV=production rails backup:cd_git_commit_and_push
