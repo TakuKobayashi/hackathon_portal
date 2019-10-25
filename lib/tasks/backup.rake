@@ -19,6 +19,30 @@ namespace :backup do
     BackupToGoogleServices.backup_table_to_spreadsheet!(backup_models: backup_models)
   end
 
+  task export_active_records_data: :environment do
+    environment = Rails.env
+    configuration = ActiveRecord::Base.configurations[environment]
+    database = Shellwords.escape(Regexp.escape(configuration['database'].to_s))
+    username = Shellwords.escape(Regexp.escape(configuration['username'].to_s))
+    password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))
+    unless Dir.exists?(Rails.root.join("db", "seeds"))
+      FileUtils.mkdir(Rails.root.join("db", "seeds"))
+    end
+    Rails.application.eager_load!
+    model_classes = ActiveRecord::Base.descendants.select{|m| m.table_name.present? }.uniq{|m| m.table_name }
+    model_classes.each do |model_class|
+      export_table_directory_name = Rails.root.join("db", "seeds", model_class.table_name)
+      export_full_dump_sql = Rails.root.join("db", "seeds", model_class.table_name + ".sql")
+      system("mysqldump -u #{username} #{database} #{model_class.table_name} --no-create-info -c --order-by-primary --skip-extended-insert --skip-add-locks --skip-comments --compact > #{export_full_dump_sql}")
+      if Dir.exists?(export_table_directory_name)
+        FileUtils.remove_dir(export_table_directory_name)
+      end
+      Dir.mkdir(export_table_directory_name)
+      system("gsplit -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      FileUtils.rm(export_full_dump_sql)
+    end
+  end
+
   task cd_git_commit_and_push: :environment do
     git = Git.open(Rails.root.to_s)
     git.add(Rails.root.join("db", "seeds"))
