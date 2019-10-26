@@ -8,24 +8,22 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_USER: "root"
+          MYSQL_PASSWORD: ""
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
     steps:
     - uses: actions/checkout@v1
     - name: setup ubuntu
       run: sudo apt-get --quiet update --yes
     - name: install git
       run: sudo apt-get --quiet install git --yes
-    - uses: mirromutth/mysql-action@v1.1
-      with:
-        host port: 3306
-        container port: 3306
-        character set server: 'utf8mb4'
-        collation server: 'utf8mb4_bin'
-        mysql version: '5.7'
-        mysql database: 'hackathon_portal_production'
-        mysql root password: ''
-        mysql user: 'root'
-        mysql password: ''
-        mysql allow empty password: 'yes'
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
