@@ -25,7 +25,7 @@ jobs:
         mysql root password: ''
         mysql user: 'root'
         mysql password: ''
-        mysql allow empty password: true
+        mysql allow empty password: 'yes'
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
