@@ -45,17 +45,17 @@ jobs:
         MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
       run: |
-        echo "MYSQL_HOST=127.0.0.1" >> ./.env
-        echo "TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}" >> ./.env
-        echo "TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}" >> ./.env
-        echo "TWITTER_BOT_ACCESS_TOKEN=${TWITTER_BOT_ACCESS_TOKEN}" >> ./.env
-        echo "TWITTER_BOT_ACCESS_TOKEN_SECRET=${TWITTER_BOT_ACCESS_TOKEN_SECRET}" >> ./.env
-        echo "GOOGLE_API_KEY=${GOOGLE_API_KEY}" >> ./.env
-        echo "GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}" >> ./.env
-        echo "GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}" >> ./.env
-        echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN=${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}" >> ./.env
-        echo "MEETUP_API_KEY=${MEETUP_API_KEY}" >> ./.env
-        echo "BITLY_ACCESS_TOKEN=${BITLY_ACCESS_TOKEN}" >> ./.env
+        echo "MYSQL_HOST='127.0.0.1'" >> ./.env
+        echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> ./.env
+        echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> ./.env
+        echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> ./.env
+        echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='${TWITTER_BOT_ACCESS_TOKEN_SECRET}'" >> ./.env
+        echo "GOOGLE_API_KEY='${GOOGLE_API_KEY}'" >> ./.env
+        echo "GOOGLE_OAUTH_CLIENT_ID='${GOOGLE_OAUTH_CLIENT_ID}'" >> ./.env
+        echo "GOOGLE_OAUTH_CLIENT_SECRET='${GOOGLE_OAUTH_CLIENT_SECRET}'" >> ./.env
+        echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}'" >> ./.env
+        echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> ./.env
+        echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> ./.env
     - name: MySQL db create
       run: |
         RAILS_ENV=production rails db:create
