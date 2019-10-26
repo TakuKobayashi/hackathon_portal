@@ -8,28 +8,28 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 20s --health-timeout 10s --health-retries 10
-        env:
-          MYSQL_ROOT_PASSWORD: ""
-          MYSQL_USER: "root"
-          MYSQL_PASSWORD: ""
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-
-    container:
-      image: ruby:2.6.3
-      env:
-        DATABASE_URL: mysql2://root:@mysql:3306/
-
     steps:
     - uses: actions/checkout@v1
     - name: setup ubuntu
       run: sudo apt-get --quiet update --yes
     - name: install git
       run: sudo apt-get --quiet install git --yes
-    - uses: actions/checkout@v1
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 3306
+        container port: 3306
+        character set server: 'utf8mb4'
+        collation server: 'utf8mb4_bin'
+        mysql version: '5.7'
+        mysql database: 'hackathon_portal_production'
+        mysql root password: ''
+        mysql user: 'root'
+        mysql password: ''
+        mysql allow empty password: true
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.6.3
     - name: Bundle install
       run: |
         gem install bundler
