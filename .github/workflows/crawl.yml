@@ -17,6 +17,8 @@ jobs:
           MYSQL_PASSWORD: ""
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+        ports:
+          - "3306:3306"
 
     steps:
     - uses: actions/checkout@v1
@@ -32,15 +34,6 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-    - name: MySQL db create
-      run: |
-        RAILS_ENV=production rails db:create
-    - name: MySQL db migrate
-      run: |
-        RAILS_ENV=production rails db:migrate
-    - name: MySQL db seed
-      run: |
-        RAILS_ENV=production rails db:seed
     - name: Register .env
       env:
         TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
@@ -54,6 +47,7 @@ jobs:
         MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
       run: |
+        echo "MYSQL_HOST=127.0.0.1" >> ./.env
         echo "TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}" >> ./.env
         echo "TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}" >> ./.env
         echo "TWITTER_BOT_ACCESS_TOKEN=${TWITTER_BOT_ACCESS_TOKEN}" >> ./.env
@@ -64,6 +58,15 @@ jobs:
         echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN=${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}" >> ./.env
         echo "MEETUP_API_KEY=${MEETUP_API_KEY}" >> ./.env
         echo "BITLY_ACCESS_TOKEN=${BITLY_ACCESS_TOKEN}" >> ./.env
+    - name: MySQL db create
+      run: |
+        RAILS_ENV=production rails db:create
+    - name: MySQL db migrate
+      run: |
+        RAILS_ENV=production rails db:migrate
+    - name: MySQL db seed
+      run: |
+        RAILS_ENV=production rails db:seed
     - name: execute crawl
       run: |
         RAILS_ENV=production rails batch:event_crawl
