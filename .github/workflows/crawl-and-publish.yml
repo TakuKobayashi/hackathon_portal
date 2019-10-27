@@ -65,6 +65,9 @@ jobs:
     - name: execute crawl
       run: |
         RAILS_ENV=production rails batch:event_crawl
+    - name: execute publish tweet
+      run: |
+        RAILS_ENV=production rails batch:event_bot_tweet
     - name: export dbdump
       run: |
         RAILS_ENV=production rails backup:export_active_records_data
@@ -81,3 +84,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: 'crawled-data'
+    - uses: actions/upload-artifact@master
+      with:
+        name: log
+        path: log
