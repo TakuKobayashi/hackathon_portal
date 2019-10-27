@@ -32,6 +32,7 @@ jobs:
         GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
         GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
         GOOGLE_OAUTH_BOT_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_BOT_REFRESH_TOKEN }}
+        QIITA_BOT_ACCESS_TOKEN: ${{ secrets.QIITA_BOT_ACCESS_TOKEN }}
         MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
       run: |
@@ -45,6 +46,7 @@ jobs:
         echo "GOOGLE_OAUTH_CLIENT_ID='${GOOGLE_OAUTH_CLIENT_ID}'" >> ./.env
         echo "GOOGLE_OAUTH_CLIENT_SECRET='${GOOGLE_OAUTH_CLIENT_SECRET}'" >> ./.env
         echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}'" >> ./.env
+        echo "QIITA_BOT_ACCESS_TOKEN='${QIITA_BOT_ACCESS_TOKEN}'" >> ./.env
         echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> ./.env
         echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> ./.env
     - name: MySQL db create
@@ -62,6 +64,16 @@ jobs:
     - name: export dbdump
       run: |
         RAILS_ENV=production rails backup:export_active_records_data
-    - name: git commit and push
+    - name: Commit files
+      env:
+        USER_EMAIL: ${{ secrets.USER_EMAIL }}
+        USER_NAME: ${{ secrets.USER_NAME }}
       run: |
-        RAILS_ENV=production rails backup:cd_git_commit_and_push
+        git config --local user.email "${USER_EMAIL}"
+        git config --local user.name "${USER_NAME}"
+        git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: 'crawled-data'
