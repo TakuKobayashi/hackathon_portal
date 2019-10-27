@@ -56,7 +56,7 @@ class Peatix < Event
     update_columns = Peatix.column_names - %w[id type shortener_url event_id created_at]
     begin
       events_response = Peatix.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん], page: page)
-      json_data = events_response['json_data']
+      json_data = events_response['json_data'] || {"events" => []}
       page += 1
       current_events = Peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
       json_data['events'].each do |res|

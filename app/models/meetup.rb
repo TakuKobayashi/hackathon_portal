@@ -52,8 +52,9 @@ class Meetup < Event
   def self.import_events!
     update_columns = Meetup.column_names - %w[id type shortener_url event_id created_at]
     events_response = Meetup.find_event(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
-    current_events = Meetup.where(event_id: events_response['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
-    events_response['events'].each do |res|
+    res_events = events_response['events'] || []
+    current_events = Meetup.where(event_id: res_events.map { |res| res['id'] }.compact).index_by(&:event_id)
+    res_events.each do |res|
       transaction do
         if current_events[res['id'].to_s].present?
           meetup_event = current_events[res['id'].to_s]
