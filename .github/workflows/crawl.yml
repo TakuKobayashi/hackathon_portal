@@ -8,16 +8,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: ""
-          MYSQL_USER: "root"
-          MYSQL_PASSWORD: ""
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
-
     steps:
     - uses: actions/checkout@v1
     - name: setup ubuntu
@@ -45,7 +35,8 @@ jobs:
         MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
       run: |
-        echo "MYSQL_HOST='127.0.0.1'" >> ./.env
+        echo "MYSQL_USERNAME='root'" >> ./.env
+        echo "MYSQL_PASSWORD='root'" >> ./.env
         echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> ./.env
         echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> ./.env
         echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> ./.env
