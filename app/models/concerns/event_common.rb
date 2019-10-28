@@ -55,10 +55,6 @@ module EventCommon
     self.address = Charwidth.normalize(self.address).strip if self.address.present?
   end
 
-  def build_location_map_image
-    self.location_image_binary = self.generate_google_map_static_image_url
-  end
-
   def import_hashtags!(hashtag_strings: [])
     sanitized_hashtags =
       [hashtag_strings].flatten.map do |hashtag|
