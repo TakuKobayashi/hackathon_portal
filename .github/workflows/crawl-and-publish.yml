@@ -1,7 +1,9 @@
 name: CrawlAndPublish
 
 on:
-  [push]
+  push:
+    branches:
+    - crawled-data
 
 jobs:
   build:
@@ -59,6 +61,7 @@ jobs:
       run: |
         RAILS_ENV=production rails db:seed
     - name: Install Mecab Neologd
+      working-directory: ./tmp
       run: |
         git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
         ./mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y --eliminate-redundant-entry
