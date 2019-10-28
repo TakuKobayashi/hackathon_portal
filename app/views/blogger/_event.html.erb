@@ -5,9 +5,7 @@
   <% if event.address.present? %>
     <div><%= link_to(event.address, event.generate_google_map_url) %></div>
   <% end %>
-  <% if event.location_image_binary.present? %>
-    <div><%= event.generate_google_map_embed_tag %></div>
-  <% end %>
+  <div><%= event.generate_google_map_embed_tag %></div>
   <% if event.limit_number.present? %>
     <div>定員<%= event.limit_number %>人</div>
   <% end %>
