@@ -85,11 +85,10 @@ class Event < ApplicationRecord
   end
 
   def self.import_events!
-    Connpass.import_events!
-    Doorkeeper.import_events!
-    Atnd.import_events!
-    Peatix.import_events!
-    Meetup.import_events!
+    event_classes = [Connpass, Doorkeeper, Atnd, Peatix, Meetup]
+    Parallel.each(event_classes, in_threads: event_classes.size) do |event_class|
+      event_class.import_events!
+    end
   end
 
   def hackathon_event?
