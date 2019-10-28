@@ -76,17 +76,17 @@ jobs:
         RAILS_ENV=production rails backup:export_active_records_data
     - name: Commit files
       env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         USER_EMAIL: ${{ secrets.USER_EMAIL }}
         USER_NAME: ${{ secrets.USER_NAME }}
       run: |
         git config --local user.email "${USER_EMAIL}"
         git config --local user.name "${USER_NAME}"
+        git remote set-url origin https://TakuKobayashi:${ACCESS_TOKEN}@github.com/TakuKobayashi/hackathon_portal.git
         git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data" -a
     - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.ACCESS_TOKEN }}
-        branch: 'crawled-data'
+      run: |
+        git push origin crawled-data
     - uses: actions/upload-artifact@master
       with:
         name: log
