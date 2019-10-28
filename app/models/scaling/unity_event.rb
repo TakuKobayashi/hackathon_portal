@@ -49,7 +49,7 @@ class Scaling::UnityEvent < ApplicationRecord
   UNITY_KEYWORDS = %w[unity Unity ユニティ XR AR VR]
 
   def self.import_events!
-    Connpass.import_events!
+    Scaling::ConnpassUnityEvent.import_events!
     Scaling::DoorkeeperUnityEvent.import_events!
     Scaling::AtndUnityEvent.import_events!
     Scaling::PeatixUnityEvent.import_events!
