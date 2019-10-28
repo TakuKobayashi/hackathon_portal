@@ -28,7 +28,8 @@ class BloggerBot < ApplicationRecord
   BLOGGER_BLOG_URL = 'https://hackathonportal.blogspot.com/'
 
   def self.post_or_update_article!(events: [], event_type: 'Event')
-    action_view_renderer = ActionView::Base.new(Rails.root.join('app', 'views'))
+    context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
+    action_view_renderer = ActionView::Base.new(context)
     service = BackupToGoogleServices.get_google_blogger_service
     blogger_blog = service.get_blog_by_url(BloggerBot::BLOGGER_BLOG_URL)
 
