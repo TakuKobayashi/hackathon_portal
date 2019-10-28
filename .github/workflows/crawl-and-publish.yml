@@ -1,9 +1,8 @@
 name: CrawlAndPublish
 
 on:
-  push:
-    branches:
-    - crawled-data
+  schedule:
+    - cron: 00 6 * * *
 
 jobs:
   build:
