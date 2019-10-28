@@ -65,12 +65,6 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
         ./mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y --eliminate-redundant-entry
-    - name: execute crawl
-      run: |
-        RAILS_ENV=production rails batch:event_crawl
-    - name: execute publish tweet
-      run: |
-        RAILS_ENV=production rails batch:event_bot_tweet
     - name: export dbdump
       run: |
         RAILS_ENV=production rails backup:export_active_records_data
@@ -85,7 +79,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
         branch: 'crawled-data'
     - uses: actions/upload-artifact@master
       with:
