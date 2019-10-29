@@ -37,9 +37,7 @@
 #
 
 class Scaling::AtndUnityEvent < Scaling::UnityEvent
-  include AtndOperation
-
   def self.import_events!
-    self.import_events_from_keywords!(keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+    AtndOperation.import_events_from_keywords!(event_clazz: Scaling::AtndUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
   end
 end

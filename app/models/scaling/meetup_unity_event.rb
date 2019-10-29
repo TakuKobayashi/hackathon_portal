@@ -37,9 +37,7 @@
 #
 
 class Scaling::MeetupUnityEvent < Scaling::UnityEvent
-  include MeetupOperation
-
   def self.import_events!
-    self.import_events_from_keywords!(keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+    MeetupOperation.import_events_from_keywords!(event_clazz: Scaling::MeetupUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
   end
 end
