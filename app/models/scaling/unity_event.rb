@@ -49,10 +49,11 @@ class Scaling::UnityEvent < ApplicationRecord
   UNITY_KEYWORDS = %w[unity Unity ユニティ XR AR VR]
 
   def self.import_events!
-    Connpass.import_events!
-    Scaling::DoorkeeperUnityEvent.import_events!
-    Scaling::AtndUnityEvent.import_events!
-    Scaling::PeatixUnityEvent.import_events!
-    Scaling::MeetupUnityEvent.import_events!
+    # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
+    Rails.application.eager_load!
+    event_classes = [Scaling::ConnpassUnityEvent, Scaling::DoorkeeperUnityEvent, Scaling::AtndUnityEvent, Scaling::PeatixUnityEvent, Scaling::MeetupUnityEvent]
+    Parallel.each(event_classes, in_threads: event_classes.size) do |event_class|
+      event_class.import_events!
+    end
   end
 end
