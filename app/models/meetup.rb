@@ -37,9 +37,7 @@
 #
 
 class Meetup < Event
-  include MeetupOperation
-
   def self.import_events!
-    self.import_events_from_keywords!(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    MeetupOperation.import_events_from_keywords!(event_clazz: Meetup,keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end

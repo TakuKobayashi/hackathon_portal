@@ -5,18 +5,18 @@ module DoorkeeperOperation
     return RequestParser.request_and_parse_json(url: DOORKEEPER_URL, params: { q: keywords.join('|'), page: page })
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(event_clazz:, keywords:)
     page = 1
     begin
       events_response = self.find_event(keywords: keywords, page: page)
-      current_events = self.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
       events_response.each do |res|
-        transaction do
+        event_clazz.transaction do
           event = res['event']
           if current_events[event['id'].to_s].present?
             doorkeeper_event = current_events[event['id'].to_s]
           else
-            doorkeeper_event = self.new(event_id: event['id'].to_s)
+            doorkeeper_event = event_clazz.new(event_id: event['id'].to_s)
           end
           doorkeeper_event.merge_event_attributes(
             attrs: {

@@ -37,9 +37,7 @@
 #
 
 class Scaling::ConnpassUnityEvent < Scaling::UnityEvent
-  include ConnpassOperation
-
   def self.import_events!
-    self.import_events_from_keywords!(keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+    ConnpassOperation.import_events_from_keywords!(event_clazz: Scaling::ConnpassUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
   end
 end

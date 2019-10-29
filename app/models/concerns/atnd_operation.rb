@@ -8,19 +8,19 @@ module AtndOperation
     )
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(event_clazz:, keywords:)
     start = 1
     begin
       events_response = self.find_event(keywords: keywords, start: start)
       start += events_response['results_returned']
-      current_events = self.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
       events_response['events'].each do |res|
-        transaction do
+        event_clazz.transaction do
           event = res['event']
           if current_events[event['event_id'].to_s].present?
             atnd_event = current_events[event['event_id'].to_s]
           else
-            atnd_event = self.new(event_id: event['event_id'].to_s)
+            atnd_event = event_clazz.new(event_id: event['event_id'].to_s)
           end
           atnd_event.merge_event_attributes(
             attrs: {
