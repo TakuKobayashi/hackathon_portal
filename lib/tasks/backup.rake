@@ -22,9 +22,9 @@ namespace :backup do
   task export_active_records_data: :environment do
     environment = Rails.env
     configuration = ActiveRecord::Base.configurations[environment]
-    database = Shellwords.escape(Regexp.escape(configuration['database'].to_s))
-    username = Shellwords.escape(Regexp.escape(configuration['username'].to_s))
-    password = Shellwords.escape(Regexp.escape(configuration['password'].to_s))
+    database = Regexp.escape(configuration['database'].to_s)
+    username = Regexp.escape(configuration['username'].to_s)
+    password = Regexp.escape(configuration['password'].to_s)
     unless Dir.exists?(Rails.root.join("db", "seeds"))
       FileUtils.mkdir(Rails.root.join("db", "seeds"))
     end
@@ -33,7 +33,12 @@ namespace :backup do
     model_classes.each do |model_class|
       export_table_directory_name = Rails.root.join("db", "seeds", model_class.table_name)
       export_full_dump_sql = Rails.root.join("db", "seeds", model_class.table_name + ".sql")
-      system("mysqldump -u #{username} #{database} #{model_class.table_name} --no-create-info -c --order-by-primary --skip-extended-insert --skip-add-locks --skip-comments --compact > #{export_full_dump_sql}")
+      mysqldump_commands = ["mysqldump", "-u", username]
+      if password.present?
+        mysqldump_commands << "-p#{password}"
+      end
+      mysqldump_commands += [database, model_class.table_name, "--no-create-info","-c","--order-by-primary", "--skip-extended-insert", "--skip-add-locks", "--skip-comments", "--compact", ">", export_full_dump_sql]
+      system(mysqldump_commands.join(" "))
       if Dir.exists?(export_table_directory_name)
         FileUtils.remove_dir(export_table_directory_name)
       end
