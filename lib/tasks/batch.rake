@@ -8,6 +8,7 @@ require "fileutils"
 namespace :batch do
   task event_crawl: :environment do
     Event.import_events!
+    Scaling::UnityEvent.import_events!
   end
 
   task event_bot_tweet: :environment do
