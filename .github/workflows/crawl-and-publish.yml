@@ -74,6 +74,10 @@ jobs:
     - name: export dbdump
       run: |
         RAILS_ENV=production rails backup:export_active_records_data
+    - uses: actions/upload-artifact@master
+      with:
+        name: sqls
+        path: db/seeds
     - name: Commit files And push
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -82,10 +86,6 @@ jobs:
       run: |
         git config --local user.email "${USER_EMAIL}"
         git config --local user.name "${USER_NAME}"
-        git remote set-url origin https://${USER_NAME}:${ACCESS_TOKEN}@github.com/TakuKobayashi/hackathon_portal.git
+        git remote set-url origin "https://${USER_NAME}:${ACCESS_TOKEN}@github.com/TakuKobayashi/hackathon_portal.git"
         git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data" -a
         git push origin HEAD:crawled-data
-    - uses: actions/upload-artifact@master
-      with:
-        name: log
-        path: log
