@@ -48,6 +48,14 @@ class Scaling::UnityEvent < ApplicationRecord
 
   UNITY_KEYWORDS = %w[unity Unity ユニティ XR AR VR]
 
+  def self.summary_title
+    return "Unity"
+  end
+
+  def self.main_topic
+    return "Unity"
+  end
+
   def self.import_events!
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
