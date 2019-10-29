@@ -5,7 +5,7 @@ module ConnpassOperation
     return RequestParser.request_and_parse_json(url: CONNPASS_URL, params: { keyword_or: keywords, count: 100, start: start, order: 1 })
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(event_clazz:, keywords:)
     results_available = 0
     start = 1
     begin
@@ -13,13 +13,13 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_events = self.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
       res_events.each do |res|
-        transaction do
+        event_clazz.transaction do
           if current_events[res['event_id'].to_s].present?
             connpass_event = current_events[res['event_id'].to_s]
           else
-            connpass_event = self.new(event_id: res['event_id'].to_s)
+            connpass_event = event_clazz.new(event_id: res['event_id'].to_s)
           end
           connpass_event.merge_event_attributes(
             attrs: {

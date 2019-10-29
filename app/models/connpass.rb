@@ -37,9 +37,7 @@
 #
 
 class Connpass < Event
-  include ConnpassOperation
-
   def self.import_events!
-    self.import_events_from_keywords!(keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    ConnpassOperation.import_events_from_keywords!(event_clazz: Connpass,keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end
