@@ -84,6 +84,14 @@ class Event < ApplicationRecord
     end
   end
 
+  def self.summary_title
+    return "ハッカソン"
+  end
+
+  def self.main_topic
+    return "ハッカソン・ゲームジャム・開発合宿"
+  end
+
   def self.import_events!
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!

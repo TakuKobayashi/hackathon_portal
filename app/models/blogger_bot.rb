@@ -27,11 +27,11 @@ class BloggerBot < ApplicationRecord
 
   BLOGGER_BLOG_URL = 'https://hackathonportal.blogspot.com/'
 
-  def self.post_or_update_article!(events: [], event_type: 'Event')
+  def self.post_or_update_article!(blog_url: 'https://hackathonportal.blogspot.com/', events: [], event_type: 'Event')
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
     service = BackupToGoogleServices.get_google_blogger_service
-    blogger_blog = service.get_blog_by_url(BloggerBot::BLOGGER_BLOG_URL)
+    blogger_blog = service.get_blog_by_url(blog_url)
 
     events_group = events.group_by { |e| e.started_at.year * 10_000 + e.started_at.month }
     events_group.each do |date_number, event_arr|
@@ -44,12 +44,12 @@ class BloggerBot < ApplicationRecord
         end
       start_month = date_number % 10_000
       year_number = (date_number / 10_000).to_i
-      blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
+      blogger_bot.title = "#{year_number}年#{start_month}月の#{event_type.classify.constantize.summary_title}開催情報まとめ!"
       blogger_bot.body =
         action_view_renderer.render(
           template: 'blogger/publish',
           format: 'html',
-          locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
+          locals: { main_topic: event_type.classify.constantize.main_topic ,before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
         )
       blogger_bot.update_blogger!(google_api_service: service)
     end
