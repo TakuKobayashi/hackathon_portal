@@ -1,8 +1,7 @@
 name: CrawlAndPublish
 
 on:
-  schedule:
-    - cron: 00 6 * * *
+  [push]
 
 jobs:
   build:
