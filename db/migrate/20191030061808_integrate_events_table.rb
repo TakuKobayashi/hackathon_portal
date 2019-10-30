@@ -1,9 +1,7 @@
 class IntegrateEventsTable < ActiveRecord::Migration[6.0]
   def up
-    Event.find_each do |event|
-      event.update!(type: "HackathonEvent")
-    end
-    event_columns = Event.columns - ["id", "type"]
+    Event.update_all(type: "HackathonEvent")
+    event_columns = Event.column_names - ["id", "type"]
     start_id = Event.last.id
     ActiveRecord::Base.transaction do
       ActiveRecord::Base.connection.execute("INSERT INTO events(#{event_columns.join(",")}) SELECT #{event_columns.join(",")} FROM scaling_unity_events")
