@@ -8,6 +8,8 @@ require "fileutils"
 namespace :batch do
   task event_crawl: :environment do
     Event.import_events!
+    ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
+    GC.start
     Scaling::UnityEvent.import_events!
   end
 
