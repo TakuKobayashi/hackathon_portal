@@ -39,6 +39,8 @@
 class Event < ApplicationRecord
   include EventCommon
 
+  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7 }
+
   enum judge_state: { before_judge: 0, maybe_hackathon: 1, maybe_development_camp: 2, another_development_event: 3, unknown: 9 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
