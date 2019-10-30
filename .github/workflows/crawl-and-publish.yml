@@ -64,9 +64,12 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
         ./mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y --eliminate-redundant-entry
-    - name: execute crawl
+    - name: execute Hackathon Event crawl
       run: |
-        RAILS_ENV=production rails batch:event_crawl
+        RAILS_ENV=production rails runner Event.import_events!
+    - name: execute Unity Event crawl
+      run: |
+        RAILS_ENV=production rails runner Scaling::UnityEvent.import_events!
     - name: execute publish tweet
       run: |
         RAILS_ENV=production rails batch:event_bot_tweet
