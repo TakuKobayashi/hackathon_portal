@@ -22,7 +22,7 @@ namespace :batch do
     end
     QiitaBot.post_or_update_article!(events: future_events)
     EventCalendarBot.insert_or_update_calender!(events: future_events)
-    BloggerBot.post_or_update_article!(events: future_events)
+    BloggerBot.post_or_update_article!(blog_url: BloggerBot::BLOGGER_BLOG_URL, events: future_events)
   end
 
   task generate_slide: :environment do
