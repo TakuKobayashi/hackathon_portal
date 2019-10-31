@@ -33,7 +33,7 @@ class BloggerBot < ApplicationRecord
     service = BackupToGoogleServices.get_google_blogger_service
     blogger_blog = service.get_blog_by_url(BloggerBot::BLOGGER_BLOG_URL)
 
-    events_group = events.group_by { |e| e.started_at.year * 10_000 + e.started_at.month }
+    events_group = events.group_by { |e| e.started_at.year * 10000 + e.started_at.month }
     events_group.each do |date_number, event_arr|
       blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
       blogger_bot.event_type = event_type
