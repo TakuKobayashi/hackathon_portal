@@ -11,7 +11,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      ref: crawled-data
+      with:
+        ref: crawled-data
     - name: setup ubuntu
       run: sudo apt --quiet update --yes
     - name: install to need
