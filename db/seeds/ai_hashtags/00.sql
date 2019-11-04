@@ -1258,3 +1258,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1257,'hackfuture2019');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1258,'BOKURAの悩み');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1259,'StartupExtreme');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1260,'orajam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1261,'自己分析');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1262,'自己成長');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1263,'メンターとの出会い');
