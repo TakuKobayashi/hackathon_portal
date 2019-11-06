@@ -3,8 +3,22 @@ module EventCommon
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
-    ops.started_at = DateTime.parse(ops.started_at) if ops.started_at.present? && ops.started_at.is_a?(String)
-    ops.ended_at = DateTime.parse(ops.ended_at) if ops.ended_at.present? && ops.ended_at.is_a?(String)
+    if ops.started_at.present? && ops.started_at.is_a?(String)
+      parsed_started_at = DateTime.parse(ops.started_at)
+      if self.started_at.utc != parsed_started_at.utc
+        ops.started_at = parsed_started_at
+      end
+    end
+    if ops.ended_at.present? && ops.ended_at.is_a?(String)
+      parsed_ended_at = DateTime.parse(ops.ended_at)
+      if self.ended_at.utc != parsed_ended_at.utc
+        ops.ended_at = parsed_ended_at
+      end
+    end
+    if self.lat.present? && self.lon.present?
+      ops.delete_field(:lat)
+      ops.delete_field(:lon)
+    end
     self.attributes = self.attributes.merge(ops.to_h)
     self.build_location_data
   end
