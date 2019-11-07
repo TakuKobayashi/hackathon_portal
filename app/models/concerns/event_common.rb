@@ -5,13 +5,13 @@ module EventCommon
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
     if ops.started_at.present? && ops.started_at.is_a?(String)
       parsed_started_at = DateTime.parse(ops.started_at)
-      if self.started_at.utc != parsed_started_at.utc
+      if self.started_at.try(:utc) != parsed_started_at.try(:utc)
         ops.started_at = parsed_started_at
       end
     end
     if ops.ended_at.present? && ops.ended_at.is_a?(String)
       parsed_ended_at = DateTime.parse(ops.ended_at)
-      if self.ended_at.utc != parsed_ended_at.utc
+      if self.ended_at.try(:utc) != parsed_ended_at.try(:utc)
         ops.ended_at = parsed_ended_at
       end
     end
