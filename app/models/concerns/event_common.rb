@@ -16,8 +16,8 @@ module EventCommon
       end
     end
     if self.lat.present? && self.lon.present?
-      ops.delete_field(:lat)
-      ops.delete_field(:lon)
+      ops.delete_field(:lat) unless ops.lat.nil?
+      ops.delete_field(:lon) unless ops.lon.nil?
     end
     self.attributes = self.attributes.merge(ops.to_h)
     self.build_location_data
