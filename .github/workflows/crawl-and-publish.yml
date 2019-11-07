@@ -2,7 +2,7 @@ name: CrawlAndPublish
 
 on:
   schedule:
-    - cron: 00 6 * * *
+    - cron: 00 4 * * *
 
 jobs:
   build:
@@ -38,6 +38,7 @@ jobs:
         QIITA_BOT_ACCESS_TOKEN: ${{ secrets.QIITA_BOT_ACCESS_TOKEN }}
         MEETUP_API_KEY: ${{ secrets.MEETUP_API_KEY }}
         BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
+        DOORKEEPER_API_KEY: ${{ secrets.DOORKEEPER_API_KEY }}
       run: |
         echo "MYSQL_USERNAME='root'" >> ./.env
         echo "MYSQL_PASSWORD='root'" >> ./.env
