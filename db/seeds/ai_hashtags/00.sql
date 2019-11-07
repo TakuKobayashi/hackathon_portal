@@ -1261,3 +1261,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1260,'orajam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1261,'自己分析');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1262,'自己成長');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1263,'メンターとの出会い');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1264,'toyolabio');
