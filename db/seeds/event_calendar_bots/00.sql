@@ -992,3 +992,4 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (992,'Event',644601,'6sfcck3em4600do2lps2miqqj4','2019-11-09 05:09:02','2019-11-09 05:09:02');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (993,'Event',644605,'9l8g12ku87chbieqraqpg99hdo','2019-11-11 05:11:47','2019-11-11 05:11:47');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (994,'Event',644604,'moi9pv8acqnqs499o08glcjems','2019-11-11 05:11:48','2019-11-11 05:11:48');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (995,'Event',644614,'56c9regiaqq9b2sh3l88da7u9c','2019-11-12 04:57:02','2019-11-12 04:57:02');
