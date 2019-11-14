@@ -91,7 +91,7 @@ class Event < ApplicationRecord
   def self.import_events!
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    event_classes = [Connpass, Doorkeeper, Atnd, Peatix, Meetup]
+    event_classes = [Connpass, Doorkeeper, Atnd, Peatix, GoogleFormEvent]
     Parallel.each(event_classes, in_threads: event_classes.size) do |event_class|
       event_class.import_events!
     end
