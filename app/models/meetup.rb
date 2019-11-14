@@ -36,8 +36,8 @@
 #  index_events_on_url                      (url)
 #
 
-class GoogleFormEvent < Event
+class Meetup < Event
   def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    MeetupOperation.import_events_from_keywords!(event_clazz: Meetup, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end
