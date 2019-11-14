@@ -56,4 +56,8 @@ class Scaling::UnityEvent < ApplicationRecord
       event_class.import_events!
     end
   end
+
+  def self.google_form_spreadsheet_id
+    return "1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY"
+  end
 end
