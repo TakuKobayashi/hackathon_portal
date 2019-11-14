@@ -22,7 +22,7 @@ namespace :batch do
     end
     QiitaBot.post_or_update_article!(events: future_events)
     EventCalendarBot.insert_or_update_calender!(events: future_events)
-    BloggerBot.post_or_update_article!(events: future_events)
+    BloggerBot.post_or_update_article!(events: future_events, blogger_blog_url: 'https://hackathonportal.blogspot.com/', refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""), event_type: 'Event')
   end
 
   task generate_slide: :environment do

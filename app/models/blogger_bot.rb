@@ -27,11 +27,11 @@ class BloggerBot < ApplicationRecord
 
   BLOGGER_BLOG_URL = 'https://hackathonportal.blogspot.com/'
 
-  def self.post_or_update_article!(events: [], event_type: 'Event')
+  def self.post_or_update_article!(blogger_blog_url:, refresh_token:, access_token: nil, events: [], event_type: 'Event')
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
-    service = BackupToGoogleServices.get_google_blogger_service
-    blogger_blog = service.get_blog_by_url(BloggerBot::BLOGGER_BLOG_URL)
+    service = self.get_google_blogger_service(refresh_token: refresh_token, access_token: access_token)
+    blogger_blog = service.get_blog_by_url(blogger_blog_url)
 
     events_group = events.group_by { |e| e.started_at.year * 10000 + e.started_at.month }
     events_group.each do |date_number, event_arr|
@@ -74,5 +74,11 @@ class BloggerBot < ApplicationRecord
         tag_names: result_blogger_post.labels
       }
     )
+  end
+
+  def self.get_google_blogger_service(refresh_token:, access_token: nil)
+    sheet_service = Google::Apis::SheetsV4::SheetsService.new
+    sheet_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: refresh_token, access_token: access_token)
+    return sheet_service
   end
 end
