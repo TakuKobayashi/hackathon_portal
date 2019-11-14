@@ -66,8 +66,4 @@ class HackathonEvent < Event
     '合宿' => 4,
     'ハック' => 1
   }
-
-  def self.import_events!
-    self.import_events_from_keywords!(keywords: HACKATHON_KEYWORDS + %w[はっかそん])
-  end
 end
