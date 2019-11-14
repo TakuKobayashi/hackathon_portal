@@ -25,8 +25,8 @@ class QiitaBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def self.post_or_update_article!(events: [], event_type: 'Event')
-    client = get_qiita_client
+  def self.post_or_update_article!(events: [], event_type: 'Event', access_token: nil)
+    client = self.get_qiita_client(access_token: access_token)
     events_group = events.group_by(&:season_date_number)
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
@@ -88,8 +88,8 @@ class QiitaBot < ApplicationRecord
 
   private
 
-  def self.get_qiita_client
-    client = Qiita::Client.new(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+  def self.get_qiita_client(access_token: nil)
+    client = Qiita::Client.new(access_token: access_token || ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     return client
   end
 end
