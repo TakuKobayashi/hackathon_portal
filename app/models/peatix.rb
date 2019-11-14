@@ -36,8 +36,8 @@
 #  index_events_on_url                      (url)
 #
 
-class GoogleFormEvent < Event
+class Peatix < Event
   def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    PeatixOperation.import_events_from_keywords!(event_clazz: Peatix, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end

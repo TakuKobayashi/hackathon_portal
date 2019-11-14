@@ -1,8 +1,8 @@
 # == Schema Information
 #
-# Table name: events
+# Table name: scaling_unity_events
 #
-#  id                :integer          not null, primary key
+#  id                :bigint           not null, primary key
 #  event_id          :string(255)
 #  type              :string(255)
 #  title             :string(255)      not null
@@ -30,14 +30,16 @@
 #
 # Indexes
 #
-#  index_events_on_event_id_and_type        (event_id,type)
-#  index_events_on_started_at_and_ended_at  (started_at,ended_at)
-#  index_events_on_title                    (title)
-#  index_events_on_url                      (url)
+#  index_scaling_unity_events_on_event_id_and_type        (event_id,type)
+#  index_scaling_unity_events_on_started_at_and_ended_at  (started_at,ended_at)
+#  index_scaling_unity_events_on_title                    (title)
+#  index_scaling_unity_events_on_url                      (url)
 #
 
-class GoogleFormEvent < Event
+class Scaling::MeetupUnityEvent < Scaling::UnityEvent
   def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    MeetupOperation.import_events_from_keywords!(
+      event_clazz: Scaling::MeetupUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ]
+    )
   end
 end

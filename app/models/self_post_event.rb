@@ -36,8 +36,14 @@
 #  index_events_on_url                      (url)
 #
 
-class GoogleFormEvent < Event
-  def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+class SelfPostEvent < Event
+  before_create do
+    if self.url.present? && self.description.blank?
+      doc = RequestParser.request_and_parse_html(url: self.url)
+      sanitized_html = Sanitizer.delete_javascript_in_html(doc.css('body').children.to_html)
+      sanitized_html = Sanitizer.delete_html_comment(sanitized_html)
+      sanitized_html = Sanitizer.delete_empty_words(sanitized_html)
+      self.description = Sanitizer.basic_sanitize(sanitized_html).strip
+    end
   end
 end

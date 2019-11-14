@@ -36,8 +36,8 @@
 #  index_events_on_url                      (url)
 #
 
-class GoogleFormEvent < Event
+class Atnd < Event
   def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    AtndOperation.import_events_from_keywords!(event_clazz: Atnd, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end
