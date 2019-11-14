@@ -38,6 +38,7 @@
 
 class Scaling::UnityEvent < ApplicationRecord
   include EventCommon
+  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7 }
 
   enum judge_state: { before_judge: 0, maybe_unity: 1, another_development_event: 2, unknown: 9 }
 
