@@ -1,9 +1,4 @@
 module TwitterEventOperation
-  PEATIX_ROOT_URL = 'http://peatix.com'
-  PEATIX_SEARCH_URL = PEATIX_ROOT_URL + '/search/events'
-
-  PAGE_PER = 100
-
   def self.find_tweets(keywords:, options: {})
     twitter_client = TwitterBot.get_twitter_client
     request_options = { count: PAGE_PER, result_type: 'recent', exclude: 'retweets' }.merge(options)
