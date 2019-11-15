@@ -26,7 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  judge_state       :integer          default("before_judge"), not null
+#  informed_from     :integer          default("web"), not null
 #
 # Indexes
 #
