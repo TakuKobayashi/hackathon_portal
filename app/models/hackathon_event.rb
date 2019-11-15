@@ -67,7 +67,7 @@ class HackathonEvent < Event
     'ハック' => 1
   }
 
-  def hashtags
+  def default_hashtags
     return %w[#hackathon #ハッカソン]
   end
 end
