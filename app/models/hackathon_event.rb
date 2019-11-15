@@ -66,4 +66,8 @@ class HackathonEvent < Event
     '合宿' => 4,
     'ハック' => 1
   }
+
+  def hashtags
+    return %w[#hackathon #ハッカソン]
+  end
 end

@@ -60,8 +60,6 @@ class Event < ApplicationRecord
     'ゲームジャム' => 2,
     'gamejam' => 2,
     'game jam' => 2,
-    '合宿' => 2,
-    'ハック' => 1
   }
 
   HACKATHON_KEYWORD_CALENDER_INDEX = {
@@ -77,6 +75,10 @@ class Event < ApplicationRecord
     '合宿' => 4,
     'ハック' => 1
   }
+
+  before_create do
+    self.distribute_event_type
+  end
 
   before_save do
     if self.url.size > 255
@@ -101,45 +103,73 @@ class Event < ApplicationRecord
     GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
   end
 
+  def distribute_event_type
+    if self.hackathon_event?
+      self.type = HackathonEvent.to_s
+    elsif self.development_camp?
+      self.type = DevelopmentCampEvent.to_s
+    else
+      self.type = nil
+    end
+  end
+
   def hackathon_event?
-    return true if self.type == 'SelfPostEvent'
-    return hackathon_event_hit_keyword.present?
-  end
-
-  def hackathon_event_hit_keyword
-    appear_count = 0
-    Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
-      sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
-      appear_count += sanitized_title.scan(keyword).size * point * 3
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
-      appear_count += sanitized_description.scan(keyword).size * point
-
-      if appear_count >= 6
-        return nil if keyword == '合宿' && !development_camp?(keyword: keyword)
-        return keyword
+    sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+    score = 0
+    direct_keywords = ['hackathon', 'ハッカソン', 'hack day', 'アイディアソン', 'アイデアソン', 'ideathon', 'ゲームジャム', 'gamejam', 'game jam']
+    direct_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 1
+        break
       end
     end
-    return nil
+    if score >= 1
+      return true
+    end
+
+    sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+    direct_keywords.each do |keyword|
+      score += sanitized_description.scan(keyword).size * 0.35
+      if score >= 1
+        return true
+      end
+    end
+    return false
   end
 
-  def development_camp?(keyword: nil)
-    sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
-    if keyword.present?
-      check_word = keyword
-    else
-      check_word = Event::HACKATHON_KEYWORDS.detect { |word| sanitized_title.include?(word) }
-    end
-    if check_word == '合宿'
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
-      appear_count = 0
-      Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
-        appear_count += sanitized_title.scan(keyword).size * 2
-        appear_count += sanitized_description.scan(keyword).size
+  def development_camp?
+    sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+    score = 0
+    camp_keywords = ["合宿", "キャンプ", "camp"]
+    camp_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 0.5
+        break
       end
-      return appear_count >= 2
-    else
-      return false
     end
+
+    development_keywords = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
+    development_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 0.5
+        break
+      end
+    end
+    if score >= 1
+      return true
+    end
+    sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+    (camp_keywords + development_keywords).each do |keyword|
+      score += sanitized_description.scan(keyword).size * 0.2
+      if score >= 1
+        return true
+      end
+    end
+    return false
+  end
+
+  def hashtags
+    return %w[#hackathon #ハッカソン]
   end
 
   def generate_tweet_text
@@ -147,11 +177,7 @@ class Event < ApplicationRecord
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
-    if development_camp?
-      tweet_words += %w[#開発合宿 #合宿]
-    else
-      tweet_words += %w[#hackathon #ハッカソン]
-    end
+    tweet_words += self.hashtags
     text_size = 0
     tweet_words.select! do |text|
       text_size += text.size

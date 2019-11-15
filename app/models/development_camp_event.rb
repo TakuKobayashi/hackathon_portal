@@ -61,4 +61,8 @@ class DevelopmentCampEvent < Event
     'gamejam' => 3,
     'game jam' => 3
   }
+
+  def hashtags
+    return %w[#開発合宿 #合宿]
+  end
 end
