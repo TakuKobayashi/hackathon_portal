@@ -1289,3 +1289,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1288,'hardcider');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1289,'サノバスミス');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1290,'sonofthesmith');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1291,'cheftakuya');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1292,'VTuberhackFukuoka');
