@@ -39,7 +39,7 @@
 class UnityEvent < Event
   UNITY_KEYWORDS = %w[unity Unity ユニティ XR AR VR]
 
-  def self.import_events!
-    self.import_events_from_keywords!(keywords: UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+  def default_hashtags
+    return %w[#hackathon #ハッカソン]
   end
 end

@@ -166,7 +166,7 @@ class Event < ApplicationRecord
     return false
   end
 
-  def hashtags
+  def default_hashtags
     return %w[#hackathon #ハッカソン]
   end
 
@@ -175,7 +175,7 @@ class Event < ApplicationRecord
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
-    tweet_words += self.hashtags
+    tweet_words += self.default_hashtags
     text_size = 0
     tweet_words.select! do |text|
       text_size += text.size
