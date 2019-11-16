@@ -90,6 +90,14 @@ class Event < ApplicationRecord
     return '1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY'
   end
 
+  def self.google_bot_refresh_token
+    return ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+  end
+
+  def self.qiita_access_token
+    return ENV.fetch('QIITA_BOT_ACCESS_TOKEN', '')
+  end
+
   def self.import_events!
     keywords = HACKATHON_KEYWORDS + %w[はっかそん]
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする

@@ -25,8 +25,9 @@ class QiitaBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def self.post_or_update_article!(events: [], event_type: 'Event', access_token: nil)
-    client = self.get_qiita_client(access_token: access_token)
+  def self.post_or_update_article!(events: [], event_type: 'Event')
+    event_class = event_type.capitalize
+    client = self.get_qiita_client(access_token: event_class.qiita_access_token)
     events_group = events.group_by(&:season_date_number)
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)

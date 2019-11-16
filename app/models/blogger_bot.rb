@@ -25,12 +25,11 @@ class BloggerBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  BLOGGER_BLOG_URL = 'https://hackathonportal.blogspot.com/'
-
-  def self.post_or_update_article!(blogger_blog_url:, refresh_token:, access_token: nil, events: [], event_type: 'Event')
+  def self.post_or_update_article!(blogger_blog_url:, events: [], event_type: 'Event')
+    event_class = event_type.capitalize
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
-    service = self.get_google_blogger_service(refresh_token: refresh_token, access_token: access_token)
+    service = self.get_google_blogger_service(refresh_token: event_class.google_bot_refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
 
     events_group = events.group_by { |e| e.started_at.year * 10000 + e.started_at.month }
