@@ -191,4 +191,16 @@ class Event < ApplicationRecord
     end
     return tweet_words.uniq.join("\n")
   end
+
+  def self.generate_qiita_topic_title(year_number: ,start_month: ,end_month:)
+    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
+  end
+
+  def self.generate_qiita_title(year_number: ,start_month: ,end_month:)
+    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!"
+  end
+
+  def self.attached_qiita_tags
+    return [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
+  end
 end
