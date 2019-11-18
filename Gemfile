@@ -37,10 +37,6 @@ gem "httpclient"
 gem "kaminari"
 gem "whenever", :require => false
 
-gem "omniauth"
-gem "omniauth-twitter"
-gem "certified"
-
 gem "google-api-client"
 
 gem "qiita"
