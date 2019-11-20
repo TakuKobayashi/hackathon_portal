@@ -1291,3 +1291,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1290,'sonofthesmith');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1291,'cheftakuya');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1292,'VTuberhackFukuoka');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1293,'Teams');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1294,'ggjmd');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1295,'今まで常識だと思っていた');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1296,'キレイなデザインやカッコいいデザインだけじゃない');
