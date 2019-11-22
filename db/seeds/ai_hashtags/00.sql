@@ -1294,3 +1294,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1293,'Teams');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1294,'ggjmd');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1295,'今まで常識だと思っていた');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1296,'キレイなデザインやカッコいいデザインだけじゃない');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1297,'ArtecRobo2.0');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1298,'obniz');
