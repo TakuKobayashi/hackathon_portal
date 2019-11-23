@@ -1296,3 +1296,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1295,'今まで常識だと�
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1296,'キレイなデザインやカッコいいデザインだけじゃない');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1297,'ArtecRobo2.0');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1298,'obniz');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1299,'高知ハッカソン2020');
