@@ -1303,3 +1303,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1302,'teamaijp');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1303,'あなたを幸せにしたいんだ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1304,'あなたを幸せにしたいんだ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1305,'あなたを幸せにしたいんだ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1306,'soilab');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1307,'NHACK');
