@@ -1305,3 +1305,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1304,'あなたを幸せに�
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1305,'あなたを幸せにしたいんだ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1306,'soilab');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1307,'NHACK');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1308,'AMac2020');
