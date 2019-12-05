@@ -1,0 +1,32 @@
+image: "ruby:2.6.3"
+
+cache:
+  paths:
+    - vendor/bundle
+    - node_modules
+
+services:
+  - mysql:5.7
+
+variables:
+  MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq mysql-server mysql-client libmysqlclient-dev nodejs
+  - gem install bundler --no-document
+  - bundle install --jobs 4 --retry 3
+
+stages:
+  - crawler
+
+CrawlAndPublish:
+  stage: crawler
+  script:
+    - RAILS_ENV=production rails db:create
+    - RAILS_ENV=production rails db:migrate
+    - RAILS_ENV=production rails db:seed
+    - RAILS_ENV=production rails runner Event.import_events!
+    - RAILS_ENV=production rails backup:export_active_records_data
+  artifacts:
+    paths:
+      - log/
