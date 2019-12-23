@@ -1,32 +1,36 @@
-image: "ruby:2.6.3"
-
-cache:
-  paths:
-    - vendor/bundle
-    - node_modules
-
-services:
-  - mysql:5.7
-
-variables:
-  MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-
-before_script:
-  - apt-get update -qq && apt-get install -y -qq mysql-server mysql-client libmysqlclient-dev nodejs
-  - gem install bundler --no-document
-  - bundle install --jobs 4 --retry 3
-
 stages:
-  - crawler
+  - crawl-and-publish
+
+.base_job_template: &base_job_definition
+  image: amd2/rails-gitlab-runner
+  tags:
+    - docker
+  cache:
+    untracked: true
+    key: "$CI_BUILD_NAME"
+    paths:
+      - vendor
+
+.database_job_template: &database_job_template
+  <<: *base_job_definition
+  services:
+    - mysql:5.7
+  variables:
+    MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    RAILS_MAX_THREADS: "5"
+    RAILS_ENV: production
+  before_script:
+    - ruby -v
+    - bundle install --jobs $(nproc) --path vendor/bundle
 
 CrawlAndPublish:
-  stage: crawler
+  <<: *database_job_template
+  stage: crawl-and-publish
+  allow_failure: true
   script:
-    - RAILS_ENV=production rails db:create
-    - RAILS_ENV=production rails db:migrate
-    - RAILS_ENV=production rails db:seed
-    - RAILS_ENV=production rails runner Event.import_events!
-    - RAILS_ENV=production rails backup:export_active_records_data
+    - rails db:setup
+    - rails runner Event.import_events!
+    - rails backup:export_active_records_data
   artifacts:
     paths:
       - log/
