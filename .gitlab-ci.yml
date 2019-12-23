@@ -16,12 +16,29 @@ stages:
   services:
     - mysql:5.7
   variables:
-    MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    MYSQL_ROOT_PASSWORD: ""
+    MYSQL_USER: "root"
+    MYSQL_PASSWORD: ""
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     RAILS_MAX_THREADS: "5"
     RAILS_ENV: production
   before_script:
     - ruby -v
     - bundle install --jobs $(nproc) --path vendor/bundle
+    - echo "MYSQL_USERNAME='root'" >> ./.env
+    - echo "MYSQL_PASSWORD=''" >> ./.env
+    - echo "TWITTER_CONSUMER_KEY='$TWITTER_CONSUMER_KEY'" >> ./.env
+    - echo "TWITTER_CONSUMER_SECRET='$TWITTER_CONSUMER_SECRET'" >> ./.env
+    - echo "TWITTER_BOT_ACCESS_TOKEN='$TWITTER_BOT_ACCESS_TOKEN'" >> ./.env
+    - echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='$TWITTER_BOT_ACCESS_TOKEN_SECRET'" >> ./.env
+    - echo "GOOGLE_API_KEY='$GOOGLE_API_KEY'" >> ./.env
+    - echo "GOOGLE_OAUTH_CLIENT_ID='$GOOGLE_OAUTH_CLIENT_ID'" >> ./.env
+    - echo "GOOGLE_OAUTH_CLIENT_SECRET='$GOOGLE_OAUTH_CLIENT_SECRET'" >> ./.env
+    - echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='$GOOGLE_OAUTH_BOT_REFRESH_TOKEN'" >> ./.env
+    - echo "QIITA_BOT_ACCESS_TOKEN='$QIITA_BOT_ACCESS_TOKEN'" >> ./.env
+    - echo "MEETUP_API_KEY='$MEETUP_API_KEY'" >> ./.env
+    - echo "BITLY_ACCESS_TOKEN='$BITLY_ACCESS_TOKEN'" >> ./.env
+    - echo "DOORKEEPER_API_KEY='$DOORKEEPER_API_KEY'" >> ./.env
 
 CrawlAndPublish:
   <<: *database_job_template
