@@ -27,6 +27,7 @@ stages:
     - bundle install --jobs $(nproc) --path vendor/bundle
     - echo "MYSQL_USERNAME='root'" >> ./.env
     - echo "MYSQL_PASSWORD=''" >> ./.env
+    - echo "MYSQL_HOST='mysql'" >> ./.env
     - echo "TWITTER_CONSUMER_KEY='$TWITTER_CONSUMER_KEY'" >> ./.env
     - echo "TWITTER_CONSUMER_SECRET='$TWITTER_CONSUMER_SECRET'" >> ./.env
     - echo "TWITTER_BOT_ACCESS_TOKEN='$TWITTER_BOT_ACCESS_TOKEN'" >> ./.env
@@ -45,7 +46,10 @@ CrawlAndPublish:
   stage: crawl-and-publish
   allow_failure: true
   script:
-    - rails db:setup
+    - rails db:drop
+    - rails db:create
+    - rails db:migrate
+    - rails db:seed
     - rails runner Event.import_events!
     - rails backup:export_active_records_data
   artifacts:
