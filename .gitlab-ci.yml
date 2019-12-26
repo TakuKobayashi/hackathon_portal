@@ -44,13 +44,13 @@ crawlAndPublish:
   stage: crawl-and-publish
   script:
     - cat .env
-    - rails db:drop
-    - rails db:create
-    - rails db:migrate
-    - rails db:seed
-    - rails runner Event.import_events!
-    - rails batch:event_bot_tweet
-    - rails backup:export_active_records_data
+    - bundle exec rails db:drop
+    - bundle exec rails db:create
+    - bundle exec rails db:migrate
+    - bundle exec rails db:seed
+    - bundle exec rails runner Event.import_events!
+    - bundle exec rails batch:event_bot_tweet
+    - bundle exec rails backup:export_active_records_data
     - git config --local user.email "${GITHUB_USER_EMAIL}"
     - git config --local user.name "${GITHUB_USER_NAME}"
     - git remote set-url origin "https://${GITHUB_USER_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/TakuKobayashi/hackathon_portal.git"
