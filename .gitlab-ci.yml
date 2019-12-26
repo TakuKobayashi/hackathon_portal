@@ -1,18 +1,9 @@
+image: "ruby:2.6"
+
 stages:
   - crawl-and-publish
 
-.base_job_template: &base_job_definition
-  image: amd2/rails-gitlab-runner
-  tags:
-    - docker
-  cache:
-    untracked: true
-    key: "${CI_BUILD_NAME}"
-    paths:
-      - vendor
-
-.database_job_template: &database_job_template
-  <<: *base_job_definition
+.rails-mysql-base-template: &rails-mysql-base-template
   services:
     - mysql:5.7
   variables:
@@ -21,13 +12,17 @@ stages:
     MYSQL_PASSWORD: ""
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     RAILS_MAX_THREADS: "5"
-    RAILS_ENV: production
+    RAILS_ENV: development
   before_script:
+    - apt --quiet update --yes
+    - curl -sL https://deb.nodesource.com/setup_10.x | bash -
+    - apt install --quiet --yes nodejs mysql-client unzip git
+    - gem install bundler --no-document
     - bundle install --jobs $(nproc) --path vendor/bundle
-    - echo "MYSQL_USERNAME='root'" >> ./.env
-    - echo "MYSQL_PASSWORD=''" >> ./.env
-    - echo "MYSQL_HOST='mysql'" >> ./.env
-    - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> ./.env
+    - echo "MYSQL_USERNAME='root'" >> .env
+    - echo "MYSQL_PASSWORD=''" >> .env
+    - echo "MYSQL_HOST='mysql'" >> .env
+    - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> .env
     - echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> ./.env
     - echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> ./.env
     - echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='${TWITTER_BOT_ACCESS_TOKEN_SECRET}'" >> ./.env
@@ -39,12 +34,17 @@ stages:
     - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> ./.env
     - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> ./.env
     - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> ./.env
+  cache:
+    untracked: true
+    paths:
+      - vendor
 
 crawlAndPublish:
-  <<: *database_job_template
+  <<: *rails-mysql-base-template
   stage: crawl-and-publish
   allow_failure: true
   script:
+    - cat .env
     - rails db:drop
     - rails db:create
     - rails db:migrate
