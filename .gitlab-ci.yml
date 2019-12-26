@@ -1,32 +1,62 @@
-image: "ruby:2.6.3"
-
-cache:
-  paths:
-    - vendor/bundle
-    - node_modules
-
-services:
-  - mysql:5.7
-
-variables:
-  MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-
-before_script:
-  - apt-get update -qq && apt-get install -y -qq mysql-server mysql-client libmysqlclient-dev nodejs
-  - gem install bundler --no-document
-  - bundle install --jobs 4 --retry 3
-
 stages:
-  - crawler
+  - crawl-and-publish
 
-CrawlAndPublish:
-  stage: crawler
+.base_job_template: &base_job_definition
+  image: amd2/rails-gitlab-runner
+  tags:
+    - docker
+  cache:
+    untracked: true
+    key: "${CI_BUILD_NAME}"
+    paths:
+      - vendor
+
+.database_job_template: &database_job_template
+  <<: *base_job_definition
+  services:
+    - mysql:5.7
+  variables:
+    MYSQL_ROOT_PASSWORD: ""
+    MYSQL_USER: "root"
+    MYSQL_PASSWORD: ""
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    RAILS_MAX_THREADS: "5"
+    RAILS_ENV: production
+  before_script:
+    - bundle install --jobs $(nproc) --path vendor/bundle
+    - echo "MYSQL_USERNAME='root'" >> ./.env
+    - echo "MYSQL_PASSWORD=''" >> ./.env
+    - echo "MYSQL_HOST='mysql'" >> ./.env
+    - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> ./.env
+    - echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> ./.env
+    - echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> ./.env
+    - echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='${TWITTER_BOT_ACCESS_TOKEN_SECRET}'" >> ./.env
+    - echo "GOOGLE_API_KEY='${GOOGLE_API_KEY}'" >> ./.env
+    - echo "GOOGLE_OAUTH_CLIENT_ID='${GOOGLE_OAUTH_CLIENT_ID}'" >> ./.env
+    - echo "GOOGLE_OAUTH_CLIENT_SECRET='${GOOGLE_OAUTH_CLIENT_SECRET}'" >> ./.env
+    - echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}'" >> ./.env
+    - echo "QIITA_BOT_ACCESS_TOKEN='${QIITA_BOT_ACCESS_TOKEN}'" >> ./.env
+    - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> ./.env
+    - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> ./.env
+    - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> ./.env
+
+crawlAndPublish:
+  <<: *database_job_template
+  stage: crawl-and-publish
+  allow_failure: true
   script:
-    - RAILS_ENV=production rails db:create
-    - RAILS_ENV=production rails db:migrate
-    - RAILS_ENV=production rails db:seed
-    - RAILS_ENV=production rails runner Event.import_events!
-    - RAILS_ENV=production rails backup:export_active_records_data
+    - rails db:drop
+    - rails db:create
+    - rails db:migrate
+    - rails db:seed
+    - rails runner Event.import_events!
+    - rails batch:event_bot_tweet
+    - rails backup:export_active_records_data
+    - git config --local user.email "${GITHUB_USER_EMAIL}"
+    - git config --local user.name "${GITHUB_USER_NAME}"
+    - git remote set-url origin "https://${GITHUB_USER_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/TakuKobayashi/hackathon_portal.git"
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data" -a
+    - git push origin HEAD:crawled-data
   artifacts:
     paths:
       - log/

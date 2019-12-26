@@ -249,8 +249,6 @@ GEM
     multi_json (1.14.1)
     multipart-post (2.1.1)
     mysql2 (0.5.2)
-    natto (1.1.2)
-      ffi (>= 1.9.0)
     naught (1.1.0)
     nio4r (2.5.2)
     nokogiri (1.10.4)
@@ -456,7 +454,6 @@ DEPENDENCIES
   kaminari
   listen (>= 3.0.5, < 3.2)
   mysql2
-  natto
   omniauth
   omniauth-twitter
   parallel
@@ -477,9 +474,6 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   whenever
   xml-simple
-
-RUBY VERSION
-   ruby 2.6.3p62
 
 BUNDLED WITH
    1.17.3
