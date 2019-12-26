@@ -16,7 +16,7 @@ stages:
   before_script:
     - apt --quiet update --yes
     - curl -sL https://deb.nodesource.com/setup_10.x | bash -
-    - apt install --quiet --yes nodejs mysql-client unzip git
+    - apt install --quiet --yes nodejs default-mysql-client unzip git
     - gem install bundler --no-document
     - bundle install --jobs $(nproc) --path vendor/bundle
     - echo "MYSQL_USERNAME='root'" >> .env
@@ -42,7 +42,6 @@ stages:
 crawlAndPublish:
   <<: *rails-mysql-base-template
   stage: crawl-and-publish
-  allow_failure: true
   script:
     - cat .env
     - rails db:drop
