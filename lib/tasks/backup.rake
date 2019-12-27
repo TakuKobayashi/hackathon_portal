@@ -22,6 +22,7 @@ namespace :backup do
   task export_active_records_data: :environment do
     environment = Rails.env
     configuration = ActiveRecord::Base.configurations[environment]
+    host = Regexp.escape(configuration['host'].to_s)
     database = Regexp.escape(configuration['database'].to_s)
     username = Regexp.escape(configuration['username'].to_s)
     password = Regexp.escape(configuration['password'].to_s)
@@ -33,7 +34,7 @@ namespace :backup do
     model_classes.each do |model_class|
       export_table_directory_name = Rails.root.join("db", "seeds", model_class.table_name)
       export_full_dump_sql = Rails.root.join("db", "seeds", model_class.table_name + ".sql")
-      mysqldump_commands = ["mysqldump", "-u", username]
+      mysqldump_commands = ["mysqldump", "-u", username, "-h", host]
       if password.present?
         mysqldump_commands << "-p#{password}"
       end
