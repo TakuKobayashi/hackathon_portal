@@ -23,17 +23,17 @@ stages:
     - echo "MYSQL_PASSWORD=''" >> .env
     - echo "MYSQL_HOST='mysql'" >> .env
     - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> .env
-    - echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> ./.env
-    - echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> ./.env
-    - echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='${TWITTER_BOT_ACCESS_TOKEN_SECRET}'" >> ./.env
-    - echo "GOOGLE_API_KEY='${GOOGLE_API_KEY}'" >> ./.env
-    - echo "GOOGLE_OAUTH_CLIENT_ID='${GOOGLE_OAUTH_CLIENT_ID}'" >> ./.env
-    - echo "GOOGLE_OAUTH_CLIENT_SECRET='${GOOGLE_OAUTH_CLIENT_SECRET}'" >> ./.env
-    - echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}'" >> ./.env
-    - echo "QIITA_BOT_ACCESS_TOKEN='${QIITA_BOT_ACCESS_TOKEN}'" >> ./.env
-    - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> ./.env
-    - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> ./.env
-    - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> ./.env
+    - echo "TWITTER_CONSUMER_SECRET='${TWITTER_CONSUMER_SECRET}'" >> .env
+    - echo "TWITTER_BOT_ACCESS_TOKEN='${TWITTER_BOT_ACCESS_TOKEN}'" >> .env
+    - echo "TWITTER_BOT_ACCESS_TOKEN_SECRET='${TWITTER_BOT_ACCESS_TOKEN_SECRET}'" >> .env
+    - echo "GOOGLE_API_KEY='${GOOGLE_API_KEY}'" >> .env
+    - echo "GOOGLE_OAUTH_CLIENT_ID='${GOOGLE_OAUTH_CLIENT_ID}'" >> .env
+    - echo "GOOGLE_OAUTH_CLIENT_SECRET='${GOOGLE_OAUTH_CLIENT_SECRET}'" >> .env
+    - echo "GOOGLE_OAUTH_BOT_REFRESH_TOKEN='${GOOGLE_OAUTH_BOT_REFRESH_TOKEN}'" >> .env
+    - echo "QIITA_BOT_ACCESS_TOKEN='${QIITA_BOT_ACCESS_TOKEN}'" >> .env
+    - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> .env
+    - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> .env
+    - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> .env
   cache:
     untracked: true
     paths:
@@ -43,13 +43,11 @@ crawlAndPublish:
   <<: *rails-mysql-base-template
   stage: crawl-and-publish
   script:
-    - cat .env
     - bundle exec rails db:drop
     - bundle exec rails db:create
     - bundle exec rails db:migrate
     - bundle exec rails db:seed
     - bundle exec rails runner Event.import_events!
-    - bundle exec rails batch:event_bot_tweet
     - bundle exec rails backup:export_active_records_data
     - git config --local user.email "${GITHUB_USER_EMAIL}"
     - git config --local user.name "${GITHUB_USER_NAME}"
