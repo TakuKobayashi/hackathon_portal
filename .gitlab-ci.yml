@@ -56,6 +56,7 @@ crawlAndPublish:on-schedule:
     - bundle exec rails runner Event.import_events!
     - bundle exec rails batch:event_bot_tweet
     - bundle exec rails backup:export_active_records_data
+    - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin crawled-data
   artifacts:
