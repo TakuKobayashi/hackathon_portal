@@ -12,7 +12,7 @@ stages:
     MYSQL_PASSWORD: ""
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     RAILS_MAX_THREADS: "5"
-    RAILS_ENV: development
+    RAILS_ENV: production
   before_script:
     - apt --quiet update --yes
     - curl -sL https://deb.nodesource.com/setup_10.x | bash -
@@ -49,8 +49,14 @@ crawlAndPublish:on-schedule:
     - git config --local user.name "${GIT_COMMIT_USER_NAME}"
     - git remote set-url origin "https://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/taptappun/hackathon_portal.git"
     - git checkout -b crawled-data origin/crawled-data
-    - touch tmp.txt
-    - git add tmp.txt
+    - bundle exec rails db:drop
+    - bundle exec rails db:create
+    - bundle exec rails db:migrate
+    - bundle exec rails db:seed
+    - bundle exec rails runner Event.import_events!
+    - bundle exec rails batch:event_bot_tweet
+    - bundle exec rails backup:export_active_records_data
+    - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin crawled-data
   artifacts:
