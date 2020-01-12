@@ -68,13 +68,20 @@ class QiitaBot < ApplicationRecord
       response_tags = response['tags'] || []
       qiita_bot.update!(
         {
-          title: response['title'],
+          title: response['title'].to_s,
           url: response['url'],
           body: response['body'],
           rendered_body: response['raw_body'],
           tag_names: response_tags.map { |t| t['name'] }
         }
       )
+      if response['title'].blenk?
+        logger = ActiveSupport::Logger.new('log/request_error.log')
+        console = ActiveSupport::Logger.new(STDOUT)
+        logger.extend ActiveSupport::Logger.broadcast(console)
+        message = {qiita_bot: qiita_bot, qiita_response: response).to_json
+        logger.info(message)
+      end
     end
   end
 
