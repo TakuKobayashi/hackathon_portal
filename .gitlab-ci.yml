@@ -47,7 +47,8 @@ crawlAndPublish:
     - git config --local user.name "${GIT_COMMIT_USER_NAME}"
     - git remote set-url origin "https://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/taptappun/hackathon_portal.git"
     - touch tmp.txt
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data" -a
+    - git add tmp.txt
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin HEAD:crawled-data
   artifacts:
     paths:
