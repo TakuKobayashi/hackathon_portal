@@ -34,6 +34,7 @@ stages:
     - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> .env
     - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> .env
     - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> .env
+    - cat .env
   cache:
     untracked: true
     paths:

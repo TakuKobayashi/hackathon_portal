@@ -47,21 +47,23 @@ class EventCalendarBot < ApplicationRecord
       end
       color_id = colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
       calender_event.color_id = color_id if color_id.present?
-=begin
-      calender_gadget = Google::Apis::CalendarV3::Event::Gadget.new({
-        title: event.title,
-        link: event.url
-      })
-      image_url = event.get_og_image_url
-      if image_url.to_s.match(/^https:\/\//).present?
-        calender_gadget.icon_link = image_url
-      end
-      calender_event.gadget = calender_gadget.to_h
-=end
 
       if current_calenders[event.id].present?
         current_event_calendar_bot = current_calenders[event.id]
-        service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
+        begin
+          service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
+        rescue Google::Apis::RateLimitError => e
+          logger = ActiveSupport::Logger.new('log/request_error.log')
+          console = ActiveSupport::Logger.new(STDOUT)
+          logger.extend ActiveSupport::Logger.broadcast(console)
+          message = {
+            error_message: e.message,
+            target_calender_id: target_calender_id,
+            calender_event_id: current_event_calendar_bot.calender_event_id,
+            calender_event: calender_event.to_h,
+          }.to_json
+          logger.info(message)
+        end
         event_calendars << current_event_calendar_bot
       else
         result = service.insert_event(target_calender_id, calender_event)
