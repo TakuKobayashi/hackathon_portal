@@ -19,7 +19,7 @@ stages:
     - apt install --quiet --yes nodejs default-mysql-client unzip git
     - gem install bundler --no-document
     - bundle install --jobs $(nproc) --path vendor/bundle
-    - echo "MYSQL_USERNAME='root'" >> .env
+    - echo "MYSQL_USERNAME='root'" > .env
     - echo "MYSQL_PASSWORD=''" >> .env
     - echo "MYSQL_HOST='mysql'" >> .env
     - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> .env
@@ -55,10 +55,14 @@ crawlAndPublish:on-schedule:
     - bundle exec rails db:migrate
     - bundle exec rails db:seed
     - bundle exec rails runner Event.import_events!
-    - bundle exec rails batch:event_bot_tweet
     - bundle exec rails backup:export_active_records_data
     - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
+    - git push origin crawled-data
+    - bundle exec rails batch:event_bot_tweet
+    - bundle exec rails backup:export_active_records_data
+    - git add db/
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
     - git push origin crawled-data
   artifacts:
     paths:
