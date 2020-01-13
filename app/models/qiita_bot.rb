@@ -80,7 +80,7 @@ class QiitaBot < ApplicationRecord
         logger = ActiveSupport::Logger.new('log/bot_error.log')
         console = ActiveSupport::Logger.new(STDOUT)
         logger.extend ActiveSupport::Logger.broadcast(console)
-        message = {qiita_bot: qiita_bot.to_hash, qiita_response: response, will_sendparams: send_params}.to_json
+        message = {qiita_bot: qiita_bot.attributes, qiita_response: response, will_sendparams: send_params}.to_json
         logger.info(message)
       end
     end
