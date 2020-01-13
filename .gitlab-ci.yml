@@ -19,7 +19,7 @@ stages:
     - apt install --quiet --yes nodejs default-mysql-client unzip git
     - gem install bundler --no-document
     - bundle install --jobs $(nproc) --path vendor/bundle
-    - echo "MYSQL_USERNAME='root'" >> .env
+    - echo "MYSQL_USERNAME='root'" > .env
     - echo "MYSQL_PASSWORD=''" >> .env
     - echo "MYSQL_HOST='mysql'" >> .env
     - echo "TWITTER_CONSUMER_KEY='${TWITTER_CONSUMER_KEY}'" >> .env
