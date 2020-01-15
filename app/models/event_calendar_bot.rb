@@ -53,22 +53,18 @@ class EventCalendarBot < ApplicationRecord
         begin
           service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
         rescue Google::Apis::RateLimitError => e
-          logger = ActiveSupport::Logger.new('log/request_error.log')
-          console = ActiveSupport::Logger.new(STDOUT)
-          logger.extend ActiveSupport::Logger.broadcast(console)
-          message = {
-            error_message: e.message,
-            target_calender_id: target_calender_id,
-            calender_event_id: current_event_calendar_bot.calender_event_id,
-            calender_event: calender_event.to_h,
-          }.to_json
-          logger.info(message)
+          self.record_ratelimit_error_request_log(error: e, target_calender_id: target_calender_id, calender_event_id: current_event_calendar_bot.calender_event_id, calender_event_hash: calender_event.to_h)
         end
         event_calendars << current_event_calendar_bot
       else
-        result = service.insert_event(target_calender_id, calender_event)
-        event_calendars << EventCalendarBot.create!(from: event, calender_event_id: result.id)
+        begin
+          result = service.insert_event(target_calender_id, calender_event)
+          event_calendars << EventCalendarBot.create!(from: event, calender_event_id: result.id)
+        rescue Google::Apis::RateLimitError => e
+          self.record_ratelimit_error_request_log(error: e, target_calender_id: target_calender_id, calender_event_id: nil, calender_event_hash: calender_event.to_h)
+        end
       end
+      return event_calendars
     end
 
     GoogleOauth2Client.record_access_token(
@@ -94,5 +90,19 @@ class EventCalendarBot < ApplicationRecord
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
     return service
+  end
+
+  private
+  def self.record_ratelimit_error_request_log(error:, target_calender_id:, calender_event_id:, calender_event_hash:)
+    logger = ActiveSupport::Logger.new('log/request_error.log')
+    console = ActiveSupport::Logger.new(STDOUT)
+    logger.extend ActiveSupport::Logger.broadcast(console)
+    message = {
+      error_message: error.message,
+      target_calender_id: target_calender_id,
+      calender_event_id: current_event_calendar_bot.calender_event_id,
+      calender_event: calender_event_hash,
+    }.to_json
+    logger.info(message)
   end
 end
