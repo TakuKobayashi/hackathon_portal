@@ -1,9 +1,13 @@
 class IntegrateEventsTable < ActiveRecord::Migration[6.0]
   def up
     Event.update_all(type: nil)
-    Event.find_each do |event|
-      event.distribute_event_type
-      event.save!
+    Event.find_in_batches do |events|
+      ActiveRecord::Base.transaction do
+        events.each do |event|
+          event.distribute_event_type
+          event.save!
+        end
+      end
     end
     event_columns = Event.column_names - ["id", "type"]
     start_id = Event.last.id
