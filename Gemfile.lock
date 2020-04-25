@@ -1034,7 +1034,6 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
-    certified (1.0.0)
     charwidth (0.1.5)
     childprocess (3.0.0)
     chromedriver-helper (2.1.1)
@@ -1106,7 +1105,6 @@ GEM
     has_scope (0.7.2)
       actionpack (>= 4.1)
       activesupport (>= 4.1)
-    hashie (4.1.0)
     http (4.4.1)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -1171,16 +1169,6 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    oauth (0.5.4)
-    omniauth (1.9.1)
-      hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
-    omniauth-oauth (1.1.0)
-      oauth
-      omniauth (~> 1.0)
-    omniauth-twitter (1.4.0)
-      omniauth-oauth (~> 1.1)
-      rack
     orm_adapter (0.5.0)
     os (1.1.0)
     parallel (1.19.2)
@@ -1355,7 +1343,6 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
-  certified
   charwidth
   chromedriver-helper
   chronic
@@ -1374,8 +1361,6 @@ DEPENDENCIES
   monetize
   money
   mysql2
-  omniauth
-  omniauth-twitter
   parallel
   prettier
   puma (~> 4.0)
