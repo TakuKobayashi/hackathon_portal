@@ -102,7 +102,7 @@ class Event < ApplicationRecord
     keywords = HACKATHON_KEYWORDS + %w[はっかそん]
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation, AtndOperation]
+    operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
       operation_module.import_events_from_keywords!(event_clazz: Event, keywords: keywords)
     end
@@ -110,6 +110,7 @@ class Event < ApplicationRecord
   end
 
   def distribute_event_type
+    # TODO アイディアソンもここで振り分けたい
     if self.hackathon_event?
       self.type = HackathonEvent.to_s
     elsif self.development_camp?
@@ -119,6 +120,7 @@ class Event < ApplicationRecord
     end
   end
 
+  # TODO データの取得先に応じて判定ロジックを変えたい
   def hackathon_event?
     sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
     score = 0
