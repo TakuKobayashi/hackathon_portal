@@ -68,7 +68,7 @@ class EventCalendarBot < ApplicationRecord
     end
 
     GoogleOauth2Client.record_access_token(
-      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_CALENDER_REFRESH_TOKEN', ''), authorization: service.authorization
+      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''), authorization: service.authorization
     )
     return event_calendars
   end
