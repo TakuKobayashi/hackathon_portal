@@ -38,6 +38,6 @@
 
 class Doorkeeper < Event
   def self.import_events!
-    DoorkeeperOperation.import_events_from_keywords!(event_clazz: Doorkeeper,keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    DoorkeeperOperation.import_events_from_keywords!(event_clazz: Doorkeeper, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end

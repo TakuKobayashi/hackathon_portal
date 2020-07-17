@@ -38,6 +38,8 @@
 
 class Scaling::DoorkeeperUnityEvent < Scaling::UnityEvent
   def self.import_events!
-    DoorkeeperOperation.import_events_from_keywords!(event_clazz: Scaling::DoorkeeperUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+    DoorkeeperOperation.import_events_from_keywords!(
+      event_clazz: Scaling::DoorkeeperUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ]
+    )
   end
 end

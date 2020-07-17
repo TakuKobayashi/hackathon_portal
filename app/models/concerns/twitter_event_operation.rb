@@ -13,7 +13,7 @@ module TwitterEventOperation
     begin
       max_tweet_id = nil
       begin
-        tweets_response = self.find_tweets(keywords: keywords, options: {max_id: max_tweet_id})
+        tweets_response = self.find_tweets(keywords: keywords, options: { max_id: max_tweet_id })
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1

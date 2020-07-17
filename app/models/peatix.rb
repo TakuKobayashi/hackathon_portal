@@ -38,6 +38,6 @@
 
 class Peatix < Event
   def self.import_events!
-    PeatixOperation.import_events_from_keywords!(event_clazz: Peatix,keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    PeatixOperation.import_events_from_keywords!(event_clazz: Peatix, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end
