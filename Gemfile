@@ -63,7 +63,7 @@ gem "geocoder"
 
 gem "fastimage"
 gem "dotenv-rails", require: "dotenv/rails-now"
-gem "aws-sdk", "~> 2"
+gem "aws-sdk", "~> 3"
 
 gem 'chronic'
 gem 'parallel'

@@ -2,7 +2,13 @@ module DoorkeeperOperation
   DOORKEEPER_URL = 'https://api.doorkeeper.jp/events'
 
   def self.find_event(keywords:, page: 1)
-    return RequestParser.request_and_parse_json(url: DOORKEEPER_URL, params: { q: keywords.join('|'), page: page }, header: {"Authorization" => ["Bearer", ENV.fetch('DOORKEEPER_API_KEY', '')].join(" ")})
+    return(
+      RequestParser.request_and_parse_json(
+        url: DOORKEEPER_URL,
+        params: { q: keywords.join('|'), page: page },
+        header: { 'Authorization' => ['Bearer', ENV.fetch('DOORKEEPER_API_KEY', '')].join(' ') }
+      )
+    )
   end
 
   def self.import_events_from_keywords!(event_clazz:, keywords:)

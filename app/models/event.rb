@@ -85,16 +85,14 @@ class Event < ApplicationRecord
   end
 
   def self.google_form_spreadsheet_id
-    return "1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY"
+    return '1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY'
   end
 
   def self.import_events!
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
     event_classes = [Connpass, Doorkeeper, Peatix, GoogleFormEvent]
-    Parallel.each(event_classes, in_threads: event_classes.size) do |event_class|
-      event_class.import_events!
-    end
+    Parallel.each(event_classes, in_threads: event_classes.size, &:import_events!)
   end
 
   def hackathon_event?

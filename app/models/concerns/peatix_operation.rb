@@ -5,11 +5,13 @@ module PeatixOperation
   PAGE_PER = 10
 
   def self.find_event(keywords:, page: 1)
-    return RequestParser.request_and_parse_json(
-      url: PEATIX_SEARCH_URL,
-      params: { q: keywords.join(' '), country: 'JP', p: page, size: PAGE_PER },
-      header: { 'X-Requested-With' => 'XMLHttpRequest' },
-      options: { follow_redirect: true }
+    return(
+      RequestParser.request_and_parse_json(
+        url: PEATIX_SEARCH_URL,
+        params: { q: keywords.join(' '), country: 'JP', p: page, size: PAGE_PER },
+        header: { 'X-Requested-With' => 'XMLHttpRequest' },
+        options: { follow_redirect: true }
+      )
     )
   end
 
@@ -18,7 +20,7 @@ module PeatixOperation
     update_columns = event_clazz.column_names - %w[id type shortener_url event_id created_at]
     begin
       events_response = self.find_event(keywords: keywords, page: page)
-      json_data = events_response['json_data'] || {"events" => []}
+      json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
       current_events = event_clazz.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
       json_data['events'].each do |res|
