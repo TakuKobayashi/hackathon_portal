@@ -38,6 +38,8 @@
 
 class Scaling::PeatixUnityEvent < Scaling::UnityEvent
   def self.import_events!
-    PeatixOperation.import_events_from_keywords!(event_clazz: Scaling::PeatixUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ])
+    PeatixOperation.import_events_from_keywords!(
+      event_clazz: Scaling::PeatixUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ]
+    )
   end
 end

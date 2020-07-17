@@ -24,7 +24,7 @@ module GoogleOauth2Client
       oauth_client.access_token = access_token
     else
       if google_oauth_config[refresh_token].present? && google_oauth_config[refresh_token]['expires_at'].present? &&
-         Time.parse(google_oauth_config[refresh_token]['expires_at']) < Time.current
+           Time.parse(google_oauth_config[refresh_token]['expires_at']) < Time.current
         oauth_client.access_token = google_oauth_config[refresh_token]['access_token']
       end
     end

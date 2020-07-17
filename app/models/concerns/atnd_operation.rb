@@ -3,8 +3,8 @@ module AtndOperation
   ATND_EVENTPAGE_URL = 'https://atnd.org/events/'
 
   def self.find_event(keywords:, start: 1)
-    return RequestParser.request_and_parse_json(
-      url: ATND_API_URL, params: { keyword_or: keywords, count: 100, start: start, format: :json }
+    return(
+      RequestParser.request_and_parse_json(url: ATND_API_URL, params: { keyword_or: keywords, count: 100, start: start, format: :json })
     )
   end
 
@@ -13,7 +13,8 @@ module AtndOperation
     begin
       events_response = self.find_event(keywords: keywords, start: start)
       start += events_response['results_returned']
-      current_events = event_clazz.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
+      current_events =
+        event_clazz.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
       events_response['events'].each do |res|
         event_clazz.transaction do
           event = res['event']

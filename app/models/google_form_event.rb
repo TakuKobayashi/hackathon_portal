@@ -38,6 +38,8 @@
 
 class GoogleFormEvent < Event
   def self.import_events!
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    GoogleFormEventOperation.load_and_imoport_events!(
+      event_clazz: GoogleFormEvent, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+    )
   end
 end

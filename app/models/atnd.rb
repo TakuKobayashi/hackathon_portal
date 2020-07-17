@@ -38,6 +38,6 @@
 
 class Atnd < Event
   def self.import_events!
-    AtndOperation.import_events_from_keywords!(event_clazz: Atnd,keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+    AtndOperation.import_events_from_keywords!(event_clazz: Atnd, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
   end
 end
