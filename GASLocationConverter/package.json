@@ -1,0 +1,26 @@
+{
+  "name": "HackathonPortal",
+  "version": "1.0.0",
+  "description": "clasp Google App Script using Typescript",
+  "main": "src/index.ts",
+  "scripts": {
+    "push": "clasp push",
+    "watch": "watch 'yarn run build && yarn run push' src/",
+    "format": "prettier --config .prettierrc --write 'src/**/*.{ts,js}'",
+    "clasp": "clasp",
+    "deploy": "yarn run push && clasp deploy",
+    "undeploy:latest": "clasp undeploy",
+    "undeploy:all": "clasp undeploy --all",
+    "open": "clasp open",
+    "open:webapp": "clasp open --webapp"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "@types/google-apps-script": "^1.0.14",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.5",
+    "watch": "^1.0.2"
+  },
+  "license": "MIT"
+}
