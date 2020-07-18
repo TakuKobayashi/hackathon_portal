@@ -29,7 +29,7 @@ class BloggerBot < ApplicationRecord
     event_class = event_type.capitalize
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
-    service = self.get_google_blogger_service(refresh_token: event_class.google_bot_refresh_token)
+    service = GoogleServices.get_blogger_service(refresh_token: event_class.google_bot_refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
 
     events_group = events.group_by { |e| e.started_at.year * 10000 + e.started_at.month }
@@ -41,8 +41,8 @@ class BloggerBot < ApplicationRecord
         event_type.classify.constantize.where(id: blogger_bot.event_ids).order('started_at ASC').partition do |e|
           e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
         end
-      start_month = date_number % 10_000
-      year_number = (date_number / 10_000).to_i
+      start_month = date_number % 10000
+      year_number = (date_number / 10000).to_i
       blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
       blogger_bot.body =
         action_view_renderer.render(
@@ -73,11 +73,5 @@ class BloggerBot < ApplicationRecord
         tag_names: result_blogger_post.labels
       }
     )
-  end
-
-  def self.get_google_blogger_service(refresh_token:, access_token: nil)
-    sheet_service = Google::Apis::SheetsV4::SheetsService.new
-    sheet_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: refresh_token, access_token: access_token)
-    return sheet_service
   end
 end
