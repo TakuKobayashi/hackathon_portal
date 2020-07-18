@@ -25,41 +25,42 @@ class QiitaBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def self.post_or_update_article!(events: [], event_type: 'Event')
-    event_class = event_type.capitalize
-    client = self.get_qiita_client(access_token: event_class.qiita_access_token)
+  def generate_post_send_params(year_number:, start_month:,end_month:)
+    qiita_events = Event.where(id: qiita_bot.event_ids).order('started_at ASC')
+    before_events_from_qiita, after_events_from_qiita = qiita_events.partition do |e|
+      e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
+    end
+    body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
+    body +=
+      "#{year_number}年#{start_month}月〜#{year_number}年#{
+        end_month
+      }月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
+    body += "# これから開催されるイベント\n\n"
+    body += before_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
+    if after_events_from_qiita.present?
+      body += "\n\n---------------------------------------\n\n"
+      body += "# すでに終了したイベント\n\n"
+      body += after_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
+    end
+    send_params = {
+      title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
+      body: body,
+      tags: [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
+    }
+    return send_params
+  end
+
+  def self.post_or_update_article!(events: [], access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+    client = self.get_qiita_client(access_token: access_token)
     events_group = events.group_by(&:season_date_number)
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
-      qiita_bot.event_type = event_type
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      before_events_from_qiita, after_events_from_qiita =
-        event_type.classify.constantize.where(id: qiita_bot.event_ids).order('started_at ASC').partition do |e|
-          e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
-        end
-
-      month_range = date_number % 10_000
-      year_number = (date_number / 10_000).to_i
+      month_range = date_number % 10000
+      year_number = (date_number / 10000).to_i
       start_month = (month_range / 100).to_i
       end_month = (month_range % 100).to_i
-      body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
-      body +=
-        "#{year_number}年#{start_month}月〜#{year_number}年#{
-          end_month
-        }月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
-      body += "# これから開催されるイベント\n\n"
-      body += before_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
-      if after_events_from_qiita.present?
-        body += "\n\n---------------------------------------\n\n"
-        body += "# すでに終了したイベント\n\n"
-        body += after_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
-      end
-      send_params = {
-        title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
-        body: body,
-        tags: [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
-      }
-
+      send_params = qiita_bot.generate_post_send_params(year_number: year_number, start_month: start_month, end_month: end_month)
       if qiita_bot.new_record?
         response = client.create_item(send_params).body
       else
@@ -88,9 +89,8 @@ class QiitaBot < ApplicationRecord
   end
 
   private
-
-  def self.get_qiita_client(access_token: nil)
-    client = Qiita::Client.new(access_token: access_token || ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+  def self.get_qiita_client(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+    client = Qiita::Client.new(access_token: access_token)
     return client
   end
 end
