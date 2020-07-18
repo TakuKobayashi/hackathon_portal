@@ -6,20 +6,8 @@ module BackupToGoogleServices
   SPREADSHEET_ID = '1bIEvJBml-Y-uiiVcNQzdKbbR9rSsb4ott-nQY4AucyQ'
   BACKUP_ROOT_DIRECTORY_NAME = 'backup'
 
-  def self.get_google_sheet_service
-    sheet_service = Google::Apis::SheetsV4::SheetsService.new
-    sheet_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
-    return sheet_service
-  end
-
-  def self.get_google_drive_service
-    drive_service = Google::Apis::DriveV3::DriveService.new
-    drive_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
-    return drive_service
-  end
-
   def self.backup_and_upload_and_clear_data!(backup_models: [])
-    drive = self.get_google_drive_service
+    drive = GoogleServices.get_drive_service
     backup_folder =
       drive.list_files({ q: "name='#{BACKUP_ROOT_DIRECTORY_NAME}' and mimeType='application/vnd.google-apps.folder'" }).files.first
     if backup_folder.blank?
@@ -64,7 +52,7 @@ module BackupToGoogleServices
   end
 
   def self.backup_table_to_spreadsheet!(backup_models: [])
-    service = self.get_google_sheet_service
+    service = GoogleServices.get_sheet_service
     target_spreadsheet = service.get_spreadsheet(SPREADSHEET_ID)
     backup_models.each do |model_class|
       row_count = model_class.count
@@ -88,11 +76,5 @@ module BackupToGoogleServices
       value_range = Google::Apis::SheetsV4::ValueRange.new(values: cell_rows)
       updated = service.update_spreadsheet_value(SPREADSHEET_ID, range, value_range, value_input_option: 'USER_ENTERED')
     end
-  end
-
-  def self.get_google_blogger_service
-    blogger_service = Google::Apis::BloggerV3::BloggerService.new
-    blogger_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
-    return blogger_service
   end
 end
