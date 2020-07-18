@@ -22,30 +22,12 @@ module EventCommon
   end
 
   def build_location_data
-    #geo_result = Geocoder.search(self.address).first
-
     script_url = 'https://script.google.com/macros/s/AKfycbxM1zm-Ep6jsV87pi5U9UQJQM4YvU2BHiCOghOV90wYCae3mtNfrz3JIQLWBxSMoJF0zA/exec'
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result =
         RequestParser.request_and_parse_json(url: script_url, params: { address: self.address }, options: { follow_redirect: true })
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
-
-      #      geo_result =
-      #        RequestParser.request_and_parse_json(
-      #          url: 'https://maps.googleapis.com/maps/api/geocode/json',
-      #          params: { address: self.address, language: 'ja', key: ENV.fetch('GOOGLE_API_KEY', '') }
-      #        )[
-      #          'results'
-      #        ]
-      #          .first
-
-      #      if geo_result.present?
-      #        self.lat = geo_result['geometry']['location']['lat']
-      #        self.lon = geo_result['geometry']['location']['lng']
-      #        self.lat = geo_result.latitude
-      #        self.lon = geo_result.longitude
-      #      end
     elsif self.address.blank? && self.lat.present? && self.lon.present?
       geo_result =
         RequestParser.request_and_parse_json(
@@ -54,28 +36,6 @@ module EventCommon
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
       self.address = geo_result['address'].to_s
-      #      geo_result =
-      #        RequestParser.request_and_parse_json(
-      #          url: 'https://maps.googleapis.com/maps/api/geocode/json',
-      #          params: { latlng: [self.lat, self.lon].join(','), language: 'ja', key: ENV.fetch('GOOGLE_API_KEY', '') }
-      #        )[
-      #          'results'
-      #        ]
-      #          .first
-      #      geo_result = Geocoder.search([self.lat, self.lon].join(",")).first
-
-      #      if geo_result.present?
-      #        searched_address =
-      #          Charwidth.normalize(Sanitizer.scan_japan_address(geo_result['formatted_address']).join).gsub(
-      #            %r{^[0-9【】、。《》「」〔〕・（）［］｛｝！＂＃＄％＆＇＊＋，－．／：；＜＝＞？＠＼＾＿｀｜￠￡￣\(\)\[\]<>{},!? \.\-\+\\~^='&%$#\"\'_\/;:*‼•一]},
-      #            ''
-      #          )
-      #            .strip
-      #            .split(' ')
-      #            .first
-      #        self.address = searched_address if searched_address.present?
-      #self.address = Sanitizer.scan_japan_address(geo_result.address).join
-      #      end
     end
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip
