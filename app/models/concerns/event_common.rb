@@ -3,10 +3,12 @@ module EventCommon
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
+
     if ops.started_at.present? && ops.started_at.is_a?(String)
       parsed_started_at = DateTime.parse(ops.started_at)
       ops.started_at = parsed_started_at if self.started_at.try(:utc) != parsed_started_at.try(:utc)
     end
+
     if ops.ended_at.present? && ops.ended_at.is_a?(String)
       parsed_ended_at = DateTime.parse(ops.ended_at)
       ops.ended_at = parsed_ended_at if self.ended_at.try(:utc) != parsed_ended_at.try(:utc)
@@ -78,7 +80,7 @@ module EventCommon
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip
     else
-      self.address = ""
+      self.address = ''
     end
   end
 

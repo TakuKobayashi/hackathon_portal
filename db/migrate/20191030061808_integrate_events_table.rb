@@ -14,7 +14,7 @@ class IntegrateEventsTable < ActiveRecord::Migration[6.0]
     ActiveRecord::Base.transaction do
       ActiveRecord::Base.connection.execute("INSERT INTO events(#{event_columns.join(",")}) SELECT #{event_columns.join(",")} FROM scaling_unity_events")
     end
-    Event.where("id > ?", start_id).update_all(type: "UnityEvent")
+    Event.where('id > ?', start_id).update_all(type: 'UnityEvent')
     drop_table :scaling_unity_events
   end
 
