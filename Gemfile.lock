@@ -1080,7 +1080,6 @@ GEM
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
-    geocoder (1.6.3)
     get_process_mem (0.2.5)
       ffi (~> 1.0)
     git (1.7.0)
@@ -1350,7 +1349,6 @@ DEPENDENCIES
   devise
   dotenv-rails
   fastimage
-  geocoder
   git
   google-api-client
   httpclient

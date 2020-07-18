@@ -55,8 +55,6 @@ gem "addressable"
 
 gem "puma_worker_killer"
 
-gem "geocoder"
-
 gem "fastimage"
 gem "dotenv-rails", require: "dotenv/rails-now"
 gem "aws-sdk", "~> 3"
