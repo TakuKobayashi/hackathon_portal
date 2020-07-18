@@ -20,14 +20,18 @@ require 'google/apis/calendar_v3'
 class EventCalendarBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
-  POST_CALENDER_NAME = 'ハッカソンポータル'
+  def self.calender_title
+    return 'ハッカソンポータル'
+  end
 
-  def self.insert_or_update_calender!(events: [])
-    service = GoogleServices.get_calender_service
-    target_calender_id = get_target_calender_id
+  def self.insert_or_update_calender!(events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    service = GoogleServices.get_calender_service(refresh_token: refresh_token)
+    calenders = service.list_calendar_lists
+    target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
+    target_calender_id = target_calender.try(:id)
     colors = service.get_color
 
-    current_calenders = EventCalendarBot.where(from: events).index_by(&:from_id)
+    current_calenders = EventCalendarBot.where(from_type: events.map).index_by(&:from_id)
     event_calendars = []
     events.each do |event|
       calender_event =
@@ -48,45 +52,26 @@ class EventCalendarBot < ApplicationRecord
       color_id = colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
       calender_event.color_id = color_id if color_id.present?
 
-      if current_calenders[event.id].present?
-        current_event_calendar_bot = current_calenders[event.id]
-        begin
-          service.update_event(target_calender_id, current_event_calendar_bot.calender_event_id, calender_event)
-        rescue Google::Apis::RateLimitError => e
-          self.record_ratelimit_error_request_log(
-            error: e,
-            target_calender_id: target_calender_id,
-            calender_event_id: current_event_calendar_bot.calender_event_id,
-            calender_event_hash: calender_event.to_h
-          )
-        end
-        event_calendars << current_event_calendar_bot
-      else
-        begin
+      calender_bot = self.find_or_initialize_by(from: event)
+      begin
+        if calender_bot.new_record?
           result = service.insert_event(target_calender_id, calender_event)
-          event_calendars << EventCalendarBot.create!(from: event, calender_event_id: result.id)
-        rescue Google::Apis::RateLimitError => e
-          self.record_ratelimit_error_request_log(
-            error: e, target_calender_id: target_calender_id, calender_event_id: nil, calender_event_hash: calender_event.to_h
-          )
+          calender_bot.calender_event_id = result.id
+          calender_bot.save!
+        else
+          service.update_event(target_calender_id, calender_bot.calender_event_id, calender_event)
         end
+      rescue Google::Apis::RateLimitError => e
+        self.record_ratelimit_error_request_log(
+          error: e,
+          target_calender_id: target_calender_id,
+          calender_event_id: calender_bot.try(:calender_event_id),
+          calender_event_hash: calender_event.to_h
+        )
       end
-      return event_calendars
+      event_calendars << calender_bot
     end
     return event_calendars
-  end
-
-  def self.get_target_calender_id
-    local_storage = ExtraInfo.read_extra_info
-    if local_storage['target_post_calender_id'].present?
-      return local_storage['target_post_calender_id']
-    else
-      service = GoogleServices.get_calender_service
-      calenders = service.list_calendar_lists
-      target_calender = calenders.items.detect { |item| item.summary == POST_CALENDER_NAME }
-      ExtraInfo.update({ 'target_post_calender_id' => target_calender.try(:id) })
-      return target_calender.try(:id)
-    end
   end
 
   private
