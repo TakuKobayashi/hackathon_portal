@@ -25,33 +25,34 @@ class BloggerBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def self.post_or_update_article!(blogger_blog_url:, events: [], event_type: 'Event')
-    event_class = event_type.capitalize
+  def self.post_or_update_article!(blogger_blog_url:, events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
-    service = GoogleServices.get_blogger_service(refresh_token: event_class.google_bot_refresh_token)
+    service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
 
     events_group = events.group_by { |e| e.started_at.year * 10000 + e.started_at.month }
     events_group.each do |date_number, event_arr|
       blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
-      blogger_bot.event_type = event_type
       blogger_bot.event_ids = [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      before_events, after_events =
-        event_type.classify.constantize.where(id: blogger_bot.event_ids).order('started_at ASC').partition do |e|
-          e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
-        end
-      start_month = date_number % 10000
-      year_number = (date_number / 10000).to_i
-      blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
-      blogger_bot.body =
-        action_view_renderer.render(
-          template: 'blogger/publish',
-          format: 'html',
-          locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
-        )
+      blogger_bot.build_content
       blogger_bot.update_blogger!(google_api_service: service)
     end
+  end
+
+  def build_content
+    before_events, after_events = Event.where(id: blogger_bot.event_ids).order('started_at ASC').partition do |e|
+      e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
+    end
+    start_month = date_number % 10000
+    year_number = (date_number / 10000).to_i
+    blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
+    blogger_bot.body =
+      action_view_renderer.render(
+        template: 'blogger/publish',
+        format: 'html',
+        locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
+      )
   end
 
   def update_blogger!(google_api_service:)
