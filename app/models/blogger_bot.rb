@@ -35,12 +35,12 @@ class BloggerBot < ApplicationRecord
     events_group.each do |date_number, event_arr|
       blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
       blogger_bot.event_ids = [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      blogger_bot.build_content
+      blogger_bot.build_content(action_view_renderer: action_view_renderer)
       blogger_bot.update_blogger!(google_api_service: service)
     end
   end
 
-  def build_content
+  def build_content(action_view_renderer:)
     before_events, after_events = Event.where(id: blogger_bot.event_ids).order('started_at ASC').partition do |e|
       e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
     end
