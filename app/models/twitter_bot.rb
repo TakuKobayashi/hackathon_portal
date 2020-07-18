@@ -33,13 +33,13 @@ class TwitterBot < ApplicationRecord
     destroy!
   end
 
-  def self.get_twitter_client(access_token: nil, access_token_secret: nil)
+  def self.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     twitter_client =
       Twitter::REST::Client.new do |config|
         config.consumer_key = ENV.fetch('TWITTER_CONSUMER_KEY', '')
         config.consumer_secret = ENV.fetch('TWITTER_CONSUMER_SECRET', '')
-        config.access_token = access_token || ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', '')
-        config.access_token_secret = access_token_secret || ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+        config.access_token = access_token
+        config.access_token_secret = access_token_secret
       end
     return twitter_client
   end
