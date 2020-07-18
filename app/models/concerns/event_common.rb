@@ -28,7 +28,6 @@ module EventCommon
         RequestParser.request_and_parse_json(url: script_url, params: { address: self.address }, options: { follow_redirect: true })
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
-      self.address = geo_result['address']
 
       #      geo_result =
       #        RequestParser.request_and_parse_json(
