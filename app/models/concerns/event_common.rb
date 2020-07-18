@@ -51,7 +51,7 @@ module EventCommon
         )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
-      self.address = geo_result['address']
+      self.address = geo_result['address'].to_s
       #      geo_result =
       #        RequestParser.request_and_parse_json(
       #          url: 'https://maps.googleapis.com/maps/api/geocode/json',
@@ -75,7 +75,11 @@ module EventCommon
       #self.address = Sanitizer.scan_japan_address(geo_result.address).join
       #      end
     end
-    self.address = Charwidth.normalize(self.address).strip if self.address.present?
+    if self.address.present?
+      self.address = Charwidth.normalize(self.address).strip
+    else
+      self.address = ""
+    end
   end
 
   def import_hashtags!(hashtag_strings: [])
