@@ -23,7 +23,7 @@ class EventCalendarBot < ApplicationRecord
   POST_CALENDER_NAME = 'ハッカソンポータル'
 
   def self.insert_or_update_calender!(events: [])
-    service = self.google_calender_client
+    service = GoogleServices.get_calender_service
     target_calender_id = get_target_calender_id
     colors = service.get_color
 
@@ -73,10 +73,6 @@ class EventCalendarBot < ApplicationRecord
       end
       return event_calendars
     end
-
-    GoogleOauth2Client.record_access_token(
-      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''), authorization: service.authorization
-    )
     return event_calendars
   end
 
@@ -85,18 +81,12 @@ class EventCalendarBot < ApplicationRecord
     if local_storage['target_post_calender_id'].present?
       return local_storage['target_post_calender_id']
     else
-      service = self.google_calender_client
+      service = GoogleServices.get_calender_service
       calenders = service.list_calendar_lists
       target_calender = calenders.items.detect { |item| item.summary == POST_CALENDER_NAME }
       ExtraInfo.update({ 'target_post_calender_id' => target_calender.try(:id) })
       return target_calender.try(:id)
     end
-  end
-
-  def self.google_calender_client
-    service = Google::Apis::CalendarV3::CalendarService.new
-    service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
-    return service
   end
 
   private
