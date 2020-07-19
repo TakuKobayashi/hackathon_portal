@@ -158,7 +158,7 @@ module EventCommon
 
   # {年}{開始月}{終了月}になるように番号を形成する
   def season_date_number
-    number = self.started_at.year * 10_000
+    number = self.started_at.year * 10000
     month = self.started_at.month
     if (1..2).cover?(month)
       return number + 102
@@ -171,7 +171,7 @@ module EventCommon
     elsif (9..10).cover?(month)
       return number + 910
     elsif (11..12).cover?(month)
-      return number + 1_112
+      return number + 1112
     end
   end
 
