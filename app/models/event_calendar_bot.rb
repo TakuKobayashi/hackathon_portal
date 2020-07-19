@@ -48,7 +48,14 @@ class EventCalendarBot < ApplicationRecord
       else
         calender_event.end = { date_time: event.started_at.end_of_day.to_datetime.rfc3339 }
       end
-      color_id = colors.calendar.keys[Event::HACKATHON_KEYWORD_CALENDER_INDEX[event.hackathon_event_hit_keyword].to_i]
+      #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
+      if event.hackathon_event?
+        color_id = colors.calendar.keys[1]
+      elsif event.development_camp?
+        color_id = colors.calendar.keys[4]
+      else
+        color_id = colors.calendar.keys[5]
+      end
       calender_event.color_id = color_id if color_id.present?
 
       calender_bot = self.find_or_initialize_by(from: event)
