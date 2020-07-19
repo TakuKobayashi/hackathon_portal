@@ -9,7 +9,6 @@
 #  url             :string(255)      not null
 #  date_number     :integer          not null
 #  tag_names       :string(255)
-#  event_type      :string(255)
 #  event_ids       :text(65535)      not null
 #  body            :text(16777215)   not null
 #  created_at      :datetime         not null

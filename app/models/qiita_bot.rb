@@ -13,7 +13,6 @@
 #  rendered_body :text(16777215)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  event_type    :string(255)
 #
 # Indexes
 #
