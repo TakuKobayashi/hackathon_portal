@@ -38,6 +38,7 @@
 
 class Scaling::UnityEvent < ApplicationRecord
   include EventCommon
+  enum informed_from: Event.informed_froms
 
   enum judge_state: { before_judge: 0, maybe_unity: 1, another_development_event: 2, unknown: 9 }
 

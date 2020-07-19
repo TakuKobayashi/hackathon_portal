@@ -26,7 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  judge_state       :integer          default("before_judge"), not null
+#  informed_from     :integer          default("web"), not null
 #
 # Indexes
 #
@@ -39,7 +39,7 @@
 class Event < ApplicationRecord
   include EventCommon
 
-  enum judge_state: { before_judge: 0, maybe_hackathon: 1, maybe_development_camp: 2, another_development_event: 3, unknown: 9 }
+  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
@@ -58,8 +58,6 @@ class Event < ApplicationRecord
     'ゲームジャム' => 2,
     'gamejam' => 2,
     'game jam' => 2,
-    '合宿' => 2,
-    'ハック' => 1
   }
 
   HACKATHON_KEYWORD_CALENDER_INDEX = {
@@ -76,6 +74,10 @@ class Event < ApplicationRecord
     'ハック' => 1
   }
 
+  before_create do
+    self.distribute_event_type
+  end
+
   before_save do
     if self.url.size > 255
       shorted_url = self.get_short_url
@@ -88,52 +90,94 @@ class Event < ApplicationRecord
     return '1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY'
   end
 
+  def self.google_bot_refresh_token
+    return ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+  end
+
+  def self.qiita_access_token
+    return ENV.fetch('QIITA_BOT_ACCESS_TOKEN', '')
+  end
+
   def self.import_events!
+    keywords = HACKATHON_KEYWORDS + %w[はっかそん]
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    event_classes = [Connpass, Doorkeeper, Peatix, GoogleFormEvent]
-    Parallel.each(event_classes, in_threads: event_classes.size, &:import_events!)
+    operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
+    Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
+      operation_module.import_events_from_keywords!(event_clazz: Event, keywords: keywords)
+    end
+    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: Event, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
   end
 
+  def distribute_event_type
+    # TODO アイディアソンもここで振り分けたい
+    if self.hackathon_event?
+      self.type = HackathonEvent.to_s
+    elsif self.development_camp?
+      self.type = DevelopmentCampEvent.to_s
+    else
+      self.type = nil
+    end
+  end
+
+  # TODO データの取得先に応じて判定ロジックを変えたい
   def hackathon_event?
-    return true if self.type == 'SelfPostEvent'
-    return hackathon_event_hit_keyword.present?
-  end
-
-  def hackathon_event_hit_keyword
-    appear_count = 0
-    Event::HACKATHON_CHECK_SEARCH_KEYWORD_POINTS.each do |keyword, point|
-      sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
-      appear_count += sanitized_title.scan(keyword).size * point * 3
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
-      appear_count += sanitized_description.scan(keyword).size * point
-
-      if appear_count >= 6
-        return nil if keyword == '合宿' && !development_camp?(keyword: keyword)
-        return keyword
+    sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+    score = 0
+    direct_keywords = ['hackathon', 'ハッカソン', 'hack day', 'アイディアソン', 'アイデアソン', 'ideathon', 'ゲームジャム', 'gamejam', 'game jam']
+    direct_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 1
+        break
       end
     end
-    return nil
+    if score >= 1
+      return true
+    end
+
+    sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+    direct_keywords.each do |keyword|
+      score += sanitized_description.scan(keyword).size * 0.35
+      if score >= 1
+        return true
+      end
+    end
+    return false
   end
 
-  def development_camp?(keyword: nil)
-    sanitized_title = Sanitizer.basic_sanitize(self.title).downcase
-    if keyword.present?
-      check_word = keyword
-    else
-      check_word = Event::HACKATHON_KEYWORDS.detect { |word| sanitized_title.include?(word) }
-    end
-    if check_word == '合宿'
-      sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
-      appear_count = 0
-      Event::DEVELOPMENT_CAMP_KEYWORDS.each do |keyword|
-        appear_count += sanitized_title.scan(keyword).size * 2
-        appear_count += sanitized_description.scan(keyword).size
+  def development_camp?
+    sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+    score = 0
+    camp_keywords = ["合宿", "キャンプ", "camp"]
+    camp_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 0.5
+        break
       end
-      return appear_count >= 2
-    else
-      return false
     end
+
+    development_keywords = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
+    development_keywords.each do |word|
+      if sanitized_title.include?(word)
+        score += 0.5
+        break
+      end
+    end
+    if score >= 1
+      return true
+    end
+    sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
+    (camp_keywords + development_keywords).each do |keyword|
+      score += sanitized_description.scan(keyword).size * 0.2
+      if score >= 1
+        return true
+      end
+    end
+    return false
+  end
+
+  def default_hashtags
+    return %w[#hackathon #ハッカソン]
   end
 
   def generate_tweet_text
@@ -141,16 +185,24 @@ class Event < ApplicationRecord
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
-    if development_camp?
-      tweet_words += %w[#開発合宿 #合宿]
-    else
-      tweet_words += %w[#hackathon #ハッカソン]
-    end
+    tweet_words += self.default_hashtags
     text_size = 0
     tweet_words.select! do |text|
       text_size += text.size
       text_size <= 140
     end
     return tweet_words.uniq.join("\n")
+  end
+
+  def self.generate_qiita_topic_title(year_number: ,start_month: ,end_month:)
+    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
+  end
+
+  def self.generate_qiita_title(year_number: ,start_month: ,end_month:)
+    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!"
+  end
+
+  def self.attached_qiita_tags
+    return [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
   end
 end

@@ -37,10 +37,6 @@ gem "httpclient"
 gem "kaminari"
 gem "whenever", :require => false
 
-gem "omniauth"
-gem "omniauth-twitter"
-gem "certified"
-
 gem "google-api-client"
 
 gem "qiita"
@@ -58,8 +54,6 @@ gem "xml-simple"
 gem "addressable"
 
 gem "puma_worker_killer"
-
-gem "geocoder"
 
 gem "fastimage"
 gem "dotenv-rails", require: "dotenv/rails-now"

@@ -20,26 +20,26 @@
 class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
-  def self.tweet!(text:, from: nil, options: {})
-    twitter_client = self.get_twitter_client
+  def self.tweet!(text:, from: nil, access_token: nil, access_token_secret: nil, options: {})
+    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     tweet_result = twitter_client.update(text, options)
     twitter_bot = TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from)
     return twitter_bot
   end
 
-  def reject_tweet!
-    twitter_client = TwitterBot.get_twitter_client
+  def reject_tweet!(access_token: nil, access_token_secret: nil)
+    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     result = twitter_client.destroy_status(self.tweet_id)
     destroy!
   end
 
-  def self.get_twitter_client
+  def self.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     twitter_client =
       Twitter::REST::Client.new do |config|
         config.consumer_key = ENV.fetch('TWITTER_CONSUMER_KEY', '')
         config.consumer_secret = ENV.fetch('TWITTER_CONSUMER_SECRET', '')
-        config.access_token = ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', '')
-        config.access_token_secret = ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+        config.access_token = access_token
+        config.access_token_secret = access_token_secret
       end
     return twitter_client
   end

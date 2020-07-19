@@ -1,8 +1,8 @@
 # == Schema Information
 #
-# Table name: scaling_unity_events
+# Table name: events
 #
-#  id                :bigint           not null, primary key
+#  id                :integer          not null, primary key
 #  event_id          :string(255)
 #  type              :string(255)
 #  title             :string(255)      not null
@@ -26,20 +26,20 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  judge_state       :integer          default("before_judge"), not null
+#  informed_from     :integer          default("web"), not null
 #
 # Indexes
 #
-#  index_scaling_unity_events_on_event_id_and_type        (event_id,type)
-#  index_scaling_unity_events_on_started_at_and_ended_at  (started_at,ended_at)
-#  index_scaling_unity_events_on_title                    (title)
-#  index_scaling_unity_events_on_url                      (url)
+#  index_events_on_event_id_and_type        (event_id,type)
+#  index_events_on_started_at_and_ended_at  (started_at,ended_at)
+#  index_events_on_title                    (title)
+#  index_events_on_url                      (url)
 #
 
-class Scaling::PeatixUnityEvent < Scaling::UnityEvent
-  def self.import_events!
-    PeatixOperation.import_events_from_keywords!(
-      event_clazz: Scaling::PeatixUnityEvent, keywords: Scaling::UnityEvent::UNITY_KEYWORDS + %w[ゆにてぃ]
-    )
+class UnityEvent < Event
+  UNITY_KEYWORDS = %w[unity Unity ユニティ XR AR VR]
+
+  def default_hashtags
+    return %w[#hackathon #ハッカソン]
   end
 end
