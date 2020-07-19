@@ -22,7 +22,7 @@ module PeatixOperation
       events_response = self.find_event(keywords: keywords, page: page)
       json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
-      current_events = event_clazz.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
       json_data['events'].each do |res|
         event_clazz.transaction do
           tracking_url = Addressable::URI.parse(res['tracking_url'])
@@ -34,6 +34,7 @@ module PeatixOperation
           end
           peatix_event.merge_event_attributes(
             attrs: {
+              informed_from: :peatix,
               title: res['name'].to_s,
               url: tracking_url.origin.to_s + tracking_url.path.to_s,
               address: res['address'].to_s,
