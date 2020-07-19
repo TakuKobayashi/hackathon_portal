@@ -17,7 +17,7 @@ module MeetupOperation
     update_columns = event_clazz.column_names - %w[id type shortener_url event_id created_at]
     events_response = self.find_event(keywords: keywords)
     res_events = events_response['events'] || []
-    current_events = event_clazz.where(event_id: res_events.map { |res| res['id'] }.compact).index_by(&:event_id)
+    current_events = event_clazz.meetup.where(event_id: res_events.map { |res| res['id'] }.compact).index_by(&:event_id)
     res_events.each do |res|
       event_clazz.transaction do
         if current_events[res['id'].to_s].present?
@@ -37,6 +37,7 @@ module MeetupOperation
         meetup_event.attributes =
           meetup_event.attributes.merge_event_attributes(
             attrs: {
+              informed_from: :meetup,
               title: Sanitizer.basic_sanitize(res['name'].to_s),
               url: res['link'].to_s,
               description: Sanitizer.basic_sanitize(res['description'].to_s),

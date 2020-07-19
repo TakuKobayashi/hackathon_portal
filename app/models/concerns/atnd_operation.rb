@@ -14,7 +14,7 @@ module AtndOperation
       events_response = self.find_event(keywords: keywords, start: start)
       start += events_response['results_returned']
       current_events =
-        event_clazz.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
+        event_clazz.atnd.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
       events_response['events'].each do |res|
         event_clazz.transaction do
           event = res['event']
@@ -25,6 +25,7 @@ module AtndOperation
           end
           atnd_event.merge_event_attributes(
             attrs: {
+              informed_from: :atnd,
               title: event['title'].to_s,
               url: ATND_EVENTPAGE_URL + event['event_id'].to_s,
               description: Sanitizer.basic_sanitize(event['description'].to_s),

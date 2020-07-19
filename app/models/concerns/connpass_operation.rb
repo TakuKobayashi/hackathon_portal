@@ -13,7 +13,7 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_events = event_clazz.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.connpass.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
       res_events.each do |res|
         event_clazz.transaction do
           if current_events[res['event_id'].to_s].present?
@@ -23,6 +23,7 @@ module ConnpassOperation
           end
           connpass_event.merge_event_attributes(
             attrs: {
+              informed_from: :connpass,
               title: res['title'].to_s,
               url: res['event_url'].to_s,
               description: Sanitizer.basic_sanitize(res['description'].to_s),

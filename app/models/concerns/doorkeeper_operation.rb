@@ -15,7 +15,7 @@ module DoorkeeperOperation
     page = 1
     begin
       events_response = self.find_event(keywords: keywords, page: page)
-      current_events = event_clazz.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
+      current_events = event_clazz.doorkeeper.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
       events_response.each do |res|
         event_clazz.transaction do
           event = res['event']
@@ -26,6 +26,7 @@ module DoorkeeperOperation
           end
           doorkeeper_event.merge_event_attributes(
             attrs: {
+              informed_from: :doorkeeper,
               title: event['title'].to_s,
               url: event['public_url'].to_s,
               description: Sanitizer.basic_sanitize(event['description'].to_s),
