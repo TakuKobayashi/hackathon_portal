@@ -14,15 +14,15 @@ namespace :batch do
   end
 
   task event_bot_tweet: :environment do
-    future_events = Event.before_judge.where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC").select { |event| event.hackathon_event? }
+    future_events = Event.where.not(type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC")
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
-        TwitterBot.tweet!(text: event.generate_tweet_text, from: event, options: { lat: event.lat, long: event.lon })
+        TwitterBot.tweet!(text: event.generate_tweet_text, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), from: event, options: { lat: event.lat, long: event.lon })
       end
     end
-    QiitaBot.post_or_update_article!(events: future_events)
-    EventCalendarBot.insert_or_update_calender!(events: future_events)
-    BloggerBot.post_or_update_article!(events: future_events)
+    QiitaBot.post_or_update_article!(events: future_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+    EventCalendarBot.insert_or_update_calender!(events: future_events, refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
+    BloggerBot.post_or_update_article!(events: future_events, blogger_blog_url: 'https://hackathonportal.blogspot.com/', refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
   end
 
   task generate_slide: :environment do

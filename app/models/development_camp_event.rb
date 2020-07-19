@@ -26,7 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  judge_state       :integer          default("before_judge"), not null
+#  informed_from     :integer          default("web"), not null
 #
 # Indexes
 #
@@ -36,8 +36,33 @@
 #  index_events_on_url                      (url)
 #
 
-class Doorkeeper < Event
-  def self.import_events!
-    DoorkeeperOperation.import_events_from_keywords!(event_clazz: Doorkeeper, keywords: Event::HACKATHON_KEYWORDS + %w[はっかそん])
+class DevelopmentCampEvent < Event
+  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon]
+  HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
+    'hackathon' => 2,
+    'ハッカソン' => 2,
+    'hack day' => 2,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 2,
+    'gamejam' => 2,
+    'game jam' => 2
+  }
+
+  HACKATHON_KEYWORD_CALENDER_INDEX = {
+    'hackathon' => 1,
+    'ハッカソン' => 1,
+    'hack day' => 1,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 3,
+    'gamejam' => 3,
+    'game jam' => 3
+  }
+
+  def default_hashtags
+    return %w[#開発合宿 #合宿]
   end
 end

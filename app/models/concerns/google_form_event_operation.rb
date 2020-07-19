@@ -1,14 +1,8 @@
 require 'google/apis/sheets_v4'
 
 module GoogleFormEventOperation
-  def self.get_google_sheet_service(refresh_token:, access_token: nil)
-    sheet_service = Google::Apis::SheetsV4::SheetsService.new
-    sheet_service.authorization = GoogleOauth2Client.oauth2_client(refresh_token: refresh_token, access_token: access_token)
-    return sheet_service
-  end
-
-  def self.load_and_imoport_events!(event_clazz:, refresh_token:, access_token: nil)
-    service = self.get_google_sheet_service(refresh_token: refresh_token, access_token: access_token)
+  def self.load_and_imoport_events!(event_clazz:, refresh_token:)
+    service = GoogleServices.get_sheet_service(refresh_token: refresh_token)
     target_spreadsheet =
       service.get_spreadsheet(
         event_clazz.google_form_spreadsheet_id,

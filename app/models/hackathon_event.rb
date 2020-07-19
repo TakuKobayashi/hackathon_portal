@@ -26,7 +26,7 @@
 #  substitute_number :integer          default(0), not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  judge_state       :integer          default("before_judge"), not null
+#  informed_from     :integer          default("web"), not null
 #
 # Indexes
 #
@@ -36,14 +36,38 @@
 #  index_events_on_url                      (url)
 #
 
-class SelfPostEvent < Event
-  before_create do
-    if self.url.present? && self.description.blank?
-      doc = RequestParser.request_and_parse_html(url: self.url)
-      sanitized_html = Sanitizer.delete_javascript_in_html(doc.css('body').children.to_html)
-      sanitized_html = Sanitizer.delete_html_comment(sanitized_html)
-      sanitized_html = Sanitizer.delete_empty_words(sanitized_html)
-      self.description = Sanitizer.basic_sanitize(sanitized_html).strip
-    end
+class HackathonEvent < Event
+  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
+  DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
+  HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
+    'hackathon' => 2,
+    'ハッカソン' => 2,
+    'hack day' => 2,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 2,
+    'gamejam' => 2,
+    'game jam' => 2,
+    '合宿' => 2,
+    'ハック' => 1
+  }
+
+  HACKATHON_KEYWORD_CALENDER_INDEX = {
+    'hackathon' => 1,
+    'ハッカソン' => 1,
+    'hack day' => 1,
+    'アイディアソン' => 2,
+    'アイデアソン' => 2,
+    'ideathon' => 2,
+    'ゲームジャム' => 3,
+    'gamejam' => 3,
+    'game jam' => 3,
+    '合宿' => 4,
+    'ハック' => 1
+  }
+
+  def default_hashtags
+    return %w[#hackathon #ハッカソン]
   end
 end
