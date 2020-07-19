@@ -44,6 +44,20 @@ module EventCommon
     end
   end
 
+  def build_informed_from_url
+    aurl = Addressable::URI.parse(self.url)
+    if aurl.host.include?("connpass.com")
+      self.informed_from = :connpass
+    elsif aurl.host.include?("peatix.com")
+      self.informed_from = :peatix
+    elsif aurl.host.include?("doorkeeper")
+      self.informed_from = :doorkeeper
+    elsif aurl.host.include?("atnd")
+      self.informed_from = :atnd
+    elsif aurl.host.include?("meetup.com")
+      self.informed_from = :meetup
+    end
+  end
   def import_hashtags!(hashtag_strings: [])
     sanitized_hashtags =
       [hashtag_strings].flatten.map do |hashtag|
