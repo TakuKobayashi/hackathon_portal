@@ -46,8 +46,8 @@ class BloggerBot < ApplicationRecord
     end
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
-    blogger_bot.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
-    blogger_bot.body =
+    self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
+    self.body =
       action_view_renderer.render(
         template: 'blogger/publish',
         format: 'html',
