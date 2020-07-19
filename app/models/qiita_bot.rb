@@ -26,7 +26,7 @@ class QiitaBot < ApplicationRecord
   serialize :event_ids, JSON
 
   def generate_post_send_params(year_number:, start_month:,end_month:)
-    qiita_events = Event.where(id: qiita_bot.event_ids).order('started_at ASC')
+    qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
     before_events_from_qiita, after_events_from_qiita = qiita_events.partition do |e|
       e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
     end
