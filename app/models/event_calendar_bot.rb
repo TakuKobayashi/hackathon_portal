@@ -31,7 +31,6 @@ class EventCalendarBot < ApplicationRecord
     target_calender_id = target_calender.try(:id)
     colors = service.get_color
 
-    current_calenders = EventCalendarBot.where(from_type: events.map).index_by(&:from_id)
     event_calendars = []
     events.each do |event|
       calender_event =
