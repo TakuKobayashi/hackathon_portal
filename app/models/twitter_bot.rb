@@ -33,7 +33,9 @@ class TwitterBot < ApplicationRecord
     destroy!
   end
 
-  def self.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def self.get_twitter_client(
+    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+  )
     twitter_client =
       Twitter::REST::Client.new do |config|
         config.consumer_key = ENV.fetch('TWITTER_CONSUMER_KEY', '')

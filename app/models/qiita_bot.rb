@@ -24,11 +24,10 @@ class QiitaBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def generate_post_send_params(year_number:, start_month:,end_month:)
+  def generate_post_send_params(year_number:, start_month:, end_month:)
     qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
-    before_events_from_qiita, after_events_from_qiita = qiita_events.partition do |e|
-      e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
-    end
+    before_events_from_qiita, after_events_from_qiita =
+      qiita_events.partition { |e| e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current }
     body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
     body +=
       "#{year_number}年#{start_month}月〜#{year_number}年#{
@@ -88,6 +87,7 @@ class QiitaBot < ApplicationRecord
   end
 
   private
+
   def self.get_qiita_client(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     client = Qiita::Client.new(access_token: access_token)
     return client

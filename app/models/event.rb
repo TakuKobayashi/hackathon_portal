@@ -57,7 +57,7 @@ class Event < ApplicationRecord
     'ideathon' => 2,
     'ゲームジャム' => 2,
     'gamejam' => 2,
-    'game jam' => 2,
+    'game jam' => 2
   }
 
   HACKATHON_KEYWORD_CALENDER_INDEX = {
@@ -74,9 +74,7 @@ class Event < ApplicationRecord
     'ハック' => 1
   }
 
-  before_create do
-    self.distribute_event_type
-  end
+  before_create { self.distribute_event_type }
 
   before_save do
     if self.url.size > 255
@@ -116,23 +114,29 @@ class Event < ApplicationRecord
   def hackathon_event?
     sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
     score = 0
-    direct_keywords = ['hackathon', 'ハッカソン', 'hack day', 'アイディアソン', 'アイデアソン', 'ideathon', 'ゲームジャム', 'gamejam', 'game jam']
+    direct_keywords = [
+      'hackathon',
+      'ハッカソン',
+      'hack day',
+      'アイディアソン',
+      'アイデアソン',
+      'ideathon',
+      'ゲームジャム',
+      'gamejam',
+      'game jam'
+    ]
     direct_keywords.each do |word|
       if sanitized_title.include?(word)
         score += 1
         break
       end
     end
-    if score >= 1
-      return true
-    end
+    return true if score >= 1
 
     sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
     direct_keywords.each do |keyword|
       score += sanitized_description.scan(keyword).size * 0.35
-      if score >= 1
-        return true
-      end
+      return true if score >= 1
     end
     return false
   end
@@ -140,7 +144,7 @@ class Event < ApplicationRecord
   def development_camp?
     sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
     score = 0
-    camp_keywords = ["合宿", "キャンプ", "camp"]
+    camp_keywords = %w[合宿 キャンプ camp]
     camp_keywords.each do |word|
       if sanitized_title.include?(word)
         score += 0.5
@@ -148,22 +152,18 @@ class Event < ApplicationRecord
       end
     end
 
-    development_keywords = ["開発", "プログラム", "プログラミング", "ハンズオン", "勉強会", "エンジニア", "デザイナ", "デザイン", "ゲーム"]
+    development_keywords = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
     development_keywords.each do |word|
       if sanitized_title.include?(word)
         score += 0.5
         break
       end
     end
-    if score >= 1
-      return true
-    end
+    return true if score >= 1
     sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
     (camp_keywords + development_keywords).each do |keyword|
       score += sanitized_description.scan(keyword).size * 0.2
-      if score >= 1
-        return true
-      end
+      return true if score >= 1
     end
     return false
   end
@@ -184,17 +184,5 @@ class Event < ApplicationRecord
       text_size <= 140
     end
     return tweet_words.uniq.join("\n")
-  end
-
-  def self.generate_qiita_topic_title(year_number: ,start_month: ,end_month:)
-    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!\n※こちらは自動的に集めたものになります。\n"
-  end
-
-  def self.generate_qiita_title(year_number: ,start_month: ,end_month:)
-    return "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!"
-  end
-
-  def self.attached_qiita_tags
-    return [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
   end
 end
