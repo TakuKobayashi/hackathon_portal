@@ -9,10 +9,12 @@ class IntegrateEventsTable < ActiveRecord::Migration[6.0]
         end
       end
     end
-    event_columns = Event.column_names - ["id", "type"]
+    event_columns = Event.column_names - %w[id type]
     start_id = Event.last.id
     ActiveRecord::Base.transaction do
-      ActiveRecord::Base.connection.execute("INSERT INTO events(#{event_columns.join(",")}) SELECT #{event_columns.join(",")} FROM scaling_unity_events")
+      ActiveRecord::Base.connection.execute(
+        "INSERT INTO events(#{event_columns.join(',')}) SELECT #{event_columns.join(',')} FROM scaling_unity_events"
+      )
     end
     Event.where('id > ?', start_id).update_all(type: 'UnityEvent')
     drop_table :scaling_unity_events

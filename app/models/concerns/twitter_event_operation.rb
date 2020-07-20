@@ -1,6 +1,9 @@
 module TwitterEventOperation
   def self.find_tweets(keywords:, options: {})
-    twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+    twitter_client =
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+      )
     request_options = { count: PAGE_PER, result_type: 'recent', exclude: 'retweets' }.merge(options)
     return twitter_client.search(keywords.join(' OR '), request_options)
   end
@@ -14,7 +17,8 @@ module TwitterEventOperation
     begin
       max_tweet_id = nil
       begin
-        tweets_response = self.find_tweets(keywords: keywords, options: { max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id) })
+        tweets_response =
+          self.find_tweets(keywords: keywords, options: { max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id) })
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
@@ -37,10 +41,7 @@ module TwitterEventOperation
           next if extra_info.title.blank?
 
           #TODO 要ハッカソンイベントかどうかのフィルタリング
-          twitter_event = Event.new(
-            url: url.to_s,
-            informed_from: :twitter,
-          )
+          twitter_event = Event.new(url: url.to_s, informed_from: :twitter)
           twitter_event.build_from_website
           twitter_event.merge_event_attributes(
             attrs:
