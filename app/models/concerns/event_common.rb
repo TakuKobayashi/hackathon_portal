@@ -58,6 +58,32 @@ module EventCommon
       self.informed_from = :meetup
     end
   end
+
+  def build_from_website
+    #TODO 開催日時のスクレイピング
+    dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
+    self.title = dom.try(:title).to_s.truncate(140)
+    dom.css('meta').each do |meta_dom|
+      dom_attrs = OpenStruct.new(meta_dom.to_h)
+      if self.description.blank?
+        if dom_attrs.name == 'description'
+          self.description = dom_attrs.content
+        elsif dom_attrs.property == 'og:description'
+          self.description = dom_attrs.content
+        end
+      end
+    end
+    #      sanitized_body_html = Sanitizer.basic_sanitize(dom.css("body").to_html)
+    #      scaned_urls = Sanitizer.scan_urls(sanitized_body_html)
+
+    sanitized_body_text = Sanitizer.basic_sanitize(dom.css('body').to_html)
+    address_canididates = Sanitizer.scan_japan_address(sanitized_body_text)
+
+    self.address = Sanitizer.match_address_text(address_canididates.first.to_s).to_s
+    self.place = self.address
+    self.started_at = Sanitizer.basic_sanitize(dom.css('body').to_html)
+  end
+
   def import_hashtags!(hashtag_strings: [])
     sanitized_hashtags =
       [hashtag_strings].flatten.map do |hashtag|
