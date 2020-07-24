@@ -34,6 +34,7 @@ module PeatixOperation
           end
           peatix_event.merge_event_attributes(
             attrs: {
+              state: :active,
               informed_from: :peatix,
               title: res['name'].to_s,
               url: tracking_url.origin.to_s + tracking_url.path.to_s,

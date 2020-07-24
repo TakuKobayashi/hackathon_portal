@@ -12,7 +12,7 @@
 #  started_at        :datetime         not null
 #  ended_at          :datetime
 #  limit_number      :integer
-#  address           :string(255)      not null
+#  address           :string(255)
 #  place             :string(255)      not null
 #  lat               :float(24)
 #  lon               :float(24)
@@ -27,6 +27,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  informed_from     :integer          default("web"), not null
+#  state             :integer          default("active"), not null
 #
 # Indexes
 #
@@ -48,18 +49,6 @@ class DevelopmentCampEvent < Event
     'ゲームジャム' => 2,
     'gamejam' => 2,
     'game jam' => 2
-  }
-
-  HACKATHON_KEYWORD_CALENDER_INDEX = {
-    'hackathon' => 1,
-    'ハッカソン' => 1,
-    'hack day' => 1,
-    'アイディアソン' => 2,
-    'アイデアソン' => 2,
-    'ideathon' => 2,
-    'ゲームジャム' => 3,
-    'gamejam' => 3,
-    'game jam' => 3
   }
 
   def default_hashtags

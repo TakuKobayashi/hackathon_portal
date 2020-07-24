@@ -40,10 +40,11 @@ class BloggerBot < ApplicationRecord
   end
 
   def build_content(action_view_renderer:)
-    before_events, after_events =
-      Event.where(id: self.event_ids).order('started_at ASC').partition do |e|
-        e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current
-      end
+    post_events = Event.where(id: self.event_ids).order('started_at ASC')
+    active_events, closed_events = post_events.partition{|event| event.active? }
+    before_events, after_events = active_events.partition do |event|
+      event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
+    end
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
@@ -51,7 +52,7 @@ class BloggerBot < ApplicationRecord
       action_view_renderer.render(
         template: 'blogger/publish',
         format: 'html',
-        locals: { before_events: before_events, after_events: after_events, year_number: year_number, start_month: start_month }
+        locals: { before_events: before_events, after_events: after_events, closed_events: closed_events, year_number: year_number, start_month: start_month }
       )
   end
 

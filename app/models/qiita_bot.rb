@@ -26,8 +26,10 @@ class QiitaBot < ApplicationRecord
 
   def generate_post_send_params(year_number:, start_month:, end_month:)
     qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
-    before_events_from_qiita, after_events_from_qiita =
-      qiita_events.partition { |e| e.ended_at.present? ? e.ended_at > Time.current : (e.started_at + 2.day) > Time.current }
+    active_events, closed_events = qiita_events.partition{|event| event.active? }
+    before_events_from_qiita, after_events_from_qiita = active_events.partition do |event|
+      event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
+    end
     body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
     body +=
       "#{year_number}年#{start_month}月〜#{year_number}年#{
@@ -39,6 +41,11 @@ class QiitaBot < ApplicationRecord
       body += "\n\n---------------------------------------\n\n"
       body += "# すでに終了したイベント\n\n"
       body += after_events_from_qiita.map(&:generate_qiita_cell_text).join("\n\n")
+    end
+    if closed_events.present?
+      body += "\n\n---------------------------------------\n\n"
+      body += "# 中止したイベント\n\n"
+      body += closed_events.map(&:generate_qiita_cell_text).join("\n\n")
     end
     send_params = {
       title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
