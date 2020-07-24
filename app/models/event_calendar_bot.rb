@@ -89,7 +89,7 @@ class EventCalendarBot < ApplicationRecord
     message = {
       error_message: error.message,
       target_calender_id: target_calender_id,
-      calender_event_id: current_event_calendar_bot.calender_event_id,
+      calender_event_id: calender_event_id,
       calender_event: calender_event_hash
     }.to_json
     logger.info(message)
