@@ -12,3 +12,11 @@
     <%= render :partial => "blogger/event", :locals => {event: event} %>
   <% end %>
 <% end %>
+
+<% if closed_events.present? %>
+  <hr>
+  <h1>中止したイベント</h1>
+  <% closed_events.each do |event| %>
+    <%= render :partial => "blogger/event", :locals => {event: event} %>
+  <% end %>
+<% end %>
