@@ -60,28 +60,76 @@ module EventCommon
   end
 
   def build_from_website
-    #TODO 開催日時のスクレイピング
     dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
-    self.title = dom.try(:title).to_s.truncate(140)
+    if dom.text.blank?
+      return nil
+    end
+    # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
     dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
-      if self.description.blank?
-        if dom_attrs.name == 'description'
-          self.description = dom_attrs.content
-        elsif dom_attrs.property == 'og:description'
+      if self.title.blank?
+        if dom_attrs.property.to_s.include?('title') ||
+           dom_attrs.name.to_s.include?('title') ||
+           dom_attrs.itemprop.to_s.include?('title')
+          self.title = dom_attrs.content
+        end
+      end
+      if self.description.to_s.length < dom_attrs.content.to_s.length
+        if dom_attrs.property.to_s.include?('description')
+           dom_attrs.name.to_s.include?('description')
+           dom_attrs.itemprop.to_s.include?('description')
           self.description = dom_attrs.content
         end
       end
     end
-    #      sanitized_body_html = Sanitizer.basic_sanitize(dom.css("body").to_html)
-    #      scaned_urls = Sanitizer.scan_urls(sanitized_body_html)
+    if self.title.blank?
+      self.title = dom.try(:title).to_s.strip.truncate(140)
+    end
 
-    sanitized_body_text = Sanitizer.basic_sanitize(dom.css('body').to_html)
-    address_canididates = Sanitizer.scan_japan_address(sanitized_body_text)
+    body_dom = dom.css('body').first
+    if body_dom.blank?
+      return nil
+    end
+    main_content = NokogiriSearcher.find_by_main_content_dom(body_dom)
+    if main_content.blank?
+      main_content = body_dom
+    end
+    sanitized_main_content = Sanitizer.basic_sanitize(main_content.to_html)
+    match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(main_content.text))
+    if match_address.present?
+      self.address = match_address
+    else
+      # オンラインの場合を検索する
+    end
 
-    self.address = Sanitizer.match_address_text(address_canididates.first.to_s).to_s
+    current_time = Time.current
+    candidate_dates = Sanitizer.scan_candidate_datetime(sanitized_main_content)
+    # 前後一年以内の日時が候補
+    # 時間が早い順にsortした
+    filtered_dates = candidate_dates.select do |candidate_date|
+      ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year)
+    end.uniq.sort
+
+    candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content)
+    filtered_times = candidate_times.select do |candidate_time|
+      0 <= candidate_time[0].to_i &&
+      candidate_time[0].to_i < 30 &&
+      0 <= candidate_time[1].to_i &&
+      candidate_time[1].to_i < 60 &&
+      0 <= candidate_time[2].to_i &&
+      candidate_time[2] < 60
+    end.uniq
+    filtered_times.sort_by! do |time|
+      time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i
+    end
+    start_time_array = filtered_times.first || []
+    end_time_array = filtered_times.last || []
+    start_at_datetime = filtered_dates.first
+    end_at_datetime = filtered_dates.last
+
     self.place = self.address
-    self.started_at = Sanitizer.basic_sanitize(dom.css('body').to_html)
+    self.started_at = start_at_datetime.try(:advance, {hours: start_time_array[0].to_i, minutes: start_time_array[1].to_i, secounds: start_time_array[2].to_i})
+    self.ended_at = end_at_datetime.try(:advance, {hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i})
   end
 
   def import_hashtags!(hashtag_strings: [])
