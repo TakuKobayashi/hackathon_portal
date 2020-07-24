@@ -21,9 +21,9 @@ namespace :batch do
         TwitterBot.tweet!(text: event.generate_tweet_text, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), from: event, options: { lat: event.lat, long: event.lon })
       end
     end
-    QiitaBot.post_or_update_article!(events: future_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
+    QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     EventCalendarBot.insert_or_update_calender!(events: future_events, refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
-    BloggerBot.post_or_update_article!(events: future_events, blogger_blog_url: 'https://hackathonportal.blogspot.com/', refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
+    BloggerBot.post_or_update_article!(events: will_post_events, blogger_blog_url: 'https://hackathonportal.blogspot.com/', refresh_token: ENV.fetch("GOOGLE_OAUTH_BOT_REFRESH_TOKEN", ""))
   end
 
   task generate_slide: :environment do
