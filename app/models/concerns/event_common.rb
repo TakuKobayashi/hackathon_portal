@@ -226,7 +226,7 @@ module EventCommon
   def url_active?
     http_client = HTTPClient.new
     begin
-      response = http_client.get(self.url)
+      response = http_client.get(self.url, {follow_redirect: true})
       if 400 <= response.status && response.status < 500
         return false
       end
