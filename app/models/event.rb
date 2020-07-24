@@ -62,20 +62,6 @@ class Event < ApplicationRecord
     'game jam' => 2
   }
 
-  HACKATHON_KEYWORD_CALENDER_INDEX = {
-    'hackathon' => 1,
-    'ハッカソン' => 1,
-    'hack day' => 1,
-    'アイディアソン' => 2,
-    'アイデアソン' => 2,
-    'ideathon' => 2,
-    'ゲームジャム' => 3,
-    'gamejam' => 3,
-    'game jam' => 3,
-    '合宿' => 4,
-    'ハック' => 1
-  }
-
   before_create { self.distribute_event_type }
 
   before_save do
