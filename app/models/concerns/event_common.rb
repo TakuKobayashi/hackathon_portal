@@ -110,7 +110,7 @@ module EventCommon
   def generate_qiita_cell_text
     words = ["### [#{self.title}](#{self.url})"]
     image_html = self.og_image_html
-    words << (image_html + "\n") if image_html.present?
+    words += [image_html, ""] if image_html.present?
 
     words += [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
     words << "定員#{self.limit_number}人" if self.limit_number.present?
@@ -223,7 +223,7 @@ module EventCommon
     update!(shortener_url: self.get_short_url)
   end
 
-  def url_activate?
+  def url_active?
     http_client = HTTPClient.new
     begin
       response = http_client.get(self.url)
