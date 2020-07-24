@@ -23,6 +23,7 @@ module ConnpassOperation
           end
           connpass_event.merge_event_attributes(
             attrs: {
+              state: :active,
               informed_from: :connpass,
               title: res['title'].to_s,
               url: res['event_url'].to_s,

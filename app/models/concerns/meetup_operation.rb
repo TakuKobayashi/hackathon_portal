@@ -37,6 +37,7 @@ module MeetupOperation
         meetup_event.attributes =
           meetup_event.attributes.merge_event_attributes(
             attrs: {
+              state: :active,
               informed_from: :meetup,
               title: Sanitizer.basic_sanitize(res['name'].to_s),
               url: res['link'].to_s,

@@ -38,6 +38,7 @@ module GoogleFormEventOperation
             event.build_location_data
             save_event = event
           end
+          save_event.informed_from = :google_form
           save_event.transaction do
             save_event.save!
             save_event.import_hashtags!(hashtag_strings: save_event.search_hashtags)

@@ -35,7 +35,7 @@ module EventCommon
         )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
-      self.address = geo_result['address'].to_s
+      self.address = geo_result['address']
     end
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip

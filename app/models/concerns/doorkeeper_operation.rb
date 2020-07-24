@@ -26,6 +26,7 @@ module DoorkeeperOperation
           end
           doorkeeper_event.merge_event_attributes(
             attrs: {
+              state: :active,
               informed_from: :doorkeeper,
               title: event['title'].to_s,
               url: event['public_url'].to_s,
