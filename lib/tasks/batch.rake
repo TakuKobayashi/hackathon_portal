@@ -10,12 +10,14 @@ namespace :batch do
     will_post_events = Event.active.where.not(type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC")
     future_events = []
     will_post_events.each do |event|
-      if event.url_activate?
+      if event.url_active?
         future_events << event
       else
         event.closed!
       end
-    end    
+    end
+    will_post_events += Event.where.not(state: :active, type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).to_a
+    will_post_events.sort_by!(&:started_at)
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
         TwitterBot.tweet!(text: event.generate_tweet_text, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), from: event, options: { lat: event.lat, long: event.lon })
