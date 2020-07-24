@@ -219,6 +219,19 @@ module EventCommon
     update!(shortener_url: self.get_short_url)
   end
 
+  def url_activate?
+    http_client = HTTPClient.new
+    begin
+      response = http_client.get(self.url)
+      if 400 <= response.status && response.status < 500
+        return false
+      end
+    rescue SocketError, HTTPClient::ConnectTimeoutError, HTTPClient::BadResponseError, Addressable::URI::InvalidURIError => e
+      return false
+    end
+    return true
+  end
+
   def get_short_url
     result =
       RequestParser.request_and_parse_json(
