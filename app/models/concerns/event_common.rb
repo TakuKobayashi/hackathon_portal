@@ -135,6 +135,10 @@ module EventCommon
   end
 
   def og_image_html
+    # すでにイベントが閉鎖しているのだからその後の処理をやらないようにしてみる
+    if self.closed?
+      return ''
+    end
     image_url = self.get_og_image_url
     if image_url.present?
       fi = FastImage.new(image_url.to_s)
