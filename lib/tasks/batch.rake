@@ -6,13 +6,6 @@ require "google/apis/slides_v1"
 require "fileutils"
 
 namespace :batch do
-  task event_crawl: :environment do
-    Event.import_events!
-    ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
-    GC.start
-    Scaling::UnityEvent.import_events!
-  end
-
   task event_bot_tweet: :environment do
     will_post_events = Event.active.where.not(type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC")
     future_events = []

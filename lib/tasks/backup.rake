@@ -15,7 +15,7 @@ namespace :backup do
   end
 
   task update_table_to_spreadsheet: :environment do
-    backup_models = [Event, Scaling::UnityEvent]
+    backup_models = [Event]
     BackupToGoogleServices.backup_table_to_spreadsheet!(backup_models: backup_models)
   end
 

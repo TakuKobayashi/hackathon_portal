@@ -28,10 +28,6 @@ set :output, "#{path}/log/cron.log"
 #  job_type :script,  %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec script/:task :output}
 #end
 
-every :day, at: '10:00' do
-  rake 'batch:event_crawl'
-end
-
 every :day, at: '15:00' do
   rake 'backup:update_table_to_spreadsheet'
 end
