@@ -2,7 +2,8 @@ require 'xmlsimple'
 
 module RequestParser
   def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: {}, options: {})
-    text = self.request_and_response_body(url: url, method: method, params: params, header: header, body: body, options: options)
+    response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
+    text = response.try(:body).to_s
     doc = Nokogiri::HTML.parse(text)
     return doc
   end
@@ -15,7 +16,8 @@ module RequestParser
   end
 
   def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: {}, options: {})
-    text = self.request_and_response_body(url: url, method: method, params: params, header: header, body: body, options: options)
+    response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
+    text = response.try(:body).to_s
     parsed_json = {}
     begin
       parsed_json = JSON.parse(text)
@@ -34,21 +36,30 @@ module RequestParser
   end
 
   def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: {}, options: {})
-    text = self.request_and_response_body(url: url, method: method, params: params, header: header, body: body, options: options)
+    response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
+    text = response.try(:body).to_s
     parsed_xml = XmlSimple.xml_in(text)
     return parsed_xml
   end
 
-  def self.request_and_response_body(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_response(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+    option_struct = OpenStruct.new(options)
+    customize_force_redirect = option_struct.customize_force_redirect
+    if customize_force_redirect.present?
+      option_struct.delete_field(:customize_force_redirect)
+      if option_struct.follow_redirect.present?
+        option_struct.delete_field(:follow_redirect)
+      end
+    end
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http_client.connect_timeout = 600
     http_client.send_timeout = 600
     http_client.receive_timeout = 600
-    result = ''
+    response = nil
     begin
-      request_option_hash = { query: params, header: header, body: body }.merge(options)
-      request_option_hash.delete_if { |k, v| v.blank? }
+      request_option_hash = { query: params, header: header, body: body }.merge(option_struct.to_h)
+      request_option_hash.delete_if{|k, v| v.blank? }
       response = http_client.send(method, url, request_option_hash)
       if response.status >= 400
         self.record_log(
@@ -60,7 +71,6 @@ module RequestParser
           insert_top_messages: ["request Error Status Code: #{response.status}"]
         )
       end
-      result = response.body
     rescue SocketError, HTTPClient::ConnectTimeoutError, HTTPClient::BadResponseError, Addressable::URI::InvalidURIError => e
       self.record_log(
         url: url,
@@ -72,7 +82,13 @@ module RequestParser
         insert_top_messages: ['exception:' + e.class.to_s]
       )
     end
-    return result
+    if customize_force_redirect.present? && response.present?
+      redirect_url = response.headers["Location"]
+      if redirect_url.present?
+        response = self.request_and_response(url: redirect_url, options: {customize_force_redirect: true})
+      end
+    end
+    return response
   end
 
   private
