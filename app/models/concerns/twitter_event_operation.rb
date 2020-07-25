@@ -83,9 +83,13 @@ module TwitterEventOperation
         }
       )
       if twitter_event.hackathon_event? || twitter_event.development_camp?
-        twitter_event.save!
-        twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
-        saved_twitter_events << twitter_event
+        begin
+          twitter_event.save!
+          twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
+          saved_twitter_events << twitter_event
+        rescue Exception => error
+          Rails.logger.warn("Data save error #{twitter_event.attributes}")
+        end
       end
     end
 

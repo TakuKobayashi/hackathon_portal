@@ -46,6 +46,10 @@ module RequestParser
     option_struct = OpenStruct.new(options)
     customize_force_redirect = option_struct.customize_force_redirect
     customize_redirect_counter = option_struct.customize_redirect_counter.to_i
+    timeout_second = option_struct.timeout_second || 600
+    if option_struct.timeout_second.present?
+      option_struct.delete_field(:timeout_second)
+    end
     if customize_force_redirect.present?
       option_struct.delete_field(:customize_force_redirect)
       if option_struct.customize_redirect_counter.present?
@@ -57,9 +61,9 @@ module RequestParser
     end
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    http_client.connect_timeout = 600
-    http_client.send_timeout = 600
-    http_client.receive_timeout = 600
+    http_client.connect_timeout = timeout_second
+    http_client.send_timeout = timeout_second
+    http_client.receive_timeout = timeout_second
     response = nil
     begin
       request_option_hash = { query: params, header: header, body: body }.merge(option_struct.to_h)

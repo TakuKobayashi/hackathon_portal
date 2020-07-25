@@ -60,7 +60,7 @@ module EventCommon
   end
 
   def build_from_website
-    dom = RequestParser.request_and_parse_html(url: self.url, options: { customize_force_redirect: true })
+    dom = RequestParser.request_and_parse_html(url: self.url, options: { customize_force_redirect: true, timeout_second: 60 })
     if dom.text.blank?
       return nil
     end
