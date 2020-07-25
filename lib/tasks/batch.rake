@@ -16,11 +16,25 @@ namespace :batch do
         event.closed!
       end
     end
-    will_post_events += Event.where.not(state: :active, type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).to_a
+    will_post_events += Event.where.not(state: :active).where.not(type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).to_a
     will_post_events.sort_by!(&:started_at)
+
+    Event.preset_tweet_urls!(events: will_post_events)
+
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
-        TwitterBot.tweet!(text: event.generate_tweet_text, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), from: event, options: { lat: event.lat, long: event.lon })
+        tweet_options = { lat: event.lat, long: event.lon }
+        if event.twitter?
+          tweet_options[:attachment_url] = event.tweet_url
+        end
+
+        TwitterBot.tweet!(
+          text: event.generate_tweet_text,
+          access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+          access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+          from: event,
+          options: tweet_options
+        )
       end
     end
     QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))

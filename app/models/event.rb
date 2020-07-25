@@ -174,4 +174,38 @@ class Event < ApplicationRecord
     end
     return tweet_words.uniq.join("\n")
   end
+
+  def tweet_url
+    if @tweet_url.present?
+      return @tweet_url
+    end
+    if self.twitter? && self.event_id.present?
+      twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+      tweet = nil
+      begin
+        tweet = twitter_client.status(self.event_id)
+      rescue Exception => e
+      end
+      @tweet_url = tweet.try(:url).to_s
+      return @tweet_url
+    end
+    return ""
+  end
+
+  def tweet_url=(url)
+    @tweet_url = url
+  end
+
+  def self.preset_tweet_urls!(events: [])
+    event_tweet_ids = events.select(&:twitter?).map(&:event_id)
+    twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+    # Twitter APIの仕様により100件ずつ設定する
+    event_tweet_ids.each_slice(100) do |tweet_ids|
+      event_tweets = twitter_client.statuses(tweet_ids)
+      event_tweets.each do |event_tweet|
+        event = events.detect{|event| event.twitter? && event.event_id == event_tweet.id.to_s }
+        event.tweet_url = event_tweet.url.to_s
+      end
+    end
+  end
 end
