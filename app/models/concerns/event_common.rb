@@ -102,7 +102,7 @@ module EventCommon
       self.place = self.address
     else
       # オンラインの場合を検索する
-      scaned_online = sanitized_main_content_html.downcase.scan(/(オンライン|online)/)
+      scaned_online = sanitized_main_content_html.downcase.scan(/(オンライン|online|おんらいん)/)
       if scaned_online.present?
         self.place = "online"
       end
