@@ -90,27 +90,33 @@ module EventCommon
     if body_dom.blank?
       return nil
     end
-    main_content = NokogiriSearcher.find_by_main_content_dom(body_dom)
-    if main_content.blank?
-      main_content = body_dom
-    end
-    sanitized_main_content = Sanitizer.basic_sanitize(main_content.to_html)
-    match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(main_content.text))
+    sanitized_main_content_html = Sanitizer.basic_sanitize(body_dom.to_html)
+    sanitized_main_content_html = Sanitizer.delete_javascript_in_html(sanitized_main_content_html)
+    sanitized_main_content_html = Sanitizer.delete_html_comment(sanitized_main_content_html)
+    sanitized_main_content_html = Sanitizer.delete_header_tag_in_html(sanitized_main_content_html)
+    sanitized_main_content_html = Sanitizer.delete_footer_tag_in_html(sanitized_main_content_html)
+    sanitized_main_content_html = Sanitizer.delete_style_in_html(sanitized_main_content_html)
+    match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(body_dom.text))
     if match_address.present?
       self.address = match_address
+      self.place = self.address
     else
       # オンラインの場合を検索する
+      scaned_online = sanitized_main_content_html.downcase.scan(/(オンライン|online)/)
+      if scaned_online.present?
+        self.place = "online"
+      end
     end
 
     current_time = Time.current
-    candidate_dates = Sanitizer.scan_candidate_datetime(sanitized_main_content)
+    candidate_dates = Sanitizer.scan_candidate_datetime(sanitized_main_content_html)
     # 前後一年以内の日時が候補
     # 時間が早い順にsortした
     filtered_dates = candidate_dates.select do |candidate_date|
       ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year)
     end.uniq.sort
 
-    candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content)
+    candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content_html)
     filtered_times = candidate_times.select do |candidate_time|
       0 <= candidate_time[0].to_i &&
       candidate_time[0].to_i < 30 &&
@@ -127,9 +133,12 @@ module EventCommon
     start_at_datetime = filtered_dates.first
     end_at_datetime = filtered_dates.last
 
-    self.place = self.address
     self.started_at = start_at_datetime.try(:advance, {hours: start_time_array[0].to_i, minutes: start_time_array[1].to_i, secounds: start_time_array[2].to_i})
-    self.ended_at = end_at_datetime.try(:advance, {hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i})
+    if end_at_datetime.present?
+      self.ended_at = end_at_datetime.try(:advance, {hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i})
+    else
+      self.ended_at = self.started_at.end_of_day
+    end
   end
 
   def import_hashtags!(hashtag_strings: [])

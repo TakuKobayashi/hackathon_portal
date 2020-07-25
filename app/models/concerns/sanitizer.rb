@@ -2,6 +2,10 @@ module Sanitizer
   module RegexpParts
     HTML_COMMENT = '<!--(.*)-->'
     HTML_SCRIPT_TAG = '<script[^>]+?\/>|<script(.|\s)*?\/script>'
+    HTML_HEADER_TAG = '<header[^>]+?\/>|<header(.|\s)*?\/header>'
+    HTML_FOOTER_TAG = '<footer[^>]+?\/>|<footer(.|\s)*?\/footer>'
+    HTML_LINK_TAG = '<link[^>]+?\/>|<link(.|\s)*?\/link>'
+    HTML_STYLE_TAG = '<style[^>]+?\/>|<style(.|\s)*?\/style>'
     TODOUFUKENLIST = [
       '北海道',
       '青森県',
@@ -142,6 +146,18 @@ module Sanitizer
 
   def self.delete_javascript_in_html(text)
     return text.gsub(/#{RegexpParts::HTML_SCRIPT_TAG}/, '')
+  end
+
+  def self.delete_header_tag_in_html(text)
+    return text.gsub(/#{RegexpParts::HTML_HEADER_TAG}/, '')
+  end
+
+  def self.delete_footer_tag_in_html(text)
+    return text.gsub(/#{RegexpParts::HTML_FOOTER_TAG}/, '')
+  end
+
+  def self.delete_style_in_html(text)
+    return text.gsub(/#{RegexpParts::HTML_STYLE_TAG}/, '')
   end
 
   def self.delete_empty_words(text)
