@@ -71,14 +71,14 @@ module EventCommon
         if dom_attrs.property.to_s.include?('title') ||
            dom_attrs.name.to_s.include?('title') ||
            dom_attrs.itemprop.to_s.include?('title')
-          self.title = dom_attrs.content
+          self.title = dom_attrs.content.to_s.strip.truncate(140)
         end
       end
       if self.description.to_s.length < dom_attrs.content.to_s.length
         if dom_attrs.property.to_s.include?('description')
            dom_attrs.name.to_s.include?('description')
            dom_attrs.itemprop.to_s.include?('description')
-          self.description = dom_attrs.content
+          self.description = dom_attrs.content.to_s.strip
         end
       end
     end
