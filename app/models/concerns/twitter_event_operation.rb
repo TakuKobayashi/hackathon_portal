@@ -15,9 +15,10 @@ module TwitterEventOperation
     update_columns = Event.column_names - %w[id type shortener_url event_id created_at]
     tweet_counter = 0
     retry_count = 0
-    tweets_response = []
     max_tweet_id = nil
+    tweets = []
     begin
+      tweets_response = []
       begin
         tweets_response = self.find_tweets(keywords: keywords, options: {
           max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id),
@@ -36,7 +37,7 @@ module TwitterEventOperation
       tweets.sort_by!{|tweet| -tweet.id }
       url_twitter_events = self.find_by_all_relative_events_from_tweets(tweets: tweets).index_by(&:url)
 
-      tweets.each do |tweet|
+      Parallel.each(tweets, in_threads: tweets.size) do |tweet|
         tweet_counter = tweet_counter + 1
         twitter_events = self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
         twitter_events.each do |twitter_event|
@@ -51,7 +52,7 @@ module TwitterEventOperation
       end
 
       max_tweet_id = tweets.last.try(:id)
-    end while tweets.size >= PAGE_PER
+    end while tweets.size > 0
   end
 
   private

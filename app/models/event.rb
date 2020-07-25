@@ -48,6 +48,7 @@ class Event < ApplicationRecord
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
+  TWITTER_HACKATHON_KEYWORDS = %w[hackathon ッカソン gamejam アイディアソン アイデアソン ideathon 開発合宿 はっかそん]
   HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
