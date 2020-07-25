@@ -83,9 +83,9 @@ class Event < ApplicationRecord
     Rails.application.eager_load!
     operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
-      operation_module.import_events_from_keywords!(event_clazz: Event, keywords: keywords)
+      operation_module.import_events_from_keywords!(keywords: keywords)
     end
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: Event, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
   end
 
   def distribute_event_type

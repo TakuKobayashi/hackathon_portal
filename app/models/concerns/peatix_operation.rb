@@ -15,22 +15,21 @@ module PeatixOperation
     )
   end
 
-  def self.import_events_from_keywords!(event_clazz:, keywords:)
+  def self.import_events_from_keywords!(keywords:)
     page = 1
-    update_columns = event_clazz.column_names - %w[id type shortener_url event_id created_at]
     begin
       events_response = self.find_event(keywords: keywords, page: page)
       json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
-      current_events = event_clazz.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
+      current_events = Event.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
       json_data['events'].each do |res|
-        event_clazz.transaction do
+        Event.transaction do
           tracking_url = Addressable::URI.parse(res['tracking_url'])
           lat, lng = res['latlng'].to_s.split(',')
           if current_events[res['id'].to_s].present?
             peatix_event = current_events[res['id'].to_s]
           else
-            peatix_event = event_clazz.new(event_id: res['id'].to_s)
+            peatix_event = Event.new(event_id: res['id'].to_s)
           end
           peatix_event.merge_event_attributes(
             attrs: {

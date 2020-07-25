@@ -11,18 +11,18 @@ module DoorkeeperOperation
     )
   end
 
-  def self.import_events_from_keywords!(event_clazz:, keywords:)
+  def self.import_events_from_keywords!(keywords:)
     page = 1
     begin
       events_response = self.find_event(keywords: keywords, page: page)
-      current_events = event_clazz.doorkeeper.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
+      current_events = Event.doorkeeper.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
       events_response.each do |res|
-        event_clazz.transaction do
+        Event.transaction do
           event = res['event']
           if current_events[event['id'].to_s].present?
             doorkeeper_event = current_events[event['id'].to_s]
           else
-            doorkeeper_event = event_clazz.new(event_id: event['id'].to_s)
+            doorkeeper_event = Event.new(event_id: event['id'].to_s)
           end
           doorkeeper_event.merge_event_attributes(
             attrs: {
