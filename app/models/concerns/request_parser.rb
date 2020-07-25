@@ -45,8 +45,12 @@ module RequestParser
   def self.request_and_response(url:, method: :get, params: {}, header: {}, body: {}, options: {})
     option_struct = OpenStruct.new(options)
     customize_force_redirect = option_struct.customize_force_redirect
+    customize_redirect_counter = option_struct.customize_redirect_counter.to_i
     if customize_force_redirect.present?
       option_struct.delete_field(:customize_force_redirect)
+      if option_struct.customize_redirect_counter.present?
+        option_struct.delete_field(:customize_redirect_counter)
+      end
       if option_struct.follow_redirect.present?
         option_struct.delete_field(:follow_redirect)
       end
@@ -82,10 +86,10 @@ module RequestParser
         insert_top_messages: ['exception:' + e.class.to_s]
       )
     end
-    if customize_force_redirect.present? && response.present?
+    if customize_force_redirect.present? && response.present? && 300 <= response.status && response.status < 400 && customize_redirect_counter < 5
       redirect_url = response.headers["Location"]
       if redirect_url.present?
-        response = self.request_and_response(url: redirect_url, options: {customize_force_redirect: true})
+        response = self.request_and_response(url: redirect_url, options: {customize_force_redirect: true, customize_redirect_counter: customize_redirect_counter + 1})
       end
     end
     return response
