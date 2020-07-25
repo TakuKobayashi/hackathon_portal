@@ -136,7 +136,9 @@ module EventCommon
     self.started_at = start_at_datetime.try(:advance, {hours: start_time_array[0].to_i, minutes: start_time_array[1].to_i, secounds: start_time_array[2].to_i})
     if end_at_datetime.present?
       self.ended_at = end_at_datetime.try(:advance, {hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i})
-    else
+    end
+    # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
+    if self.started_at.present? && self.started_at == self.ended_at
       self.ended_at = self.started_at.try(:end_of_day)
     end
   end
