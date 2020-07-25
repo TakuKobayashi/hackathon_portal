@@ -3,7 +3,7 @@ require 'xmlsimple'
 module RequestParser
   def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: {}, options: {})
     response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
-    text = response.try(:body).to_s
+    text = response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     doc = Nokogiri::HTML.parse(text)
     return doc
   end
@@ -17,7 +17,7 @@ module RequestParser
 
   def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: {}, options: {})
     response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
-    text = response.try(:body).to_s
+    text = response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     parsed_json = {}
     begin
       parsed_json = JSON.parse(text)
@@ -37,7 +37,7 @@ module RequestParser
 
   def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: {}, options: {})
     response = self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
-    text = response.try(:body).to_s
+    text = response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     parsed_xml = XmlSimple.xml_in(text)
     return parsed_xml
   end
@@ -86,10 +86,16 @@ module RequestParser
         insert_top_messages: ['exception:' + e.class.to_s]
       )
     end
-    if customize_force_redirect.present? && response.present? && 300 <= response.status && response.status < 400 && customize_redirect_counter < 5
+    if customize_force_redirect.present? &&
+       response.present? &&
+       300 <= response.status &&
+       response.status < 400 &&
+       response.headers["Location"].present? &&
+       customize_redirect_counter < 5
       redirect_url = response.headers["Location"]
       if redirect_url.present?
-        response = self.request_and_response(url: redirect_url, options: {customize_force_redirect: true, customize_redirect_counter: customize_redirect_counter + 1})
+        redirect_full_url = WebNormalizer.merge_full_url(src: redirect_url, org: url)
+        response = self.request_and_response(url: redirect_full_url, options: {customize_force_redirect: true, customize_redirect_counter: customize_redirect_counter + 1})
       end
     end
     return response
