@@ -87,6 +87,8 @@ module RequestParser
       end
     rescue SocketError,
            HTTPClient::ConnectTimeoutError,
+           HTTPClient::SendTimeoutError,
+           HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
