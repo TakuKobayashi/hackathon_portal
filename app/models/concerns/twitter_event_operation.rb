@@ -62,6 +62,7 @@ module TwitterEventOperation
     urls = tweet.urls.map(&:expanded_url)
     return saved_twitter_events if urls.blank?
     urls.each do |url|
+      Rails.logger.info(url)
       next if current_url_twitter_events[url.to_s].present?
       if url.host.include?("twitter.com") || url.host.include?("youtu.be") || url.host.include?("youtube.com")
         next
