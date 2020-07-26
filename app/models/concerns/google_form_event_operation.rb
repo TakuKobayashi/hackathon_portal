@@ -6,7 +6,7 @@ module GoogleFormEventOperation
     target_spreadsheet =
       service.get_spreadsheet(
         Event.google_form_spreadsheet_id,
-        fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)'
+        fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)',
       )
     target_spreadsheet.sheets.each do |sheet|
       sheet.data.each do |sheet_data|
@@ -15,7 +15,8 @@ module GoogleFormEventOperation
         row_data = sheet_data.row_data
         # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
         header_names = (row_data[0].try(:values) || [])
-        column_header_names = (header_names[1..(header_names.size)] || []).map { |name_property| name_property.formatted_value.downcase }
+        column_header_names =
+          (header_names[1..(header_names.size)] || []).map { |name_property| name_property.formatted_value.downcase }
         rows = row_data[1..(row_data.size - 1)] || []
         rows.each do |row|
           columns = row.values[1..(row.values.size - 1)]

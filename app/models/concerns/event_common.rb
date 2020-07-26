@@ -22,16 +22,19 @@ module EventCommon
   end
 
   def build_location_data
-    script_url = 'https://script.google.com/macros/s/AKfycbxM1zm-Ep6jsV87pi5U9UQJQM4YvU2BHiCOghOV90wYCae3mtNfrz3JIQLWBxSMoJF0zA/exec'
+    script_url =
+      'https://script.google.com/macros/s/AKfycbxM1zm-Ep6jsV87pi5U9UQJQM4YvU2BHiCOghOV90wYCae3mtNfrz3JIQLWBxSMoJF0zA/exec'
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result =
-        RequestParser.request_and_parse_json(url: script_url, params: { address: self.address }, options: { follow_redirect: true })
+        RequestParser.request_and_parse_json(
+          url: script_url, params: { address: self.address }, options: { follow_redirect: true },
+        )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
     elsif self.address.blank? && self.lat.present? && self.lon.present?
       geo_result =
         RequestParser.request_and_parse_json(
-          url: script_url, params: { latitude: self.lat, longitude: self.lon }, options: { follow_redirect: true }
+          url: script_url, params: { latitude: self.lat, longitude: self.lon }, options: { follow_redirect: true },
         )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
@@ -60,36 +63,32 @@ module EventCommon
   end
 
   def build_from_website
-    dom = RequestParser.request_and_parse_html(url: self.url, options: { customize_force_redirect: true, timeout_second: 60 })
-    if dom.text.blank?
-      return nil
-    end
+    dom =
+      RequestParser.request_and_parse_html(
+        url: self.url, options: { customize_force_redirect: true, timeout_second: 60 },
+      )
+    return nil if dom.text.blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
     dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       if self.title.blank?
-        if dom_attrs.property.to_s.include?('title') ||
-           dom_attrs.name.to_s.include?('title') ||
-           dom_attrs.itemprop.to_s.include?('title')
+        if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
+             dom_attrs.itemprop.to_s.include?('title')
           self.title = dom_attrs.content.to_s.strip.truncate(140)
         end
       end
       if self.description.to_s.length < dom_attrs.content.to_s.length
         if dom_attrs.property.to_s.include?('description')
-           dom_attrs.name.to_s.include?('description')
-           dom_attrs.itemprop.to_s.include?('description')
+          dom_attrs.name.to_s.include?('description')
+          dom_attrs.itemprop.to_s.include?('description')
           self.description = dom_attrs.content.to_s.strip
         end
       end
     end
-    if self.title.blank?
-      self.title = dom.try(:title).to_s.strip.truncate(140)
-    end
+    self.title = dom.try(:title).to_s.strip.truncate(140) if self.title.blank?
 
     body_dom = dom.css('body').first
-    if body_dom.blank?
-      return nil
-    end
+    return nil if body_dom.blank?
     sanitized_main_content_html = Sanitizer.basic_sanitize(body_dom.to_html)
     sanitized_main_content_html = Sanitizer.delete_javascript_in_html(sanitized_main_content_html)
     sanitized_main_content_html = Sanitizer.delete_html_comment(sanitized_main_content_html)
@@ -97,50 +96,51 @@ module EventCommon
     sanitized_main_content_html = Sanitizer.delete_footer_tag_in_html(sanitized_main_content_html)
     sanitized_main_content_html = Sanitizer.delete_style_in_html(sanitized_main_content_html)
     match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(body_dom.text))
+
     if match_address.present?
       self.address = match_address
       self.place = self.address
     else
       # オンラインの場合を検索する
       scaned_online = sanitized_main_content_html.downcase.scan(/(オンライン|online|おんらいん)/)
-      if scaned_online.present?
-        self.place = "online"
-      end
+      self.place = 'online' if scaned_online.present?
     end
 
     current_time = Time.current
     candidate_dates = Sanitizer.scan_candidate_datetime(sanitized_main_content_html)
     # 前後一年以内の日時が候補
     # 時間が早い順にsortした
-    filtered_dates = candidate_dates.select do |candidate_date|
-      ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year)
-    end.uniq.sort
+    filtered_dates =
+      candidate_dates.select do |candidate_date|
+        ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year)
+      end.uniq.sort
 
     candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content_html)
-    filtered_times = candidate_times.select do |candidate_time|
-      0 <= candidate_time[0].to_i &&
-      candidate_time[0].to_i < 30 &&
-      0 <= candidate_time[1].to_i &&
-      candidate_time[1].to_i < 60 &&
-      0 <= candidate_time[2].to_i &&
-      candidate_time[2] < 60
-    end.uniq
-    filtered_times.sort_by! do |time|
-      time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i
-    end
+    filtered_times =
+      candidate_times.select do |candidate_time|
+        0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
+          candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
+      end.uniq
+    filtered_times.sort_by! { |time| time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i }
     start_time_array = filtered_times.first || []
     end_time_array = filtered_times.last || []
     start_at_datetime = filtered_dates.first
     end_at_datetime = filtered_dates.last
 
-    self.started_at = start_at_datetime.try(:advance, {hours: start_time_array[0].to_i, minutes: start_time_array[1].to_i, secounds: start_time_array[2].to_i})
+    self.started_at =
+      start_at_datetime.try(
+        :advance,
+        { hours: start_time_array[0].to_i, minutes: start_time_array[1].to_i, secounds: start_time_array[2].to_i },
+      )
     if end_at_datetime.present?
-      self.ended_at = end_at_datetime.try(:advance, {hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i})
+      self.ended_at =
+        end_at_datetime.try(
+          :advance,
+          { hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i },
+        )
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
-    if self.started_at.present? && self.started_at == self.ended_at
-      self.ended_at = self.started_at.try(:end_of_day)
-    end
+    self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
   end
 
   def import_hashtags!(hashtag_strings: [])
@@ -169,9 +169,10 @@ module EventCommon
   def generate_qiita_cell_text
     words = ["### [#{self.title}](#{self.url})"]
     image_html = self.og_image_html
-    words += [image_html, ""] if image_html.present?
+    words += [image_html, ''] if image_html.present?
 
-    words += [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
+    words +=
+      [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
     words << "定員#{self.limit_number}人" if self.limit_number.present?
 
     if self.attend_number >= 0
@@ -185,7 +186,8 @@ module EventCommon
           if remain_number > 0
             words << "<font color=\"#FF0000;\">あと残り#{remain_number}人</font> 参加可能"
           else
-            words << "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
+            words <<
+              "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
           end
         end
       end
@@ -195,16 +197,19 @@ module EventCommon
 
   def og_image_html
     # すでにイベントが閉鎖しているのだからその後の処理をやらないようにしてみる
-    if self.closed?
-      return ''
-    end
+    return '' if self.closed?
     image_url = self.get_og_image_url
     if image_url.present?
       fi = FastImage.new(image_url.to_s)
       width, height = fi.size
       size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
       resize_width, resize_height = size_text.split('x')
-      return ActionController::Base.helpers.image_tag(image_url, { width: resize_width, height: resize_height, alt: self.title })
+      return(
+        ActionController::Base.helpers.image_tag(
+          image_url,
+          { width: resize_width, height: resize_height, alt: self.title },
+        )
+      )
     end
     return ''
   end
@@ -234,7 +239,7 @@ module EventCommon
       ActionController::Base.helpers.raw(
         "<iframe width=\"400\" height=\"300\" frameborder=\"0\" scrolling=\"yes\" marginheight=\"0\" marginwidth=\"0\" src=\"#{
           embed_url.to_s
-        }\"></iframe>"
+        }\"></iframe>",
       )
     )
   end
@@ -285,11 +290,12 @@ module EventCommon
   def url_active?
     http_client = HTTPClient.new
     begin
-      response = http_client.get(self.url, {follow_redirect: true})
-      if 400 <= response.status && response.status < 500
-        return false
-      end
-    rescue SocketError, HTTPClient::ConnectTimeoutError, HTTPClient::BadResponseError, Addressable::URI::InvalidURIError => e
+      response = http_client.get(self.url, { follow_redirect: true })
+      return false if 400 <= response.status && response.status < 500
+    rescue SocketError,
+           HTTPClient::ConnectTimeoutError,
+           HTTPClient::BadResponseError,
+           Addressable::URI::InvalidURIError => e
       return false
     end
     return true
@@ -300,9 +306,11 @@ module EventCommon
       RequestParser.request_and_parse_json(
         url: BITLY_SHORTEN_API_URL,
         method: :post,
-        header: { 'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}", 'Content-Type' => 'application/json' },
+        header: {
+          'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}", 'Content-Type' => 'application/json'
+        },
         body: { long_url: self.url }.to_json,
-        options: { follow_redirect: true }
+        options: { follow_redirect: true },
       )
     if result['id'].present?
       return 'https://' + result['id']

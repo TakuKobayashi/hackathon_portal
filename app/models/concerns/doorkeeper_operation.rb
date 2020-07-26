@@ -6,7 +6,7 @@ module DoorkeeperOperation
       RequestParser.request_and_parse_json(
         url: DOORKEEPER_URL,
         params: { q: keywords.join('|'), page: page },
-        header: { 'Authorization' => ['Bearer', ENV.fetch('DOORKEEPER_API_KEY', '')].join(' ') }
+        header: { 'Authorization' => ['Bearer', ENV.fetch('DOORKEEPER_API_KEY', '')].join(' ') },
       )
     )
   end
@@ -15,7 +15,8 @@ module DoorkeeperOperation
     page = 1
     begin
       events_response = self.find_event(keywords: keywords, page: page)
-      current_events = Event.doorkeeper.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
+      current_events =
+        Event.doorkeeper.where(event_id: events_response.map { |res| res['event']['id'] }.compact).index_by(&:event_id)
       events_response.each do |res|
         Event.transaction do
           event = res['event']
@@ -43,8 +44,8 @@ module DoorkeeperOperation
               attend_number: event['participants'],
               substitute_number: event['waitlisted'],
               started_at: event['starts_at'],
-              ended_at: event['ends_at']
-            }
+              ended_at: event['ends_at'],
+            },
           )
           doorkeeper_event.save!
           doorkeeper_event.import_hashtags!(hashtag_strings: doorkeeper_event.search_hashtags)

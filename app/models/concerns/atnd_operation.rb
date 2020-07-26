@@ -4,7 +4,9 @@ module AtndOperation
 
   def self.find_event(keywords:, start: 1)
     return(
-      RequestParser.request_and_parse_json(url: ATND_API_URL, params: { keyword_or: keywords, count: 100, start: start, format: :json })
+      RequestParser.request_and_parse_json(
+        url: ATND_API_URL, params: { keyword_or: keywords, count: 100, start: start, format: :json },
+      )
     )
   end
 
@@ -14,7 +16,9 @@ module AtndOperation
       events_response = self.find_event(keywords: keywords, start: start)
       start += events_response['results_returned']
       current_events =
-        Event.atnd.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(&:event_id)
+        Event.atnd.where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact).index_by(
+          &:event_id
+        )
       events_response['events'].each do |res|
         Event.transaction do
           event = res['event']
@@ -42,13 +46,15 @@ module AtndOperation
               attend_number: event['accepted'],
               substitute_number: event['waiting'],
               started_at: event['started_at'],
-              ended_at: event['ended_at']
-            }
+              ended_at: event['ended_at'],
+            },
           )
           atnd_event.save!
           dom = RequestParser.request_and_parse_html(url: atnd_event.url, options: { follow_redirect: true })
           hashtag_dom = dom.css('dl.clearfix').detect { |label| label.text.include?('ハッシュタグ') }
-          atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css('a').text.strip.split(/\s/)) if hashtag_dom.present?
+          if hashtag_dom.present?
+            atnd_event.import_hashtags!(hashtag_strings: hashtag_dom.css('a').text.strip.split(/\s/))
+          end
         end
       end
     end while events_response['events'].present?

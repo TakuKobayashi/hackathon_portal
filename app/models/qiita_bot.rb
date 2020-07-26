@@ -26,10 +26,11 @@ class QiitaBot < ApplicationRecord
 
   def generate_post_send_params(year_number:, start_month:, end_month:)
     qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
-    active_events, closed_events = qiita_events.partition{|event| event.active? }
-    before_events_from_qiita, after_events_from_qiita = active_events.partition do |event|
-      event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
-    end
+    active_events, closed_events = qiita_events.partition { |event| event.active? }
+    before_events_from_qiita, after_events_from_qiita =
+      active_events.partition do |event|
+        event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
+      end
     body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
     body +=
       "#{year_number}年#{start_month}月〜#{year_number}年#{
@@ -50,7 +51,13 @@ class QiitaBot < ApplicationRecord
     send_params = {
       title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
       body: body,
-      tags: [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }]
+      tags: [
+        { name: 'hackathon' },
+        { name: 'ハッカソン' },
+        { name: 'アイディアソン' },
+        { name: '合宿' },
+        { name: year_number.to_s },
+      ],
     }
     return send_params
   end
@@ -65,7 +72,8 @@ class QiitaBot < ApplicationRecord
       year_number = (date_number / 10000).to_i
       start_month = (month_range / 100).to_i
       end_month = (month_range % 100).to_i
-      send_params = qiita_bot.generate_post_send_params(year_number: year_number, start_month: start_month, end_month: end_month)
+      send_params =
+        qiita_bot.generate_post_send_params(year_number: year_number, start_month: start_month, end_month: end_month)
       if qiita_bot.new_record?
         response = client.create_item(send_params).body
       else
@@ -80,8 +88,8 @@ class QiitaBot < ApplicationRecord
             url: response['url'],
             body: response['body'],
             rendered_body: response['raw_body'],
-            tag_names: response_tags.map { |t| t['name'] }
-          }
+            tag_names: response_tags.map { |t| t['name'] },
+          },
         )
       else
         logger = ActiveSupport::Logger.new('log/bot_error.log')

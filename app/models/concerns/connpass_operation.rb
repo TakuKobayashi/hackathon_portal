@@ -2,7 +2,11 @@ module ConnpassOperation
   CONNPASS_URL = 'https://connpass.com/api/v1/event/'
 
   def self.find_event(keywords:, start: 1)
-    return RequestParser.request_and_parse_json(url: CONNPASS_URL, params: { keyword_or: keywords, count: 100, start: start, order: 1 })
+    return(
+      RequestParser.request_and_parse_json(
+        url: CONNPASS_URL, params: { keyword_or: keywords, count: 100, start: start, order: 1 },
+      )
+    )
   end
 
   def self.import_events_from_keywords!(keywords:)
@@ -13,7 +17,8 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_events = Event.connpass.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
+      current_events =
+        Event.connpass.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
       res_events.each do |res|
         Event.transaction do
           if current_events[res['event_id'].to_s].present?
@@ -42,8 +47,8 @@ module ConnpassOperation
               attend_number: res['accepted'],
               substitute_number: res['waiting'],
               started_at: res['started_at'],
-              ended_at: res['ended_at']
-            }
+              ended_at: res['ended_at'],
+            },
           )
           connpass_event.save!
           connpass_event.import_hashtags!(hashtag_strings: res['hash_tag'].to_s.split(/\s/))

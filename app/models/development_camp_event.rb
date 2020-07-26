@@ -48,7 +48,7 @@ class DevelopmentCampEvent < Event
     'ideathon' => 2,
     'ゲームジャム' => 2,
     'gamejam' => 2,
-    'game jam' => 2
+    'game jam' => 2,
   }
 
   def default_hashtags

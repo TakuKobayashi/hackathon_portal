@@ -51,7 +51,7 @@ class HackathonEvent < Event
     'gamejam' => 2,
     'game jam' => 2,
     '合宿' => 2,
-    'ハック' => 1
+    'ハック' => 1,
   }
 
   def default_hashtags

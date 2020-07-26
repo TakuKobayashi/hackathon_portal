@@ -10,7 +10,7 @@ module PeatixOperation
         url: PEATIX_SEARCH_URL,
         params: { q: keywords.join(' '), country: 'JP', p: page, size: PAGE_PER },
         header: { 'X-Requested-With' => 'XMLHttpRequest' },
-        options: { follow_redirect: true }
+        options: { follow_redirect: true },
       )
     )
   end
@@ -21,7 +21,8 @@ module PeatixOperation
       events_response = self.find_event(keywords: keywords, page: page)
       json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
-      current_events = Event.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
+      current_events =
+        Event.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
       json_data['events'].each do |res|
         Event.transaction do
           tracking_url = Addressable::URI.parse(res['tracking_url'])
@@ -47,8 +48,8 @@ module PeatixOperation
               owner_id: res['organizer']['id'],
               owner_nickname: res['organizer']['name'],
               owner_name: res['organizer']['name'],
-              started_at: res['datetime'].to_s
-            }
+              started_at: res['datetime'].to_s,
+            },
           )
           dom = RequestParser.request_and_parse_html(url: peatix_event.url, options: { follow_redirect: true })
           peatix_event.description = Sanitizer.basic_sanitize(dom.css('#field-event-description').to_html)

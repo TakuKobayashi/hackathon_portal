@@ -6,9 +6,11 @@ module GoogleOauth2Client
     ExtraInfo.update(
       {
         'google_oauth' => {
-          refresh_token => { 'access_token' => authorization.access_token, 'expires_at' => authorization.expires_at.to_s }
-        }
-      }
+          refresh_token => {
+            'access_token' => authorization.access_token, 'expires_at' => authorization.expires_at.to_s
+          },
+        },
+      },
     )
   end
 

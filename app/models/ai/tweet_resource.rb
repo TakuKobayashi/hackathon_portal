@@ -38,7 +38,11 @@ class Ai::TweetResource < ApplicationRecord
     return self.sentences if self.sentences.present?
     import_sentences = []
     split_sentences = plane_text_body.split(/[。．.？！!?\n\r]/)
-    transaction { split_sentences.each { |sentence| import_sentences << self.sentences.create!(body: sentence) if sentence.present? } }
+    transaction do
+      split_sentences.each do |sentence|
+        import_sentences << self.sentences.create!(body: sentence) if sentence.present?
+      end
+    end
     return import_sentences
   end
 
@@ -47,9 +51,10 @@ class Ai::TweetResource < ApplicationRecord
       RequestParser.request_and_parse_xml(
         url: 'https://jlp.yahooapis.jp/MAService/V1/parse',
         params: { appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''), sentence: plane_text_body },
-        options: { follow_redirect: true }
+        options: { follow_redirect: true },
       )
-    words = xml_hash['ma_result'].first['word_list'].first['word'].map { |hash| hash['surface'] }.flatten.select(&:present?)
+    words =
+      xml_hash['ma_result'].first['word_list'].first['word'].map { |hash| hash['surface'] }.flatten.select(&:present?)
     return words
   end
 

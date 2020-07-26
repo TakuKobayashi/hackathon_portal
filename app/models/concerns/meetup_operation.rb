@@ -8,7 +8,7 @@ module MeetupOperation
       RequestParser.request_and_parse_json(
         url: MEETUP_SEARCH_URL,
         params: { key: ENV.fetch('MEETUP_API_KEY', ''), text: keywords.join('|'), sign: true, page: PAGE_PER },
-        options: { follow_redirect: true }
+        options: { follow_redirect: true },
       )
     )
   end
@@ -55,8 +55,8 @@ module MeetupOperation
               owner_nickname: group_hash['urlname'],
               owner_name: Sanitizer.basic_sanitize(group_hash['name'].to_s),
               attend_number: res['yes_rsvp_count'] || res['attendance_count'],
-              substitute_number: res['waitlist_count']
-            }
+              substitute_number: res['waitlist_count'],
+            },
           )
         meetup_event.save!
         meetup_event.import_hashtags!(hashtag_strings: meetup_event.search_hashtags)

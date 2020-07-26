@@ -4,7 +4,8 @@ module TwitterEventOperation
   def self.find_tweets(keywords:, options: {})
     twitter_client =
       TwitterBot.get_twitter_client(
-        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     request_options = { count: PAGE_PER, result_type: 'recent', exclude: 'retweets' }.merge(options)
     return twitter_client.search(keywords.join(' OR '), request_options)
@@ -20,9 +21,10 @@ module TwitterEventOperation
     begin
       tweets_response = []
       begin
-        tweets_response = self.find_tweets(keywords: keywords, options: {
-          max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id),
-        })
+        tweets_response =
+          self.find_tweets(
+            keywords: keywords, options: { max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id) },
+          )
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
@@ -34,21 +36,21 @@ module TwitterEventOperation
         end
       end
       tweets = tweets_response.take(PAGE_PER)
-      tweets.sort_by!{|tweet| -tweet.id }
+      tweets.sort_by! { |tweet| -tweet.id }
       url_twitter_events = self.find_by_all_relative_events_from_tweets(tweets: tweets).index_by(&:url)
 
       # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
       tweets.reverse_each do |tweet|
         tweet_counter = tweet_counter + 1
-        twitter_events = self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
-        twitter_events.each do |twitter_event|
-          url_twitter_events[twitter_event.url] = twitter_event
-        end
+        twitter_events =
+          self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
+        twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         if tweet.quoted_status?
-          quoted_twitter_events = self.save_twitter_events_form_tweet!(tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events)
-          quoted_twitter_events.each do |twitter_event|
-            url_twitter_events[twitter_event.url] = twitter_event
-          end
+          quoted_twitter_events =
+            self.save_twitter_events_form_tweet!(
+              tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events,
+            )
+          quoted_twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         end
       end
 
@@ -57,6 +59,7 @@ module TwitterEventOperation
   end
 
   private
+
   def self.save_twitter_events_form_tweet!(tweet:, current_url_twitter_events:)
     saved_twitter_events = []
     urls = tweet.urls.map(&:expanded_url)
@@ -64,14 +67,10 @@ module TwitterEventOperation
     urls.each do |url|
       Rails.logger.info(url)
       next if current_url_twitter_events[url.to_s].present?
-      if url.host.include?("twitter.com") || url.host.include?("youtu.be") || url.host.include?("youtube.com")
-        next
-      end
+      next if url.host.include?('twitter.com') || url.host.include?('youtu.be') || url.host.include?('youtube.com')
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
       twitter_event.build_from_website
-      if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
-        next
-      end
+      next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
       twitter_event.merge_event_attributes(
         attrs: {
           event_id: tweet.id,
@@ -80,8 +79,8 @@ module TwitterEventOperation
           currency_unit: 'JPY',
           owner_id: tweet.user.id,
           owner_nickname: tweet.user.name,
-          owner_name: tweet.user.screen_name
-        }
+          owner_name: tweet.user.screen_name,
+        },
       )
       if twitter_event.hackathon_event? || twitter_event.development_camp?
         begin
@@ -98,18 +97,15 @@ module TwitterEventOperation
   end
 
   def self.find_by_all_relative_events_from_tweets(tweets: [])
-    all_twitter_ids = tweets.map do |tweet|
-      [tweet.id.to_s, tweet.quoted_status.id.to_s]
-    end.flatten.select(&:present?)
+    all_twitter_ids = tweets.map { |tweet| [tweet.id.to_s, tweet.quoted_status.id.to_s] }.flatten.select(&:present?)
     twitter_events = Event.twitter.where(event_id: all_twitter_ids)
 
-    all_urls = tweets.map do |tweet|
-      urls = tweet.urls.map{|u| u.expanded_url.to_s }
-      if tweet.quoted_status?
-        urls += tweet.quoted_status.urls.map{|u| u.expanded_url.to_s }
-      end
-      urls
-    end.flatten.uniq
+    all_urls =
+      tweets.map do |tweet|
+        urls = tweet.urls.map { |u| u.expanded_url.to_s }
+        urls += tweet.quoted_status.urls.map { |u| u.expanded_url.to_s } if tweet.quoted_status?
+        urls
+      end.flatten.uniq
 
     twitter_events += Event.where(url: all_urls)
     return twitter_events.uniq

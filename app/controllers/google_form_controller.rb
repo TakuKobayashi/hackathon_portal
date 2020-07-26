@@ -19,8 +19,8 @@ class GoogleFormController < ApplicationController
         currency_unit: 'JPY',
         owner_id: form_input.email,
         started_at: Time.parse([index_items[3].try(:value), index_items[4].try(:value)].join(' ')),
-        ended_at: Time.parse([index_items[5].try(:value), index_items[6].try(:value)].join(' '))
-      }
+        ended_at: Time.parse([index_items[5].try(:value), index_items[6].try(:value)].join(' ')),
+      },
     )
     google_form_event.save!
     render json: google_form_event
