@@ -87,7 +87,7 @@ class Event < ApplicationRecord
     end
     TwitterEventOperation.import_events_from_keywords!(
       keywords: Event::TWITTER_HACKATHON_KEYWORDS,
-      options: { limit_execute_second: 3600, default_max_tweet_id: nil, default_since_tweet_id: nil },
+      options: { limit_execute_second: 3600, default_max_tweet_id: nil },
     )
     GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
   end
