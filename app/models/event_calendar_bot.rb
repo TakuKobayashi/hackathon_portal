@@ -40,8 +40,8 @@ class EventCalendarBot < ApplicationRecord
             location: [event.address, event.place].join(' '),
             description: event.description,
             start: { date_time: event.started_at.to_datetime.rfc3339 },
-            source: { url: event.url, title: event.title }
-          }
+            source: { url: event.url, title: event.title },
+          },
         )
       if event.ended_at.present?
         calender_event.end = { date_time: event.ended_at.to_datetime.rfc3339 }
@@ -72,7 +72,7 @@ class EventCalendarBot < ApplicationRecord
           error: e,
           target_calender_id: target_calender_id,
           calender_event_id: calender_bot.try(:calender_event_id),
-          calender_event_hash: calender_event.to_h
+          calender_event_hash: calender_event.to_h,
         )
       end
       event_calendars << calender_bot
@@ -90,7 +90,7 @@ class EventCalendarBot < ApplicationRecord
       error_message: error.message,
       target_calender_id: target_calender_id,
       calender_event_id: calender_event_id,
-      calender_event: calender_event_hash
+      calender_event: calender_event_hash,
     }.to_json
     logger.info(message)
   end

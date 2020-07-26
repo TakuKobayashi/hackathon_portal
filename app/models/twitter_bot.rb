@@ -23,7 +23,10 @@ class TwitterBot < ApplicationRecord
   def self.tweet!(text:, from: nil, access_token: nil, access_token_secret: nil, options: {})
     twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     tweet_result = twitter_client.update(text, options)
-    twitter_bot = TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from)
+    twitter_bot =
+      TwitterBot.create!(
+        tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from,
+      )
     return twitter_bot
   end
 
@@ -34,7 +37,8 @@ class TwitterBot < ApplicationRecord
   end
 
   def self.get_twitter_client(
-    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+    access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
   )
     twitter_client =
       Twitter::REST::Client.new do |config|

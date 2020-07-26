@@ -7,7 +7,7 @@ require "fileutils"
 
 namespace :batch do
   task event_bot_tweet: :environment do
-    will_post_events = Event.active.where.not(type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).order("started_at ASC")
+    will_post_events = Event.active.where.not(type: nil).where("(? < started_at AND started_at < ?) OR ? < ended_at", Time.current, 1.year.since, Time.current).order("started_at ASC")
     future_events = []
     will_post_events.each do |event|
       if event.url_active?
@@ -16,11 +16,25 @@ namespace :batch do
         event.closed!
       end
     end
-    will_post_events += Event.where.not(state: :active, type: nil).where("? < started_at AND started_at < ?", Time.current, 1.year.since).to_a
+    will_post_events += Event.where.not(state: :active).where.not(type: nil).where("(? < started_at AND started_at < ?) OR ? < ended_at", Time.current, 1.year.since, Time.current).to_a
     will_post_events.sort_by!(&:started_at)
+
+    Event.preset_tweet_urls!(events: will_post_events)
+
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
-        TwitterBot.tweet!(text: event.generate_tweet_text, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), from: event, options: { lat: event.lat, long: event.lon })
+        tweet_options = { lat: event.lat, long: event.lon }
+        if event.twitter?
+          tweet_options[:attachment_url] = event.tweet_url
+        end
+
+        TwitterBot.tweet!(
+          text: event.generate_tweet_text,
+          access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+          access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+          from: event,
+          options: tweet_options
+        )
       end
     end
     QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))

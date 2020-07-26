@@ -24,7 +24,9 @@ class BloggerBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
-  def self.post_or_update_article!(blogger_blog_url:, events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+  def self.post_or_update_article!(
+    blogger_blog_url:, events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+  )
     context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
     action_view_renderer = ActionView::Base.new(context)
     service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
@@ -41,18 +43,25 @@ class BloggerBot < ApplicationRecord
 
   def build_content(action_view_renderer:)
     post_events = Event.where(id: self.event_ids).order('started_at ASC')
-    active_events, closed_events = post_events.partition{|event| event.active? }
-    before_events, after_events = active_events.partition do |event|
-      event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
-    end
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
+    active_events, closed_events = post_events.partition { |event| event.active? }
+    before_events, after_events =
+      active_events.partition do |event|
+        event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
+      end
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
     self.body =
       action_view_renderer.render(
         template: 'blogger/publish',
         format: 'html',
-        locals: { before_events: before_events, after_events: after_events, closed_events: closed_events, year_number: year_number, start_month: start_month }
+        locals: {
+          before_events: before_events,
+          after_events: after_events,
+          closed_events: closed_events,
+          year_number: year_number,
+          start_month: start_month,
+        },
       )
   end
 
@@ -72,8 +81,8 @@ class BloggerBot < ApplicationRecord
         title: result_blogger_post.title,
         url: result_blogger_post.url,
         body: result_blogger_post.content,
-        tag_names: result_blogger_post.labels
-      }
+        tag_names: result_blogger_post.labels,
+      },
     )
   end
 end

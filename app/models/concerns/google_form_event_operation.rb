@@ -1,12 +1,12 @@
 require 'google/apis/sheets_v4'
 
 module GoogleFormEventOperation
-  def self.load_and_imoport_events!(event_clazz:, refresh_token:)
+  def self.load_and_imoport_events!(refresh_token:)
     service = GoogleServices.get_sheet_service(refresh_token: refresh_token)
     target_spreadsheet =
       service.get_spreadsheet(
-        event_clazz.google_form_spreadsheet_id,
-        fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)'
+        Event.google_form_spreadsheet_id,
+        fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)',
       )
     target_spreadsheet.sheets.each do |sheet|
       sheet.data.each do |sheet_data|
@@ -15,18 +15,19 @@ module GoogleFormEventOperation
         row_data = sheet_data.row_data
         # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
         header_names = (row_data[0].try(:values) || [])
-        column_header_names = (header_names[1..(header_names.size)] || []).map { |name_property| name_property.formatted_value.downcase }
+        column_header_names =
+          (header_names[1..(header_names.size)] || []).map { |name_property| name_property.formatted_value.downcase }
         rows = row_data[1..(row_data.size - 1)] || []
         rows.each do |row|
           columns = row.values[1..(row.values.size - 1)]
-          event = event_clazz.new
+          event = Event.new
           columns.each_with_index do |column, index|
             next if column.formatted_value.nil?
             event.send(column_header_names[index] + '=', Sanitizer.basic_sanitize(column.formatted_value))
           end
           import_url_events[event.url] = event
         end
-        exists_url_events = event_clazz.base_class.where(url: import_url_events.keys).index_by(&:url)
+        exists_url_events = Event.where(url: import_url_events.keys).index_by(&:url)
         import_url_events.each do |url, event|
           prev_event = exists_url_events[url]
           if prev_event.present?

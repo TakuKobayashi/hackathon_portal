@@ -31,10 +31,10 @@
 #
 # Indexes
 #
-#  index_events_on_event_id_and_type        (event_id,type)
-#  index_events_on_started_at_and_ended_at  (started_at,ended_at)
-#  index_events_on_title                    (title)
-#  index_events_on_url                      (url)
+#  index_events_on_ended_at                    (ended_at)
+#  index_events_on_event_id_and_informed_from  (event_id,informed_from)
+#  index_events_on_started_at                  (started_at)
+#  index_events_on_url                         (url)
 #
 
 class HackathonEvent < Event
@@ -51,7 +51,7 @@ class HackathonEvent < Event
     'gamejam' => 2,
     'game jam' => 2,
     '合宿' => 2,
-    'ハック' => 1
+    'ハック' => 1,
   }
 
   def default_hashtags

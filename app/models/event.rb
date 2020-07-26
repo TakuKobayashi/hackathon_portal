@@ -31,10 +31,10 @@
 #
 # Indexes
 #
-#  index_events_on_event_id_and_type        (event_id,type)
-#  index_events_on_started_at_and_ended_at  (started_at,ended_at)
-#  index_events_on_title                    (title)
-#  index_events_on_url                      (url)
+#  index_events_on_ended_at                    (ended_at)
+#  index_events_on_event_id_and_informed_from  (event_id,informed_from)
+#  index_events_on_started_at                  (started_at)
+#  index_events_on_url                         (url)
 #
 
 class Event < ApplicationRecord
@@ -48,6 +48,7 @@ class Event < ApplicationRecord
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
+  TWITTER_HACKATHON_KEYWORDS = %w[hackathon ッカソン gamejam アイディアソン アイデアソン ideathon 開発合宿 はっかそん]
   HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
@@ -59,7 +60,7 @@ class Event < ApplicationRecord
     'ideathon' => 2,
     'ゲームジャム' => 2,
     'gamejam' => 2,
-    'game jam' => 2
+    'game jam' => 2,
   }
 
   before_create { self.distribute_event_type }
@@ -82,9 +83,33 @@ class Event < ApplicationRecord
     Rails.application.eager_load!
     operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
-      operation_module.import_events_from_keywords!(event_clazz: Event, keywords: keywords)
+      begin
+        operation_module.import_events_from_keywords!(keywords: keywords)
+      rescue Exception => e
+        Rails.logger.error(
+          [operation_module.to_s, 'Excuting error keywords:' + keywords.join(','), e.full_message].join('\n'),
+        )
+      end
     end
-    GoogleFormEventOperation.load_and_imoport_events!(event_clazz: Event, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    begin
+      TwitterEventOperation.import_events_from_keywords!(
+        keywords: Event::TWITTER_HACKATHON_KEYWORDS,
+        options: { limit_execute_second: 3600, default_max_tweet_id: nil, default_since_tweet_id: nil },
+      )
+    rescue Exception => e
+      Rails.logger.error(
+        [
+          TwitterEventOperation.to_s,
+          'Excuting error keywords:' + Event::TWITTER_HACKATHON_KEYWORDS.join(','),
+          e.full_message,
+        ].join('\n'),
+      )
+    end
+    begin
+      GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    rescue Exception => e
+      Rails.logger.error([GoogleFormEventOperation.to_s, 'Excuting error', e.full_message].join('\n'))
+    end
   end
 
   def distribute_event_type
@@ -111,7 +136,7 @@ class Event < ApplicationRecord
       'ideathon',
       'ゲームジャム',
       'gamejam',
-      'game jam'
+      'game jam',
     ]
     direct_keywords.each do |word|
       if sanitized_title.include?(word)
@@ -172,5 +197,45 @@ class Event < ApplicationRecord
       text_size <= 140
     end
     return tweet_words.uniq.join("\n")
+  end
+
+  def tweet_url
+    return @tweet_url if @tweet_url.present?
+    if self.twitter? && self.event_id.present?
+      twitter_client =
+        TwitterBot.get_twitter_client(
+          access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+          access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+        )
+      tweet = nil
+      begin
+        tweet = twitter_client.status(self.event_id)
+      rescue Exception => e
+      end
+      @tweet_url = tweet.try(:url).to_s
+      return @tweet_url
+    end
+    return ''
+  end
+
+  def tweet_url=(url)
+    @tweet_url = url
+  end
+
+  def self.preset_tweet_urls!(events: [])
+    event_tweet_ids = events.select(&:twitter?).map(&:event_id)
+    twitter_client =
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      )
+    # Twitter APIの仕様により100件ずつ設定する
+    event_tweet_ids.each_slice(100) do |tweet_ids|
+      event_tweets = twitter_client.statuses(tweet_ids)
+      event_tweets.each do |event_tweet|
+        event = events.detect { |event| event.twitter? && event.event_id == event_tweet.id.to_s }
+        event.tweet_url = event_tweet.url.to_s
+      end
+    end
   end
 end

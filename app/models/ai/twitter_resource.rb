@@ -51,11 +51,13 @@ class Ai::TwitterResource < Ai::TweetResource
                 resource_user_id: tweet.user.id.to_s,
                 resource_user_name: tweet.user.screen_name,
                 body: Sanitizer.basic_sanitize(tweet.text),
-                published_at: tweet.created_at
+                published_at: tweet.created_at,
               )
             ai_resource.reply_id = tweet.in_reply_to_tweet_id if tweet.in_reply_to_tweet_id.present?
             ai_resource.quote_id = tweet.quoted_tweet.id if tweet.quoted_tweet.present?
-            ai_resource.options = { mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } } }
+            ai_resource.options = {
+              mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } }
+            }
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
             ai_resource.register_attachments!(tweet: tweet)
@@ -73,7 +75,8 @@ class Ai::TwitterResource < Ai::TweetResource
   end
 
   def register_hashtags!(tweet:)
-    sanitized_hashtags = tweet.hashtags.map { |hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select(&:present?)
+    sanitized_hashtags =
+      tweet.hashtags.map { |hashtag| Sanitizer.basic_sanitize(hashtag.text).strip }.select(&:present?)
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     import_ai_hashtags = []
     sanitized_hashtags.each do |ht|
@@ -84,7 +87,9 @@ class Ai::TwitterResource < Ai::TweetResource
         import_ai_hashtags << self.hashtags.new(hashtag_id: new_hashtag.id)
       end
     end
-    Ai::ResourceHashtag.import!(import_ai_hashtags, on_duplicate_key_update: %i[hashtag_id]) if import_ai_hashtags.present?
+    if import_ai_hashtags.present?
+      Ai::ResourceHashtag.import!(import_ai_hashtags, on_duplicate_key_update: %i[hashtag_id])
+    end
   end
 
   def register_attachments!(tweet:)
