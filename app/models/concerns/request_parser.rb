@@ -99,7 +99,7 @@ module RequestParser
       redirect_url = response.headers["Location"]
       if redirect_url.present?
         redirect_full_url = WebNormalizer.merge_full_url(src: redirect_url, org: url)
-        response = self.request_and_response(url: redirect_full_url, options: {customize_force_redirect: true, customize_redirect_counter: customize_redirect_counter + 1})
+        response = self.request_and_response(url: redirect_full_url, options: {customize_force_redirect: true, customize_redirect_counter: customize_redirect_counter + 1, timeout_second: timeout_second})
       end
     end
     return response
