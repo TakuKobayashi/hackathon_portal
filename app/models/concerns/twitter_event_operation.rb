@@ -11,20 +11,25 @@ module TwitterEventOperation
     return twitter_client.search(keywords.join(' OR '), request_options)
   end
 
-  def self.import_events_from_keywords!(keywords:)
-    last_twitter_event = Event.twitter.last
-    update_columns = Event.column_names - %w[id type shortener_url event_id created_at]
+  def self.import_events_from_keywords!(keywords:, options: {})
+    execute_option_structs = OpenStruct.new(options)
+    if options.has_key?(:default_since_tweet_id)
+      since_tweet_id = execute_option_structs.default_since_tweet_id
+    else
+      since_tweet_id = Event.twitter.last.try(:event_id)
+    end
+    max_tweet_id = execute_option_structs.default_max_tweet_id
+    limit_execute_second = execute_option_structs.limit_execute_second || 3600
+
     tweet_counter = 0
     retry_count = 0
-    max_tweet_id = nil
     tweets = []
+    start_time = Time.current
     begin
       tweets_response = []
       begin
         tweets_response =
-          self.find_tweets(
-            keywords: keywords, options: { max_id: max_tweet_id, since_id: last_twitter_event.try(:event_id) },
-          )
+          self.find_tweets(keywords: keywords, options: { max_id: max_tweet_id, since_id: since_tweet_id })
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
@@ -55,7 +60,7 @@ module TwitterEventOperation
       end
 
       max_tweet_id = tweets.last.try(:id)
-    end while tweets.size >= PAGE_PER
+    end while tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second
   end
 
   private

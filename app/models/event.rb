@@ -83,9 +83,33 @@ class Event < ApplicationRecord
     Rails.application.eager_load!
     operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
-      operation_module.import_events_from_keywords!(keywords: keywords)
+      begin
+        operation_module.import_events_from_keywords!(keywords: keywords)
+      rescue Exception => e
+        Rails.logger.error(
+          [operation_module.to_s, 'Excuting error keywords:' + keywords.join(','), e.full_message].join('\n'),
+        )
+      end
     end
-    GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    begin
+      TwitterEventOperation.import_events_from_keywords!(
+        keywords: Event::TWITTER_HACKATHON_KEYWORDS,
+        options: { limit_execute_second: 3600, default_max_tweet_id: nil, default_since_tweet_id: nil },
+      )
+    rescue Exception => e
+      Rails.logger.error(
+        [
+          TwitterEventOperation.to_s,
+          'Excuting error keywords:' + Event::TWITTER_HACKATHON_KEYWORDS.join(','),
+          e.full_message,
+        ].join('\n'),
+      )
+    end
+    begin
+      GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    rescue Exception => e
+      Rails.logger.error([GoogleFormEventOperation.to_s, 'Excuting error', e.full_message].join('\n'))
+    end
   end
 
   def distribute_event_type
