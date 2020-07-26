@@ -17,6 +17,8 @@ stages:
     - apt --quiet update --yes
     - curl -sL https://deb.nodesource.com/setup_10.x | bash -
     - apt install --quiet --yes nodejs default-mysql-client unzip git
+    # https://qiita.com/masayuki14/items/c34eafb9d6130e2c5b67 より更新が必要そう
+    - sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf
     - gem install bundler --no-document
     - bundle install --jobs $(nproc) --path vendor/bundle
     - echo "MYSQL_USERNAME='root'" > .env
