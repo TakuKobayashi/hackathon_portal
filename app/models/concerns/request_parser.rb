@@ -66,6 +66,7 @@ module RequestParser
       option_struct.delete_field(:follow_redirect) if option_struct.follow_redirect.present?
     end
     http_client = HTTPClient.new
+    http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http_client.connect_timeout = timeout_second
     http_client.send_timeout = timeout_second
     http_client.receive_timeout = timeout_second
@@ -86,6 +87,8 @@ module RequestParser
       end
     rescue SocketError,
            HTTPClient::ConnectTimeoutError,
+           HTTPClient::SendTimeoutError,
+           HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
