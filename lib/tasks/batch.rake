@@ -24,10 +24,6 @@ namespace :batch do
     future_events.each do |event|
       if !TwitterBot.exists?(from: event)
         tweet_options = { lat: event.lat, long: event.lon }
-        if event.twitter?
-          tweet_options[:attachment_url] = event.tweet_url
-        end
-
         TwitterBot.tweet!(
           text: event.generate_tweet_text,
           access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
