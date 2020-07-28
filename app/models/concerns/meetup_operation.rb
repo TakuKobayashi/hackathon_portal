@@ -44,7 +44,7 @@ module MeetupOperation
               started_at: start_time,
               ended_at: end_time,
               limit_number: res['rsvp_limit'],
-              address: vanue_hash['address_1'].to_s,
+              address: vanue_hash['address_1'],
               place: vanue_hash['name'].to_s,
               lat: vanue_hash['lat'],
               lon: vanue_hash['lon'],

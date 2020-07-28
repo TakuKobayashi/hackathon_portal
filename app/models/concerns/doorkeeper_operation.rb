@@ -33,7 +33,7 @@ module DoorkeeperOperation
               url: event['public_url'].to_s,
               description: Sanitizer.basic_sanitize(event['description'].to_s),
               limit_number: event['ticket_limit'],
-              address: event['address'].to_s,
+              address: event['address'],
               place: event['venue_name'].to_s,
               lat: event['lat'],
               lon: event['long'],
