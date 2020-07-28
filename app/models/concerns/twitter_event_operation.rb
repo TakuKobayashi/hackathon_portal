@@ -1,5 +1,10 @@
 module TwitterEventOperation
   PAGE_PER = 100
+  TWITTER_HOST = 'twitter.com'
+  EXCLUDE_CHECK_EVENT_HOSTS = [
+    'youtu.be',
+    'youtube.com',
+  ]
 
   def self.find_tweets(keywords:, options: {})
     twitter_client =
@@ -40,23 +45,30 @@ module TwitterEventOperation
           return []
         end
       end
-      tweets = tweets_response.take(PAGE_PER)
+      take_tweets = tweets_response.take(PAGE_PER)
+      twitter_url_tweets = self.expanded_tweets_from_twitter_url(tweets: take_tweets)
+      tweets = take_tweets + twitter_url_tweets
+      tweets.uniq!
       tweets.sort_by! { |tweet| -tweet.id }
       url_twitter_events = self.find_by_all_relative_events_from_tweets(tweets: tweets).index_by(&:url)
 
+      saved_twitter_events = []
       # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
       tweets.reverse_each do |tweet|
         tweet_counter = tweet_counter + 1
-        twitter_events =
+        saved_twitter_events +=
           self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
-        twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         if tweet.quoted_status?
-          quoted_twitter_events =
+          saved_twitter_events +=
             self.save_twitter_events_form_tweet!(
               tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events,
             )
-          quoted_twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         end
+      end
+
+      saved_twitter_events.each do |saved_twitter_event|
+        saved_twitter_event.build_location_data
+        saved_twitter_event.save!
       end
 
       max_tweet_id = tweets.last.try(:id)
@@ -72,7 +84,10 @@ module TwitterEventOperation
     urls.each do |url|
       Rails.logger.info(url)
       next if current_url_twitter_events[url.to_s].present?
-      next if url.host.include?('twitter.com') || url.host.include?('youtu.be') || url.host.include?('youtube.com')
+      # TwitterのURLは除外する
+      next if url.host.include?(TWITTER_HOST)
+      # Youtube他、絶対にイベント情報じゃないHOSTはあらかじめはじく
+      next if EXCLUDE_CHECK_EVENT_HOSTS.any?{|event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
       twitter_event.build_from_website
       next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
@@ -87,10 +102,11 @@ module TwitterEventOperation
           owner_name: tweet.user.screen_name,
         },
       )
-      if twitter_event.hackathon_event? || twitter_event.development_camp?
+      if twitter_event.type.present?
         begin
           twitter_event.save!
           twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
+          current_url_twitter_events[twitter_event.url] = twitter_event
           saved_twitter_events << twitter_event
         rescue Exception => error
           Rails.logger.warn("Data save error #{twitter_event.attributes}")
@@ -114,5 +130,29 @@ module TwitterEventOperation
 
     twitter_events += Event.where(url: all_urls)
     return twitter_events.uniq
+  end
+
+  def self.expanded_tweets_from_twitter_url(tweets: [])
+    all_twitter_urls =
+      tweets.map do |tweet|
+        urls = tweet.urls.map { |u| u.expanded_url }
+        urls += tweet.quoted_status.urls.map { |u| u.expanded_url } if tweet.quoted_status?
+        urls
+      end.flatten.uniq.select{|url| url.host == TWITTER_HOST }
+    tweet_ids = all_twitter_urls.map do |url|
+      path_parts = url.path.split("/")
+      path_parts[path_parts.size - 1]
+    end
+    twitter_client =
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      )
+
+    result_tweets = []
+    tweet_ids.each_slice(100) do |ids|
+      result_tweets += twitter_client.statuses(ids)
+    end
+    return result_tweets
   end
 end

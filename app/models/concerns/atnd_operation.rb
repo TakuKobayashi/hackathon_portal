@@ -34,7 +34,7 @@ module AtndOperation
               url: ATND_EVENTPAGE_URL + event['event_id'].to_s,
               description: Sanitizer.basic_sanitize(event['description'].to_s),
               limit_number: event['limit'],
-              address: event['address'].to_s,
+              address: event['address'],
               place: event['place'].to_s,
               lat: event['lat'],
               lon: event['lon'],

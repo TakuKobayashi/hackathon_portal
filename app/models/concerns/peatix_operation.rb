@@ -38,7 +38,7 @@ module PeatixOperation
               informed_from: :peatix,
               title: res['name'].to_s,
               url: tracking_url.origin.to_s + tracking_url.path.to_s,
-              address: res['address'].to_s,
+              address: res['address'],
               place: res['venue_name'].to_s,
               lat: lat,
               lon: lng,

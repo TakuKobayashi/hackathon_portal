@@ -63,8 +63,6 @@ class Event < ApplicationRecord
     'game jam' => 2,
   }
 
-  before_create { self.distribute_event_type }
-
   before_save do
     if self.url.size > 255
       shorted_url = self.get_short_url
@@ -170,7 +168,7 @@ class Event < ApplicationRecord
   end
 
   def generate_tweet_text
-    tweet_words = [self.title, self.short_url, self.started_at.strftime('%Y年%m月%d日')]
+    tweet_words = [self.title, self.output_url, self.started_at.strftime('%Y年%m月%d日')]
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
@@ -181,6 +179,14 @@ class Event < ApplicationRecord
       text_size <= 140
     end
     return tweet_words.uniq.join("\n")
+  end
+
+  def output_url
+    if self.short_url.present?
+      return self.short_url
+    else
+      return self.url
+    end
   end
 
   def tweet_url

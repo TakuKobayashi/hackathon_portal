@@ -18,7 +18,7 @@ module EventCommon
       ops.delete_field(:lon) unless ops.lon.nil?
     end
     self.attributes = self.attributes.merge(ops.to_h)
-    self.build_location_data
+    self.distribute_event_type
   end
 
   def build_location_data
@@ -42,8 +42,6 @@ module EventCommon
     end
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip
-    else
-      self.address = ''
     end
   end
 
@@ -65,7 +63,7 @@ module EventCommon
   def build_from_website
     dom =
       RequestParser.request_and_parse_html(
-        url: self.url, options: { customize_force_redirect: true, timeout_second: 60 },
+        url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return nil if dom.text.blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
@@ -89,13 +87,18 @@ module EventCommon
 
     body_dom = dom.css('body').first
     return nil if body_dom.blank?
-    sanitized_main_content_html = Sanitizer.basic_sanitize(body_dom.to_html)
-    sanitized_main_content_html = Sanitizer.delete_javascript_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_html_comment(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_header_tag_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_footer_tag_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_style_in_html(sanitized_main_content_html)
-    match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(body_dom.text))
+    sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
+    sanitized_body_text = Sanitizer.basic_sanitize(body_dom.text)
+
+    delete_reg_exp = Regexp.new(['(', [
+      Sanitizer::RegexpParts::HTML_COMMENT,
+      Sanitizer::RegexpParts::HTML_SCRIPT_TAG,
+      Sanitizer::RegexpParts::HTML_HEADER_TAG,
+      Sanitizer::RegexpParts::HTML_FOOTER_TAG,
+      Sanitizer::RegexpParts::HTML_STYLE_TAG,
+    ].join(')|('), ')'].join(''))
+    sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
+    match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
     if match_address.present?
       self.address = match_address
@@ -294,6 +297,8 @@ module EventCommon
       return false if 400 <= response.status && response.status < 500
     rescue SocketError,
            HTTPClient::ConnectTimeoutError,
+           HTTPClient::SendTimeoutError,
+           HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            Addressable::URI::InvalidURIError => e
       return false
@@ -317,11 +322,5 @@ module EventCommon
     else
       return nil
     end
-    #    service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
-    #    service.key = ENV.fetch('GOOGLE_API_KEY', '')
-    #    url_obj = Google::Apis::UrlshortenerV1::Url.new
-    #    url_obj.long_url = self.url
-    #    result = service.insert_url(url_obj)
-    #    return result.id
   end
 end
