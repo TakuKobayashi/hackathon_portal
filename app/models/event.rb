@@ -174,7 +174,7 @@ class Event < ApplicationRecord
     tweet_words += hs
     tweet_words += self.default_hashtags
     text_size = 0
-    tweet_words.select! do |text|
+    tweet_words.compact.select! do |text|
       text_size += text.size
       text_size <= 140
     end
