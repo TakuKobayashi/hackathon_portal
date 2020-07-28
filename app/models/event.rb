@@ -168,17 +168,25 @@ class Event < ApplicationRecord
   end
 
   def generate_tweet_text
-    tweet_words = [self.title, self.short_url, self.started_at.strftime('%Y年%m月%d日')]
+    tweet_words = [self.title, self.output_url, self.started_at.strftime('%Y年%m月%d日')]
     tweet_words << "定員#{self.limit_number}人" if self.limit_number.present?
     hs = self.hashtags.map(&:hashtag).map { |hashtag| '#' + hashtag.to_s }
     tweet_words += hs
     tweet_words += self.default_hashtags
     text_size = 0
-    tweet_words.compact.select! do |text|
+    tweet_words.select! do |text|
       text_size += text.size
       text_size <= 140
     end
     return tweet_words.uniq.join("\n")
+  end
+
+  def output_url
+    if self.short_url.present?
+      return self.short_url
+    else
+      return self.url
+    end
   end
 
   def tweet_url

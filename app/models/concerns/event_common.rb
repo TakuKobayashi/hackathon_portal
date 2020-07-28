@@ -297,6 +297,8 @@ module EventCommon
       return false if 400 <= response.status && response.status < 500
     rescue SocketError,
            HTTPClient::ConnectTimeoutError,
+           HTTPClient::SendTimeoutError,
+           HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            Addressable::URI::InvalidURIError => e
       return false
@@ -320,11 +322,5 @@ module EventCommon
     else
       return nil
     end
-    #    service = Google::Apis::UrlshortenerV1::UrlshortenerService.new
-    #    service.key = ENV.fetch('GOOGLE_API_KEY', '')
-    #    url_obj = Google::Apis::UrlshortenerV1::Url.new
-    #    url_obj.long_url = self.url
-    #    result = service.insert_url(url_obj)
-    #    return result.id
   end
 end
