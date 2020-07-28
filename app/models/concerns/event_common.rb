@@ -65,7 +65,7 @@ module EventCommon
   def build_from_website
     dom =
       RequestParser.request_and_parse_html(
-        url: self.url, options: { customize_force_redirect: true, timeout_second: 60 },
+        url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return nil if dom.text.blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
@@ -89,13 +89,18 @@ module EventCommon
 
     body_dom = dom.css('body').first
     return nil if body_dom.blank?
-    sanitized_main_content_html = Sanitizer.basic_sanitize(body_dom.to_html)
-    sanitized_main_content_html = Sanitizer.delete_javascript_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_html_comment(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_header_tag_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_footer_tag_in_html(sanitized_main_content_html)
-    sanitized_main_content_html = Sanitizer.delete_style_in_html(sanitized_main_content_html)
-    match_address = Sanitizer.japan_address_regexp.match(Sanitizer.basic_sanitize(body_dom.text))
+    sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
+    sanitized_body_text = Sanitizer.basic_sanitize(body_dom.text)
+
+    delete_reg_exp = Regexp.new(['(', [
+      Sanitizer::RegexpParts::HTML_COMMENT,
+      Sanitizer::RegexpParts::HTML_SCRIPT_TAG,
+      Sanitizer::RegexpParts::HTML_HEADER_TAG,
+      Sanitizer::RegexpParts::HTML_FOOTER_TAG,
+      Sanitizer::RegexpParts::HTML_STYLE_TAG,
+    ].join(')|('), ')'].join(''))
+    sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
+    match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
     if match_address.present?
       self.address = match_address

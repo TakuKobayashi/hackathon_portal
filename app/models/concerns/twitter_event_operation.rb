@@ -49,13 +49,11 @@ module TwitterEventOperation
         tweet_counter = tweet_counter + 1
         twitter_events =
           self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
-        twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         if tweet.quoted_status?
           quoted_twitter_events =
             self.save_twitter_events_form_tweet!(
               tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events,
             )
-          quoted_twitter_events.each { |twitter_event| url_twitter_events[twitter_event.url] = twitter_event }
         end
       end
 
@@ -91,7 +89,7 @@ module TwitterEventOperation
         begin
           twitter_event.save!
           twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
-          saved_twitter_events << twitter_event
+          current_url_twitter_events[twitter_event.url] = twitter_event
         rescue Exception => error
           Rails.logger.warn("Data save error #{twitter_event.attributes}")
         end

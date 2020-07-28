@@ -6,6 +6,7 @@ module Sanitizer
     HTML_FOOTER_TAG = '<footer[^>]+?\/>|<footer(.|\s)*?\/footer>'
     HTML_LINK_TAG = '<link[^>]+?\/>|<link(.|\s)*?\/link>'
     HTML_STYLE_TAG = '<style[^>]+?\/>|<style(.|\s)*?\/style>'
+    EMPTY_WORD_TAGS = '\r|\n|\t'
     TODOUFUKENLIST = %w[
       北海道
       青森県
@@ -161,7 +162,7 @@ module Sanitizer
   end
 
   def self.delete_empty_words(text)
-    return text.gsub(/\r|\n|\t/, '')
+    return text.gsub(/#{RegexpParts::EMPTY_WORD_TAGS}/, '')
   end
 
   def self.japan_address_regexp
