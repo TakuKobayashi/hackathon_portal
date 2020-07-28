@@ -63,8 +63,6 @@ class Event < ApplicationRecord
     'game jam' => 2,
   }
 
-  before_create { self.distribute_event_type }
-
   before_save do
     if self.url.size > 255
       shorted_url = self.get_short_url

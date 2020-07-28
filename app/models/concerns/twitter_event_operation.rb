@@ -85,7 +85,7 @@ module TwitterEventOperation
           owner_name: tweet.user.screen_name,
         },
       )
-      if twitter_event.hackathon_event? || twitter_event.development_camp?
+      if twitter_event.type.present?
         begin
           twitter_event.save!
           twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))

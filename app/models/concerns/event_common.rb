@@ -18,7 +18,7 @@ module EventCommon
       ops.delete_field(:lon) unless ops.lon.nil?
     end
     self.attributes = self.attributes.merge(ops.to_h)
-    self.build_location_data
+    self.distribute_event_type
   end
 
   def build_location_data
