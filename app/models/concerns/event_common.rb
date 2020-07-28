@@ -42,8 +42,6 @@ module EventCommon
     end
     if self.address.present?
       self.address = Charwidth.normalize(self.address).strip
-    else
-      self.address = ''
     end
   end
 
