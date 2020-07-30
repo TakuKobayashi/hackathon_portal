@@ -83,6 +83,8 @@ class Event < ApplicationRecord
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
       operation_module.import_events_from_keywords!(keywords: keywords)
     end
+    ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
+    GC.start
     self.import_events_from_twitter!
     GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
   end
