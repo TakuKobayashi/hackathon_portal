@@ -112,7 +112,7 @@ module EventCommon
       self.place = self.address
     else
       # オンラインの場合を検索する
-      scaned_online = sanitized_main_content_html.downcase.scan(/(オンライン|online|おんらいん)/)
+      scaned_online = sanitized_main_content_html.downcase.scan(Sanitizer.online_regexp)
       self.place = 'online' if scaned_online.present?
     end
 
@@ -131,7 +131,7 @@ module EventCommon
         0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
           candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
       end.uniq
-    filtered_times.sort_by! { |time| time[0].to_i * 10_000 + time[1].to_i * 100 + time[2].to_i }
+    filtered_times.sort_by! { |time| time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i }
     start_time_array = filtered_times.first || []
     end_time_array = filtered_times.last || []
     start_at_datetime = filtered_dates.first
