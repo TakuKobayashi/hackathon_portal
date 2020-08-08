@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: promote_users
+#
+#  id             :bigint           not null, primary key
+#  type           :string(255)
+#  user_id        :string(255)      not null
+#  nickname       :string(255)      not null
+#  state          :integer          default("unrelated"), not null
+#  follower_count :integer          default(0), not null
+#  follow_count   :integer          default(0), not null
+#
+# Indexes
+#
+#  index_promote_users_on_user_id  (user_id)
+#
+require 'test_helper'
+
+class Promote::UserTest < ActiveSupport::TestCase
+  # test "the truth" do
+  #   assert true
+  # end
+end

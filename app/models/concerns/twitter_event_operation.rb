@@ -1,10 +1,7 @@
 module TwitterEventOperation
   PAGE_PER = 100
   TWITTER_HOST = 'twitter.com'
-  EXCLUDE_CHECK_EVENT_HOSTS = [
-    'youtu.be',
-    'youtube.com',
-  ]
+  EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com]
 
   def self.find_tweets(keywords:, options: {})
     twitter_client =
@@ -31,6 +28,7 @@ module TwitterEventOperation
     tweets = []
     start_time = Time.current
     begin
+      break if max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i
       tweets_response = []
       begin
         tweets_response =
@@ -72,7 +70,8 @@ module TwitterEventOperation
       end
 
       max_tweet_id = tweets.last.try(:id)
-    end while tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second
+    end while (tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second) ||
+      (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)
   end
 
   private
@@ -87,9 +86,10 @@ module TwitterEventOperation
       # TwitterのURLは除外する
       next if url.host.include?(TWITTER_HOST)
       # Youtube他、絶対にイベント情報じゃないHOSTはあらかじめはじく
-      next if EXCLUDE_CHECK_EVENT_HOSTS.any?{|event_host| url.host.include?(event_host) }
+      next if EXCLUDE_CHECK_EVENT_HOSTS.any? { |event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
-      twitter_event.build_from_website
+      build_result = twitter_event.build_from_website
+      next if build_result.blank?
       next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
       twitter_event.merge_event_attributes(
         attrs: {
@@ -138,11 +138,12 @@ module TwitterEventOperation
         urls = tweet.urls.map { |u| u.expanded_url }
         urls += tweet.quoted_status.urls.map { |u| u.expanded_url } if tweet.quoted_status?
         urls
-      end.flatten.uniq.select{|url| url.host == TWITTER_HOST }
-    tweet_ids = all_twitter_urls.map do |url|
-      path_parts = url.path.split("/")
-      path_parts[path_parts.size - 1]
-    end
+      end.flatten.uniq.select { |url| url.host == TWITTER_HOST }
+    tweet_ids =
+      all_twitter_urls.map do |url|
+        path_parts = url.path.split('/')
+        path_parts[path_parts.size - 1]
+      end
     twitter_client =
       TwitterBot.get_twitter_client(
         access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
@@ -150,9 +151,7 @@ module TwitterEventOperation
       )
 
     result_tweets = []
-    tweet_ids.each_slice(100) do |ids|
-      result_tweets += twitter_client.statuses(ids)
-    end
+    tweet_ids.each_slice(100) { |ids| result_tweets += twitter_client.statuses(ids) }
     return result_tweets
   end
 end
