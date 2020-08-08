@@ -65,10 +65,14 @@ module EventCommon
       RequestParser.request_and_parse_html(
         url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
       )
-    return nil if dom.text.blank?
+    return false if dom.text.blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
     dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
+      # 記事サイトはハッカソン告知サイトでは無いので取り除く
+      if dom_attrs.property.to_s == "og:type" && dom_attrs.content.to_s == "article"
+        return false
+      end
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
              dom_attrs.itemprop.to_s.include?('title')
@@ -144,6 +148,7 @@ module EventCommon
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
+    return true
   end
 
   def import_hashtags!(hashtag_strings: [])

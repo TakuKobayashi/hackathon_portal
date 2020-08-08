@@ -89,7 +89,8 @@ module TwitterEventOperation
       # Youtube他、絶対にイベント情報じゃないHOSTはあらかじめはじく
       next if EXCLUDE_CHECK_EVENT_HOSTS.any?{|event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
-      twitter_event.build_from_website
+      build_result = twitter_event.build_from_website
+      next if build_result.blank?
       next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
       twitter_event.merge_event_attributes(
         attrs: {
