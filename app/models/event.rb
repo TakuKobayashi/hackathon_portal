@@ -93,8 +93,7 @@ class Event < ApplicationRecord
 
   def self.import_events_from_twitter!
     TwitterEventOperation.import_events_from_keywords!(
-      keywords: Event::TWITTER_HACKATHON_KEYWORDS,
-      options: { limit_execute_second: 3600, default_max_tweet_id: nil },
+      keywords: Event::TWITTER_HACKATHON_KEYWORDS, options: { limit_execute_second: 3600, default_max_tweet_id: nil },
     )
   end
 

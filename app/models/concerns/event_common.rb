@@ -40,9 +40,7 @@ module EventCommon
       self.lon = geo_result['longitude']
       self.address = geo_result['address']
     end
-    if self.address.present?
-      self.address = Charwidth.normalize(self.address).strip
-    end
+    self.address = Charwidth.normalize(self.address).strip if self.address.present?
   end
 
   def build_informed_from_url
@@ -70,9 +68,7 @@ module EventCommon
     dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      if dom_attrs.property.to_s == "og:type" && dom_attrs.content.to_s == "article"
-        return false
-      end
+      return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s == 'article'
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
              dom_attrs.itemprop.to_s.include?('title')
@@ -94,13 +90,20 @@ module EventCommon
     sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
     sanitized_body_text = Sanitizer.basic_sanitize(body_dom.text)
 
-    delete_reg_exp = Regexp.new(['(', [
-      Sanitizer::RegexpParts::HTML_COMMENT,
-      Sanitizer::RegexpParts::HTML_SCRIPT_TAG,
-      Sanitizer::RegexpParts::HTML_HEADER_TAG,
-      Sanitizer::RegexpParts::HTML_FOOTER_TAG,
-      Sanitizer::RegexpParts::HTML_STYLE_TAG,
-    ].join(')|('), ')'].join(''))
+    delete_reg_exp =
+      Regexp.new(
+        [
+          '(',
+          [
+            Sanitizer::RegexpParts::HTML_COMMENT,
+            Sanitizer::RegexpParts::HTML_SCRIPT_TAG,
+            Sanitizer::RegexpParts::HTML_HEADER_TAG,
+            Sanitizer::RegexpParts::HTML_FOOTER_TAG,
+            Sanitizer::RegexpParts::HTML_STYLE_TAG,
+          ].join(')|('),
+          ')',
+        ].join(''),
+      )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
@@ -128,7 +131,7 @@ module EventCommon
         0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
           candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
       end.uniq
-    filtered_times.sort_by! { |time| time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i }
+    filtered_times.sort_by! { |time| time[0].to_i * 10_000 + time[1].to_i * 100 + time[2].to_i }
     start_time_array = filtered_times.first || []
     end_time_array = filtered_times.last || []
     start_at_datetime = filtered_dates.first
@@ -274,7 +277,7 @@ module EventCommon
 
   # {年}{開始月}{終了月}になるように番号を形成する
   def season_date_number
-    number = self.started_at.year * 10000
+    number = self.started_at.year * 10_000
     month = self.started_at.month
     if (1..2).cover?(month)
       return number + 102
