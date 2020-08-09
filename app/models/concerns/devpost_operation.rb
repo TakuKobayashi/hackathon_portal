@@ -37,6 +37,7 @@ module DevpostOperation
         next if url_devpost_events[event_url].present?
         devpost_event = self.analyze_and_build_event(url: event_url, options: url_event_options[event_url])
         devpost_event.save!
+        devpost_event.import_hashtags!(hashtag_strings: devpost_event.search_hashtags)
       end
       page += 1
       sleep 1
