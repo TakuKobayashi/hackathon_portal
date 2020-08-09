@@ -12,11 +12,18 @@ module DevpostOperation
         a_tag = article_dom.css("a").first || {}
         a_url = Addressable::URI.parse(a_tag[:href].to_s)
         price_text = content_list[0].try(:css, ".value").try(:text).to_s
-        price_number = price_text.slice(1, price_text.size).to_s.split(",").join.to_i
+        if price_text[0] =~ /[0-9]/
+          currency_unit = "EUR"
+        elsif price_text[0] == "$"
+          currency_unit = "USD"
+        else
+          currency_unit = "INR"
+        end
+        price_number = price_text.scan(/[0-9]/).join.to_i
         attend_text = content_list[2].try(:css, ".value").try(:text).to_s
         url_event_options[a_url.origin + a_url.path] = {
           "max_prize" => price_number,
-          "currency_unit" => price_text[0],
+          "currency_unit" => currency_unit,
           "attend_number" => attend_text.to_i
         }
       end
