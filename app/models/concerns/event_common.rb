@@ -146,6 +146,9 @@ module EventCommon
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
+    if self.started_at.blank?
+      return false
+    end
     return true
   end
 
