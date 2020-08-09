@@ -1,7 +1,7 @@
 module TwitterEventOperation
   PAGE_PER = 100
   TWITTER_HOST = 'twitter.com'
-  EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com]
+  EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com github.com]
 
   def self.find_tweets(keywords:, options: {})
     twitter_client =
@@ -87,7 +87,7 @@ module TwitterEventOperation
       next if url.host.include?(TWITTER_HOST)
       # Facebookのvideoとかもイベントページではないと思う
       next if url.path.include?("video")
-      # Youtube他、絶対にイベント情報じゃないHOSTはあらかじめはじく
+      # Youtube, Github他、絶対にイベント情報じゃないHOSTはあらかじめ弾く
       next if EXCLUDE_CHECK_EVENT_HOSTS.any? { |event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
       build_result = twitter_event.build_from_website
