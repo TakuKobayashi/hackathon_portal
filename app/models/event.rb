@@ -41,7 +41,7 @@ class Event < ApplicationRecord
   include EventCommon
 
   enum state: { active: 0, unactive: 1, closed: 2 }
-  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7 }
+  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7, devpost: 8 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
