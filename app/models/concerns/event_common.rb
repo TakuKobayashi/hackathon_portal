@@ -64,8 +64,10 @@ module EventCommon
         url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return false if dom.text.blank?
+    first_head_dom = dom.css('head').first
+    return nil if first_head_dom.try(:text).blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
-    dom.css('meta').each do |meta_dom|
+    first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
       return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s == 'article'
@@ -93,6 +95,7 @@ module EventCommon
             Sanitizer::RegexpParts::HTML_HEADER_TAG,
             Sanitizer::RegexpParts::HTML_FOOTER_TAG,
             Sanitizer::RegexpParts::HTML_STYLE_TAG,
+            Sanitizer::RegexpParts::HTML_IFRAME_TAG,
           ].join(')|('),
           ')',
         ].join(''),
