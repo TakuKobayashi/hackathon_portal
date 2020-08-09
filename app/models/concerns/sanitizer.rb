@@ -184,7 +184,8 @@ module Sanitizer
   end
 
   def self.online_regexp
-    return Regexp.new('(オンライン|online|おんらいん)')
+    return Regexp.new('(オンライン|online|おんらいん|remote|リモート)')
+  end
   end
 
   def self.scan_candidate_datetime(text)
