@@ -12,14 +12,14 @@ module DevpostOperation
         a_tag = article_dom.css("a").first || {}
         a_url = Addressable::URI.parse(a_tag[:href].to_s)
         price_text = content_list[0].try(:css, ".value").try(:text).to_s
-        price_number = price_text.slice(1, price_text.size).split(",").join.to_i
+        price_number = price_text.slice(1, price_text.size).to_s.split(",").join.to_i
         attend_text = content_list[2].try(:css, ".value").try(:text).to_s
         url_event_options[a_url.origin + a_url.path] = {
           "max_prize" => price_number,
           "currency_unit" => price_text[0],
           "attend_number" => attend_text.to_i
         }
-      end.flatten
+      end
       url_devpost_events = Event.where(url: url_event_options.keys).index_by(&:url)
       url_event_options.keys.each do |event_url|
         next if url_devpost_events[event_url].present?
@@ -59,7 +59,7 @@ module DevpostOperation
         attend_number: 0,
         max_prize: 0,
         currency_unit: 'JPY',
-        owner_name: organizer.name,
+        owner_name: organizer_struct.name,
       }.merge(options),
     )
     return devpost_event
