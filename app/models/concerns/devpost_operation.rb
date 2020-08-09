@@ -3,7 +3,7 @@ module DevpostOperation
 
   def self.imoport_hackathon_events!
     page = 1
-    events = []
+    url_event_options = {}
     begin
       doc = RequestParser.request_and_parse_html(url: DEVPOST_HACKATHONS_URL, params: { page: page })
       url_event_options = {}
@@ -28,7 +28,7 @@ module DevpostOperation
       end
       page += 1
       sleep 1
-    end while events.present?
+    end while url_event_options.present?
   end
 
   def self.analyze_and_build_event(url:, options: {})
