@@ -186,6 +186,9 @@ module Sanitizer
   def self.online_regexp
     return Regexp.new('(オンライン|online|おんらいん|remote|リモート)')
   end
+
+  def self.empty_words_regexp
+    return Regexp.new(RegexpParts::EMPTY_WORD_TAGS)
   end
 
   def self.scan_candidate_datetime(text)
