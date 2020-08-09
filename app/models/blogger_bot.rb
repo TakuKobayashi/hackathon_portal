@@ -29,7 +29,7 @@ class BloggerBot < ApplicationRecord
   )
     service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
-    date_number = event.started_at.year * 10000 + event.started_at.start_month
+    date_number = event.started_at.year * 10000 + event.started_at.month
     blogger_bot = BloggerBot.find_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
     blogger_bot.event_ids = blogger_bot.event_ids.select{|event_id| event_id != event.id }
     blogger_bot.save!
