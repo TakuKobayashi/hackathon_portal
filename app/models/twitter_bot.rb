@@ -31,7 +31,7 @@ class TwitterBot < ApplicationRecord
   end
 
   def reject_tweet!(access_token: nil, access_token_secret: nil)
-    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
+    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     result = twitter_client.destroy_status(self.tweet_id)
     destroy!
   end

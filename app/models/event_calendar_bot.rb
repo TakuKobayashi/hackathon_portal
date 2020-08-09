@@ -83,7 +83,7 @@ class EventCalendarBot < ApplicationRecord
   def remove_calender!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
     service = GoogleServices.get_calender_service(refresh_token: refresh_token)
     calenders = service.list_calendar_lists
-    target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
+    target_calender = calenders.items.detect { |item| item.summary == 'ハッカソンポータル' }
     target_calender_id = target_calender.try(:id)
     if target_calender_id.present?
       result = service.delete_event(target_calender_id, self.calender_event_id)
