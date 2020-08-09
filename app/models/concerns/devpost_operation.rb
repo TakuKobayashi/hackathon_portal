@@ -1,6 +1,10 @@
 module DevpostOperation
   DEVPOST_HACKATHONS_URL = 'https://devpost.com/hackathons'
 
+  def self.import_events_from_keywords!(keywords:)
+    self.imoport_hackathon_events!
+  end
+
   def self.imoport_hackathon_events!
     page = 1
     url_event_options = {}

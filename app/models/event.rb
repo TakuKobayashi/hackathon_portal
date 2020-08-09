@@ -82,7 +82,7 @@ class Event < ApplicationRecord
     GC.start
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
+    operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
       operation_module.import_events_from_keywords!(keywords: keywords)
     end
