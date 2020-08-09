@@ -87,8 +87,10 @@ module EventCommon
     return false if body_dom.blank?
 
     request_uri = response.header.request_uri
-    # queryは全て空っぽにしておく
+    # query(?以降)は全て空っぽにしておく
     request_uri.query_values = nil
+    # fragment(#以降)は全て空っぽにしておく
+    request_uri.fragment = nil
     # 最終的に飛んだURLになるように上書きをする
     self.url = request_uri.to_s
     sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
