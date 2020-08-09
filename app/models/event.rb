@@ -41,7 +41,7 @@ class Event < ApplicationRecord
   include EventCommon
 
   enum state: { active: 0, unactive: 1, closed: 2 }
-  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7 }
+  enum informed_from: { web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7, devpost: 8 }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
@@ -82,7 +82,7 @@ class Event < ApplicationRecord
     GC.start
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    operation_modules = [ConnpassOperation, DoorkeeperOperation, PeatixOperation]
+    operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
       operation_module.import_events_from_keywords!(keywords: keywords)
     end

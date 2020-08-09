@@ -75,13 +75,6 @@ module EventCommon
           self.title = dom_attrs.content.to_s.strip.truncate(140)
         end
       end
-      if self.description.to_s.length < dom_attrs.content.to_s.length
-        if dom_attrs.property.to_s.include?('description')
-          dom_attrs.name.to_s.include?('description')
-          dom_attrs.itemprop.to_s.include?('description')
-          self.description = dom_attrs.content.to_s.strip
-        end
-      end
     end
     self.title = dom.try(:title).to_s.strip.truncate(140) if self.title.blank?
 
@@ -105,6 +98,8 @@ module EventCommon
         ].join(''),
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
+    description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
+    self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
     if match_address.present?
