@@ -93,6 +93,8 @@ module TwitterEventOperation
       build_result = twitter_event.build_from_website
       next if build_result.blank?
       next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
+      # 短縮URLなどで上書きれてしまっている可能性があるので再度チェック
+      next if current_url_twitter_events[twitter_event.url.to_s].present?
       twitter_event.merge_event_attributes(
         attrs: {
           event_id: tweet.id,
