@@ -183,6 +183,10 @@ module Sanitizer
     return Regexp.new('(\d{1,2}[:時])(\d{1,2}[:分]?)(\d{1,2}[秒]?)?')
   end
 
+  def self.online_regexp
+    return Regexp.new('(オンライン|online|おんらいん)')
+  end
+
   def self.scan_candidate_datetime(text)
     results = []
     date_string_parts = text.scan(self.ymd_date_regexp)
