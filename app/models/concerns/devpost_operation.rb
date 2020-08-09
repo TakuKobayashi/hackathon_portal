@@ -12,6 +12,7 @@ module DevpostOperation
         a_tag = article_dom.css("a").first || {}
         a_url = Addressable::URI.parse(a_tag[:href].to_s)
         price_text = content_list[0].try(:css, ".value").try(:text).to_s
+        Rails.logger.info({url: a_url.origin + a_url.path, price: price_text})
         if price_text[0] =~ /[0-9]/
           currency_unit = "EUR"
         elsif price_text[0] == "$"
