@@ -85,6 +85,8 @@ module TwitterEventOperation
       next if current_url_twitter_events[url.to_s].present?
       # TwitterのURLは除外する
       next if url.host.include?(TWITTER_HOST)
+      # Facebookのvideoとかもイベントページではないと思う
+      next if url.path.include?("video")
       # Youtube他、絶対にイベント情報じゃないHOSTはあらかじめはじく
       next if EXCLUDE_CHECK_EVENT_HOSTS.any? { |event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)
