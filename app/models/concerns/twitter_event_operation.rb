@@ -3,11 +3,11 @@ module TwitterEventOperation
   TWITTER_HOST = 'twitter.com'
   EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com github.com]
 
-  def self.find_tweets(keywords:, options: {})
+  def self.find_tweets(keywords:, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),options: {})
     twitter_client =
       TwitterBot.get_twitter_client(
-        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+        access_token: access_token,
+        access_token_secret: access_token_secret,
       )
     request_options = { count: PAGE_PER, result_type: 'recent', exclude: 'retweets' }.merge(options)
     return twitter_client.search(keywords.join(' OR '), request_options)
