@@ -68,6 +68,7 @@ module TwitterEventOperation
       saved_twitter_events = []
       # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
       tweets.reverse_each do |tweet|
+        next if me_twitter.id == tweet.user.id
         tweet_counter = tweet_counter + 1
         saved_twitter_events +=
           self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
@@ -93,8 +94,11 @@ module TwitterEventOperation
   def self.import_relation_promote_tweets!(me_user: ,tweets: [])
     all_tweets =
       tweets.map do |tweet|
-        tweet_arr = [tweet]
-        tweet_arr << tweet.quoted_status if tweet.quoted_status?
+        tweet_arr = []
+        if tweet.user.id != me_user.id
+          tweet_arr << tweet
+          tweet_arr << tweet.quoted_status if tweet.quoted_status?
+        end
         tweet_arr
       end.flatten.uniq
     status_id_promote_tweets = Promote::ActionTweet.where(status_id: all_tweets.map{|t| t.id.to_s}).index_by(&:status_id)
