@@ -61,11 +61,11 @@ module EventCommon
   def build_from_website
     response =
       RequestParser.request_and_response(
-        url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
+        url: self.url, header: {'Content-Type' => 'text/html; charset=UTF-8'}, options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return false if response.try(:body).to_s.blank?
     text =
-      response.try(:body).to_s
+      response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     dom = Nokogiri::HTML.parse(text)
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
