@@ -3,7 +3,7 @@ class CreatePromoteActionTweets < ActiveRecord::Migration[6.0]
     create_table :promote_action_tweets do |t|
       t.string :user_id, null: false
       t.string :status_user_id, null: false
-      t.string :status_user_name, null: false
+      t.string :status_user_screen_name, null: false
       t.string :status_id, null: false
       t.integer :state, null: false, default: 0
       t.float :score, null: false, default: 0

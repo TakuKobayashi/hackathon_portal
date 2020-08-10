@@ -108,7 +108,7 @@ module TwitterEventOperation
       promote_action_tweets << Promote::ActionTweet.new(
         user_id: me_user.id,
         status_user_id: tweet.user.id,
-        status_user_name: tweet.user.name,
+        status_user_screen_name: tweet.user.screen_name,
         status_id: tweet.id,
         state: :unrelated,
         score: 0,

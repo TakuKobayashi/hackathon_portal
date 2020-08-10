@@ -2,14 +2,14 @@
 #
 # Table name: promote_action_tweets
 #
-#  id               :bigint           not null, primary key
-#  user_id          :string(255)      not null
-#  status_user_id   :string(255)      not null
-#  status_user_name :string(255)      not null
-#  status_id        :string(255)      not null
-#  state            :integer          default("unrelated"), not null
-#  score            :float(24)        default(0.0), not null
-#  created_at       :datetime         not null
+#  id                      :bigint           not null, primary key
+#  user_id                 :string(255)      not null
+#  status_user_id          :string(255)      not null
+#  status_user_screen_name :string(255)      not null
+#  status_id               :string(255)      not null
+#  state                   :integer          default("unrelated"), not null
+#  score                   :float(24)        default(0.0), not null
+#  created_at              :datetime         not null
 #
 # Indexes
 #
