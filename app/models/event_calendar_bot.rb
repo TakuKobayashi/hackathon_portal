@@ -33,12 +33,13 @@ class EventCalendarBot < ApplicationRecord
 
     event_calendars = []
     events.each do |event|
+      calender_description = '<h1><a href="' + event.url + '">' + event.title + '</a></h1>\n' + event.description.to_s
       calender_event =
         Google::Apis::CalendarV3::Event.new(
           {
             summary: event.title,
             location: [event.address, event.place].join(' '),
-            description: event.description,
+            description: calender_description,
             start: { date_time: event.started_at.to_datetime.rfc3339 },
             source: { url: event.url, title: event.title },
           },

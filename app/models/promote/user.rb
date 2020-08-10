@@ -5,7 +5,7 @@
 #  id             :bigint           not null, primary key
 #  type           :string(255)
 #  user_id        :string(255)      not null
-#  nickname       :string(255)      not null
+#  screen_name    :string(255)      not null
 #  state          :integer          default("unrelated"), not null
 #  follower_count :integer          default(0), not null
 #  follow_count   :integer          default(0), not null

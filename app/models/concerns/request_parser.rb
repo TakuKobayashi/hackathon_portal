@@ -90,6 +90,7 @@ module RequestParser
            HTTPClient::SendTimeoutError,
            HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
+           URI::InvalidURIError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
         url: url,
