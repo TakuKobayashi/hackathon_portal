@@ -33,6 +33,9 @@ module TwitterEventOperation
     retry_count = 0
     tweets = []
     start_time = Time.current
+
+    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
+    me_twitter = twitter_client.user
     begin
       break if max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i
       tweets_response = []
@@ -55,7 +58,7 @@ module TwitterEventOperation
         end
       end
       take_tweets = tweets_response.take(PAGE_PER)
-      twitter_url_tweets = self.expanded_tweets_from_twitter_url(tweets: take_tweets)
+      twitter_url_tweets = self.expanded_tweets_from_twitter_url(tweets: take_tweets, twitter_client: twitter_client)
       tweets = take_tweets + twitter_url_tweets
       tweets.uniq!
       tweets.sort_by! { |tweet| -tweet.id }
@@ -80,9 +83,35 @@ module TwitterEventOperation
         saved_twitter_event.save!
       end
 
+      self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets)
       max_tweet_id = tweets.last.try(:id)
     end while (tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second) ||
       (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)
+  end
+
+  def self.import_relation_promote_tweets!(me_user: ,tweets: [])
+    all_tweets =
+      tweets.map do |tweet|
+        tweet_arr = [tweet]
+        tweet_arr << tweet.quoted_status if tweet.quoted_status?
+        tweet_arr
+      end.flatten.uniq
+    status_id_promote_tweets = Promote::ActionTweet.where(status_id: all_tweets.map{|t| t.id.to_s}).index_by(&:status_id)
+    promote_action_tweets = []
+    all_tweets.each do |tweet|
+      next if status_id_promote_tweets[tweet.id.to_s].present?
+      promote_action_tweets << Promote::ActionTweet.new(
+        user_id: me_user.id,
+        status_user_id: tweet.user.id,
+        status_user_name: tweet.user.name,
+        status_id: tweet.id,
+        state: :unrelated,
+        score: 0,
+        created_at: tweet.created_at,
+      )
+    end
+    Promote::ActionTweet.import!(promote_action_tweets)
+    return all_tweets
   end
 
   private
@@ -147,7 +176,7 @@ module TwitterEventOperation
     return twitter_events.uniq
   end
 
-  def self.expanded_tweets_from_twitter_url(tweets: [])
+  def self.expanded_tweets_from_twitter_url(tweets: [], twitter_client:)
     all_twitter_urls =
       tweets.map do |tweet|
         urls = tweet.urls.map { |u| u.expanded_url }
@@ -159,11 +188,6 @@ module TwitterEventOperation
         path_parts = url.path.split('/')
         path_parts[path_parts.size - 1]
       end
-    twitter_client =
-      TwitterBot.get_twitter_client(
-        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-      )
 
     result_tweets = []
     tweet_ids.each_slice(100) { |ids| result_tweets += twitter_client.statuses(ids) }
