@@ -58,6 +58,7 @@ module TwitterEventOperation
         end
       end
       take_tweets = tweets_response.take(PAGE_PER)
+      take_tweets.sort_by! { |tweet| -tweet.id }
       twitter_url_tweets = self.expanded_tweets_from_twitter_url(tweets: take_tweets, twitter_client: twitter_client)
       tweets = take_tweets + twitter_url_tweets
       tweets.uniq!
@@ -84,7 +85,7 @@ module TwitterEventOperation
       end
 
       self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets)
-      max_tweet_id = tweets.last.try(:id)
+      max_tweet_id = take_tweets.last.try(:id)
     end while (tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second) ||
       (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)
   end
