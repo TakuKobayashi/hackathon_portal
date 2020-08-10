@@ -5,7 +5,7 @@
 #  id             :bigint           not null, primary key
 #  type           :string(255)
 #  user_id        :string(255)      not null
-#  nickname       :string(255)      not null
+#  name           :string(255)      not null
 #  state          :integer          default("unrelated"), not null
 #  follower_count :integer          default(0), not null
 #  follow_count   :integer          default(0), not null
@@ -14,7 +14,6 @@
 #
 #  index_promote_users_on_user_id  (user_id)
 #
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # This model initially had no columns defined. If you add columns to the
 # model remove the '{}' from the fixture names and add the columns immediately
