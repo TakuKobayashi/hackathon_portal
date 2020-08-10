@@ -15,8 +15,12 @@ module DevpostOperation
         content_list = article_dom.css("li")
         a_tag = article_dom.css("a").first || {}
         a_url = Addressable::URI.parse(a_tag[:href].to_s)
+        # query(?以降)は全て空っぽにしておく
+        a_url.query_values = nil
+        # fragment(#以降)は全て空っぽにしておく
+        a_url.fragment = nil
         price_text = content_list[0].try(:css, ".value").try(:text).to_s
-        Rails.logger.info({url: a_url.origin + a_url.path, price: price_text})
+        Rails.logger.info({url: a_url.to_s, price: price_text})
         if price_text[0] =~ /[0-9]/
           currency_unit = "EUR"
         elsif price_text[0] == "$"
@@ -26,7 +30,7 @@ module DevpostOperation
         end
         price_number = price_text.scan(/[0-9]/).join.to_i
         attend_text = content_list[2].try(:css, ".value").try(:text).to_s
-        url_event_options[a_url.origin + a_url.path] = {
+        url_event_options[a_url.to_s] = {
           "max_prize" => price_number,
           "currency_unit" => currency_unit,
           "attend_number" => attend_text.to_i
