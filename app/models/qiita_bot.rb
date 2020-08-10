@@ -24,6 +24,13 @@ class QiitaBot < ApplicationRecord
   serialize :tag_names, JSON
   serialize :event_ids, JSON
 
+  def self.remove_event!(event:)
+    season_date_number = event.season_date_number
+    qiita_bot = QiitaBot.find_by(season_number: season_date_number)
+    qiita_bot.event_ids = qiita_bot.event_ids.select{|event_id| event_id != event.id }
+    qiita_bot.save!
+  end
+
   def generate_post_send_params(year_number:, start_month:, end_month:)
     qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
     active_events, closed_events = qiita_events.partition { |event| event.active? }

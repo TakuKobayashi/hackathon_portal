@@ -59,13 +59,19 @@ module EventCommon
   end
 
   def build_from_website
-    dom =
-      RequestParser.request_and_parse_html(
+    response =
+      RequestParser.request_and_response(
         url: self.url, options: { customize_force_redirect: true, timeout_second: 30 },
       )
+    return false if response.try(:body).to_s.blank?
+    text =
+      response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
+    dom = Nokogiri::HTML.parse(text)
     return false if dom.text.blank?
+    first_head_dom = dom.css('head').first
+    return false if first_head_dom.try(:text).blank?
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
-    dom.css('meta').each do |meta_dom|
+    first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
       return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s == 'article'
@@ -77,9 +83,16 @@ module EventCommon
       end
     end
     self.title = dom.try(:title).to_s.strip.truncate(140) if self.title.blank?
-
     body_dom = dom.css('body').first
-    return nil if body_dom.blank?
+    return false if body_dom.blank?
+
+    request_uri = response.header.request_uri
+    # query(?以降)は全て空っぽにしておく
+    request_uri.query_values = nil
+    # fragment(#以降)は全て空っぽにしておく
+    request_uri.fragment = nil
+    # 最終的に飛んだURLになるように上書きをする
+    self.url = request_uri.to_s
     sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
     sanitized_body_text = Sanitizer.basic_sanitize(body_dom.text)
 
@@ -93,6 +106,7 @@ module EventCommon
             Sanitizer::RegexpParts::HTML_HEADER_TAG,
             Sanitizer::RegexpParts::HTML_FOOTER_TAG,
             Sanitizer::RegexpParts::HTML_STYLE_TAG,
+            Sanitizer::RegexpParts::HTML_IFRAME_TAG,
           ].join(')|('),
           ')',
         ].join(''),
