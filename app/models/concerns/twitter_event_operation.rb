@@ -3,17 +3,23 @@ module TwitterEventOperation
   TWITTER_HOST = 'twitter.com'
   EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com github.com]
 
-  def self.find_tweets(keywords:, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),options: {})
-    twitter_client =
-      TwitterBot.get_twitter_client(
-        access_token: access_token,
-        access_token_secret: access_token_secret,
-      )
+  def self.find_tweets(
+    keywords:,
+    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+    access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+    options: {}
+  )
+    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     request_options = { count: PAGE_PER, result_type: 'recent', exclude: 'retweets' }.merge(options)
     return twitter_client.search(keywords.join(' OR '), request_options)
   end
 
-  def self.import_events_from_keywords!(keywords:, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), options: {})
+  def self.import_events_from_keywords!(
+    keywords:,
+    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+    access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+    options: {}
+  )
     execute_option_structs = OpenStruct.new(options)
     if options.has_key?(:default_since_tweet_id)
       since_tweet_id = execute_option_structs.default_since_tweet_id
@@ -32,7 +38,12 @@ module TwitterEventOperation
       tweets_response = []
       begin
         tweets_response =
-          self.find_tweets(keywords: keywords, access_token: access_token, access_token_secret: access_token_secret, options: { max_id: max_tweet_id, since_id: since_tweet_id })
+          self.find_tweets(
+            keywords: keywords,
+            access_token: access_token,
+            access_token_secret: access_token_secret,
+            options: { max_id: max_tweet_id, since_id: since_tweet_id },
+          )
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
@@ -86,7 +97,7 @@ module TwitterEventOperation
       # TwitterのURLは除外する
       next if url.host.include?(TWITTER_HOST)
       # Facebookのvideoとかもイベントページではないと思う
-      next if url.path.include?("video")
+      next if url.path.include?('video')
       # Youtube, Github他、絶対にイベント情報じゃないHOSTはあらかじめ弾く
       next if EXCLUDE_CHECK_EVENT_HOSTS.any? { |event_host| url.host.include?(event_host) }
       twitter_event = Event.new(url: url.to_s, informed_from: :twitter, state: :active)

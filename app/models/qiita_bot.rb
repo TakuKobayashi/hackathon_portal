@@ -27,7 +27,7 @@ class QiitaBot < ApplicationRecord
   def self.remove_event!(event:)
     season_date_number = event.season_date_number
     qiita_bot = QiitaBot.find_by(season_number: season_date_number)
-    qiita_bot.event_ids = qiita_bot.event_ids.select{|event_id| event_id != event.id }
+    qiita_bot.event_ids = qiita_bot.event_ids.select { |event_id| event_id != event.id }
     qiita_bot.save!
   end
 
