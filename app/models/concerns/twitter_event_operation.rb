@@ -13,7 +13,7 @@ module TwitterEventOperation
     return twitter_client.search(keywords.join(' OR '), request_options)
   end
 
-  def self.import_events_from_keywords!(keywords:, options: {})
+  def self.import_events_from_keywords!(keywords:, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), options: {})
     execute_option_structs = OpenStruct.new(options)
     if options.has_key?(:default_since_tweet_id)
       since_tweet_id = execute_option_structs.default_since_tweet_id
@@ -32,7 +32,7 @@ module TwitterEventOperation
       tweets_response = []
       begin
         tweets_response =
-          self.find_tweets(keywords: keywords, options: { max_id: max_tweet_id, since_id: since_tweet_id })
+          self.find_tweets(keywords: keywords, access_token: access_token, access_token_secret: access_token_secret, options: { max_id: max_tweet_id, since_id: since_tweet_id })
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
