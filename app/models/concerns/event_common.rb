@@ -65,7 +65,7 @@ module EventCommon
       )
     return false if response.try(:body).to_s.blank?
     text =
-      response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
+      response.try(:body).to_s
     dom = Nokogiri::HTML.parse(text)
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
