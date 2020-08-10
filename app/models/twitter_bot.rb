@@ -20,7 +20,7 @@
 class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
-  def self.tweet!(text:, from: nil, access_token: nil, access_token_secret: nil, options: {})
+  def self.tweet!(text:, from: nil, access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''), options: {})
     twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     tweet_result = twitter_client.update(text, options)
     twitter_bot =
@@ -30,13 +30,13 @@ class TwitterBot < ApplicationRecord
     return twitter_bot
   end
 
-  def reject_tweet!(access_token: nil, access_token_secret: nil)
+  def reject_tweet!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     result = twitter_client.destroy_status(self.tweet_id)
     destroy!
   end
 
-  def self.promote!(access_token: nil, access_token_secret: nil)
+  def self.promote!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     follower_ids = twitter_client.follower_ids({count: 5000})
     follower_ids.each do |follower_id|

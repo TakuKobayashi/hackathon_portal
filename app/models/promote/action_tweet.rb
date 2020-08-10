@@ -20,5 +20,5 @@
 #  index_promote_action_tweets_on_user_id         (user_id)
 #
 class Promote::ActionTweet < ApplicationRecord
-  enum state: { unrelated: 0, only_liked: 1, only_retweeted: 2, liked_and_retweet: 3 }
+  enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 end
