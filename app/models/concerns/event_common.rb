@@ -66,8 +66,9 @@ module EventCommon
         options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return false if response.try(:body).to_s.blank?
-    text =
-      response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
+    body_text = response.try(:body).to_s
+    body_text.force_encoding('UTF-8')
+    text = body_text.scrub('?')
     dom = Nokogiri::HTML.parse(text)
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
@@ -319,6 +320,7 @@ module EventCommon
            HTTPClient::SendTimeoutError,
            HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
+           URI::InvalidURIError,
            Addressable::URI::InvalidURIError => e
       return false
     end
