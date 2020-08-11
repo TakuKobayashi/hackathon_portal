@@ -80,11 +80,14 @@ module EventCommon
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
     return false if first_head_dom.try(:text).blank?
+    article_count = 0
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
     first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
-      # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s.downcase == 'article'
+      # 記事の分だけ判定が渋くなる
+      if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s.downcase == 'article'
+        article_count = article_count + 1
+      end
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
              dom_attrs.itemprop.to_s.include?('title')
@@ -122,6 +125,10 @@ module EventCommon
         ].join(''),
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
+    articles_html_arr = sanitized_main_content_html.scan(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG))
+    # article tagの分だけ判定を渋くする
+    article_count = article_count + articles_html_arr.size
+    sanitized_main_content_html = sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
     self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
@@ -170,6 +177,7 @@ module EventCommon
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
+    self.check_score_rate = (1.to_f / (1 + article_count))
     return true
   end
 
