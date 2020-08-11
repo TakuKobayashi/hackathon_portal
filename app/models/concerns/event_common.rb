@@ -84,7 +84,9 @@ module EventCommon
     first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s.downcase == 'article'
+      if dom_attrs.property.to_s == 'og:type' && (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
+        return false
+      end
 
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
