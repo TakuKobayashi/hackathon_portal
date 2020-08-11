@@ -7,6 +7,7 @@ module Sanitizer
     HTML_LINK_TAG = '<link[^>]+?\/>|<link(.|\s)*?\/link>'
     HTML_STYLE_TAG = '<style[^>]+?\/>|<style(.|\s)*?\/style>'
     HTML_IFRAME_TAG = '<iframe[^>]+?\/>|<iframe(.|\s)*?\/iframe>'
+    HTML_ARTICLE_TAG = '<article[^>]+?\/>|<article(.|\s)*?\/article>'
     EMPTY_WORD_TAGS = '\r|\n|\t'
     TODOUFUKENLIST = %w[
       北海道
