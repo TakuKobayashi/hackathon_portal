@@ -80,14 +80,12 @@ module EventCommon
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
     return false if first_head_dom.try(:text).blank?
-    article_count = 0
     # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
     first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
-      # 記事の分だけ判定が渋くなる
-      if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s.downcase == 'article'
-        article_count = article_count + 1
-      end
+      # 記事サイトはハッカソン告知サイトでは無いので取り除く
+      return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s.downcase == 'article'
+
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
              dom_attrs.itemprop.to_s.include?('title')
@@ -127,7 +125,7 @@ module EventCommon
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
     articles_html_arr = sanitized_main_content_html.scan(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG))
     # article tagの分だけ判定を渋くする
-    article_count = article_count + articles_html_arr.size
+    article_count = articles_html_arr.size
     sanitized_main_content_html = sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
     self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
