@@ -66,10 +66,16 @@ module EventCommon
         options: { customize_force_redirect: true, timeout_second: 30 },
       )
     return false if response.try(:body).to_s.blank?
-    body_text = response.try(:body).to_s
-    body_text.force_encoding('UTF-8')
-    text = body_text.scrub('?')
-    dom = Nokogiri::HTML.parse(text)
+    dom = nil
+    begin
+      body_text = response.try(:body).to_s
+      body_text.force_encoding('UTF-8')
+      text = body_text.scrub('?')
+      dom = Nokogiri::HTML.parse(text)
+    rescue ArgumentError => e
+      Rails.logger.warn((["error: #{e.message}"] + e.backtrace).join("\n"))
+    end
+    return false if dom.blank?
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
     return false if first_head_dom.try(:text).blank?
