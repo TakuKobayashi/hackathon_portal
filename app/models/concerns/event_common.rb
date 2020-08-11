@@ -65,16 +65,17 @@ module EventCommon
         header: { 'Content-Type' => 'text/html; charset=UTF-8' },
         options: { customize_force_redirect: true, timeout_second: 30 },
       )
-    return false if response.try(:body).to_s.blank?
     dom = nil
     begin
-      body_text = response.try(:body).to_s
-      body_text.force_encoding('UTF-8')
-      text = body_text.scrub('?')
-      dom = Nokogiri::HTML.parse(text)
+      return false if response.try(:body).blank?
     rescue ArgumentError => e
       Rails.logger.warn((["error: #{e.message}"] + e.backtrace).join("\n"))
+      return false
     end
+    body_text = response.try(:body)
+    body_text.force_encoding('UTF-8')
+    text = body_text.scrub('?')
+    dom = Nokogiri::HTML.parse(text)
     return false if dom.blank?
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
