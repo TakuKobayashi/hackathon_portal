@@ -65,11 +65,18 @@ module EventCommon
         header: { 'Content-Type' => 'text/html; charset=UTF-8' },
         options: { customize_force_redirect: true, timeout_second: 30 },
       )
-    return false if response.try(:body).to_s.blank?
-    body_text = response.try(:body).to_s
+    dom = nil
+    begin
+      return false if response.try(:body).blank?
+    rescue ArgumentError => e
+      Rails.logger.warn((["error: #{e.message}"] + e.backtrace).join("\n"))
+      return false
+    end
+    body_text = response.try(:body)
     body_text.force_encoding('UTF-8')
     text = body_text.scrub('?')
     dom = Nokogiri::HTML.parse(text)
+    return false if dom.blank?
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
     return false if first_head_dom.try(:text).blank?
@@ -77,7 +84,10 @@ module EventCommon
     first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      return false if dom_attrs.property.to_s == 'og:type' && dom_attrs.content.to_s == 'article'
+      if dom_attrs.property.to_s == 'og:type' && (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
+        return false
+      end
+
       if self.title.blank?
         if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
              dom_attrs.itemprop.to_s.include?('title')
@@ -115,6 +125,10 @@ module EventCommon
         ].join(''),
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
+    articles_html_arr = sanitized_main_content_html.scan(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG))
+    # article tagの分だけ判定を渋くする
+    article_count = articles_html_arr.size
+    sanitized_main_content_html = sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
     self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
@@ -163,6 +177,7 @@ module EventCommon
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
+    self.check_score_rate = (1.to_f / (1 + article_count))
     return true
   end
 

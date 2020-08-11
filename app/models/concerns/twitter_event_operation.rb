@@ -80,7 +80,7 @@ module TwitterEventOperation
         end
       end
 
-      saved_twitter_events.each do |saved_twitter_event|
+      saved_twitter_events.uniq.each do |saved_twitter_event|
         saved_twitter_event.build_location_data
         saved_twitter_event.save!
       end
@@ -101,21 +101,9 @@ module TwitterEventOperation
         end
         tweet_arr
       end.flatten.uniq
-    status_id_promote_tweets = Promote::ActionTweet.where(status_id: all_tweets.map{|t| t.id.to_s}).index_by(&:status_id)
-    promote_action_tweets = []
-    all_tweets.each do |tweet|
-      next if status_id_promote_tweets[tweet.id.to_s].present?
-      promote_action_tweets << Promote::ActionTweet.new(
-        user_id: me_user.id,
-        status_user_id: tweet.user.id,
-        status_user_screen_name: tweet.user.screen_name,
-        status_id: tweet.id,
-        state: :unrelated,
-        score: 0,
-        created_at: tweet.created_at,
-      )
-    end
-    Promote::ActionTweet.import!(promote_action_tweets)
+    Promote::ActionTweet.import_tweets!(me_user: me_user, tweets: all_tweets)
+    Promote::TwitterUser.import_from_tweets!(tweets: all_tweets)
+    Promote::TwitterFriend.import_from_tweets!(me_user: me_user, tweets: all_tweets)
     return all_tweets
   end
 
@@ -155,7 +143,7 @@ module TwitterEventOperation
         begin
           twitter_event.save!
           twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
-          current_url_twitter_events[twitter_event.url] = twitter_event
+          current_url_twitter_events[twitter_event.url.to_s] = twitter_event
           saved_twitter_events << twitter_event
         rescue Exception => error
           Rails.logger.warn("Data save error #{twitter_event.attributes}")

@@ -113,6 +113,7 @@ class Event < ApplicationRecord
   # TODO データの取得先に応じて判定ロジックを変えたい
   def hackathon_event?
     sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
+    score_rate = self.check_score_rate
     score = 0
     direct_keywords = [
       'hackathon',
@@ -131,12 +132,12 @@ class Event < ApplicationRecord
         break
       end
     end
-    return true if score >= 1
+    return true if (score * score_rate) >= 1
 
     sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
     direct_keywords.each do |keyword|
       score += sanitized_description.scan(keyword).size * 0.35
-      return true if score >= 1
+      return true if (score * score_rate) >= 1
     end
     return false
   end
@@ -144,6 +145,7 @@ class Event < ApplicationRecord
   def development_camp?
     sanitized_title = Sanitizer.basic_sanitize(self.title.to_s).downcase
     score = 0
+    score_rate = self.check_score_rate
     camp_keywords = %w[合宿 キャンプ camp]
     camp_keywords.each do |word|
       if sanitized_title.include?(word)
@@ -159,11 +161,11 @@ class Event < ApplicationRecord
         break
       end
     end
-    return true if score >= 1
+    return true if (score * score_rate) >= 1
     sanitized_description = Sanitizer.basic_sanitize(self.description.to_s).downcase
     (camp_keywords + development_keywords).each do |keyword|
       score += sanitized_description.scan(keyword).size * 0.2
-      return true if score >= 1
+      return true if (score * score_rate) >= 1
     end
     return false
   end
@@ -215,6 +217,19 @@ class Event < ApplicationRecord
 
   def tweet_url=(url)
     @tweet_url = url
+  end
+
+  # scoreをかけることで判定を渋くする
+  def check_score_rate
+    if @score_rate.present?
+      return @score_rate.to_f
+    else
+      return 1.0
+    end
+  end
+
+  def check_score_rate=(score_rate)
+    @score_rate = score_rate
   end
 
   def self.preset_tweet_urls!(events: [])
