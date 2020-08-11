@@ -3,8 +3,8 @@
 # Table name: promote_users
 #
 #  id             :bigint           not null, primary key
-#  type           :string(255)
 #  user_id        :string(255)      not null
+#  type           :string(255)
 #  screen_name    :string(255)      not null
 #  state          :integer          default("unrelated"), not null
 #  follower_count :integer          default(0), not null
@@ -12,7 +12,7 @@
 #
 # Indexes
 #
-#  index_promote_users_on_user_id  (user_id)
+#  index_promote_users_on_user_id_and_type  (user_id,type) UNIQUE
 #
 
 # This model initially had no columns defined. If you add columns to the
