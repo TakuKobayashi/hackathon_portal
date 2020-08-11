@@ -111,6 +111,7 @@ module RequestParser
         response =
           self.request_and_response(
             url: redirect_full_url,
+            header: header,
             options: {
               customize_force_redirect: true,
               customize_redirect_counter: customize_redirect_counter + 1,
