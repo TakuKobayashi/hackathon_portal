@@ -80,7 +80,7 @@ module TwitterEventOperation
         end
       end
 
-      saved_twitter_events.each do |saved_twitter_event|
+      saved_twitter_events.uniq.each do |saved_twitter_event|
         saved_twitter_event.build_location_data
         saved_twitter_event.save!
       end
@@ -155,7 +155,7 @@ module TwitterEventOperation
         begin
           twitter_event.save!
           twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
-          current_url_twitter_events[twitter_event.url] = twitter_event
+          current_url_twitter_events[twitter_event.url.to_s] = twitter_event
           saved_twitter_events << twitter_event
         rescue Exception => error
           Rails.logger.warn("Data save error #{twitter_event.attributes}")
