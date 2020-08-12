@@ -61,9 +61,13 @@ module Promote
       end
     end
 
-    fail_both_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: me_twitter.id).where.not(to_user_id: follower_ids.to_a)
-    fail_both_friends.each do |friend|
-      result = twitter_client.unfollow(friend.to_user_id)
+    fail_follower_friends = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: me_twitter.id).where.not(to_user_id: follower_ids.to_a)
+    fail_follower_friends.each do |friend|
+      begin
+        result = twitter_client.unfollow(friend.to_user_id.to_i)
+      rescue Twitter::Error::TooManyRequests => e
+        next
+      end
       friend.update!(state: :unrelated, followed_at: nil, score: 0)
       unfollow_count = unfollow_count + 1
     end

@@ -32,7 +32,11 @@ class Promote::Friend < ApplicationRecord
       return false
     end
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    result = twitter_client.follow(self.to_user_id)
+    begin
+      result = twitter_client.follow(self.to_user_id.to_i)
+    rescue Twitter::Error::TooManyRequests => e
+      return false
+    end
     if self.unrelated?
       self.update!(state: :only_follow, followed_at: Time.current)
     elsif self.only_follower?
@@ -46,7 +50,11 @@ class Promote::Friend < ApplicationRecord
       return false
     end
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    result = twitter_client.unfollow(self.to_user_id)
+    begin
+      result = twitter_client.unfollow(self.to_user_id.to_i)
+    rescue Twitter::Error::TooManyRequests => e
+      return false
+    end
     if self.only_follow?
       self.update!(state: :unrelated, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)
     elsif self.both_follow?
