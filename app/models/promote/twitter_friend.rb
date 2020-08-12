@@ -24,7 +24,6 @@ class Promote::TwitterFriend < Promote::Friend
   end
 
   def self.import_from_users!(me_user:, twitter_users: [])
-    twitter_users = tweets.map(&:user).uniq
     to_user_id_twitter_friends = Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map{|tu| tu.id.to_s }).index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
