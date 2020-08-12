@@ -21,6 +21,9 @@
 class Promote::ActionTweet < ApplicationRecord
   enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 
+  # いいねをしたらフォローするかどうか判断するscoreの上昇値
+  LIKE_ADD_SCORE = 0.2
+
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
 
   def self.import_tweets!(me_user:, tweets: [])
@@ -39,5 +42,19 @@ class Promote::ActionTweet < ApplicationRecord
       )
     end
     Promote::ActionTweet.import!(promote_action_tweets)
+  end
+
+  def like!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+    if self.only_liked? || self.liked_and_retweet?
+      return false
+    end
+    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
+    result = twitter_client.favorite(self.status_id)
+    if self.unrelated?
+      self.update!(state: :only_liked, score: self.score + LIKE_ADD_SCORE)
+    elsif self.only_retweeted?
+      self.update!(state: :liked_and_retweet, score: self.score + LIKE_ADD_SCORE)
+    end
+    return result.first
   end
 end
