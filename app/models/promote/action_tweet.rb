@@ -21,6 +21,8 @@
 class Promote::ActionTweet < ApplicationRecord
   enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 
+  belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
+
   def self.import_tweets!(me_user:, tweets: [])
     status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map{|t| t.id.to_s}).index_by(&:status_id)
     promote_action_tweets = []
