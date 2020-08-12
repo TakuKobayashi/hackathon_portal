@@ -12,7 +12,7 @@ module Promote
     self.organize_follows!
   end
 
-  # たぶんハッカソンについて呟いているツイート全て影響力が大きい人を中心にいいねする
+  # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
   def self.like_major_user!
     action_tweets = Promote::ActionTweet.
       where(state: [:unrelated, :only_retweeted]).
