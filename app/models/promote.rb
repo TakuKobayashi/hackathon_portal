@@ -16,9 +16,9 @@ module Promote
   def self.like_major_user!
     action_tweets = Promote::ActionTweet.
       where(state: [:unrelated, :only_retweeted]).
-      joins(:promote_user).
+      includes(:promote_user).
       order("promote_users.follower_count DESC ,promote_action_tweets.created_at DESC").
-      limit(1000)
+      limit(2000)
     action_tweets.each do |action_tweet|
       action_tweet.like!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     end
