@@ -19,7 +19,10 @@ class Promote::TwitterUser < Promote::User
   has_many :action_tweets, class_name: 'Promote::ActionTweet', primary_key: "user_id", foreign_key: "status_user_id"
 
   def self.import_from_tweets!(tweets: [])
-    twitter_users = tweets.map(&:user).uniq
+    self.import_from_users!(twitter_users: tweets.map(&:user).uniq)
+  end
+
+  def self.import_from_users!(twitter_users: [])
     user_id_promote_tweet_users = Promote::TwitterUser.where(user_id: twitter_users.map{|u| u.id.to_s}).index_by(&:user_id)
     promote_twitter_users = []
     twitter_users.each do |twitter_user|
