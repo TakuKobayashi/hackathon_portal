@@ -28,7 +28,7 @@ module Promote
   def self.try_follows!
     follow_counter = 0
     Promote::TwitterFriend.where(state: [:unrelated, :only_retweeted]).find_in_batches do |unfollow_friends|
-      user_id_sum_score = Promote::ActionTweet.where(status_user_id: unfollow_friends.map(&:to_user_id)).group(:status_user_id).sum(:score)
+      user_id_sum_score = Promote::ActionTweet.where(status_user_id: unfollow_friends.map(&:to_user_id)).where("created_at > ?", EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago).group(:status_user_id).sum(:score)
       unfollow_friends.each do |unfollow_friend|
         next if follow_counter >= Promote::Friend::DAYLY_LIMIT_FOLLOW_COUNT || user_id_sum_score[unfollow_friend.to_user_id].blank?
         sum_score = user_id_sum_score[unfollow_friend.to_user_id]
