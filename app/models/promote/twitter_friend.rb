@@ -17,6 +17,8 @@
 #  index_promote_friends_on_to_user_id_and_from_user_id  (to_user_id,from_user_id)
 #
 class Promote::TwitterFriend < Promote::Friend
+  belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "to_user_id"
+
   def self.import_from_tweets!(me_user:, tweets: [])
     twitter_users = tweets.map(&:user).uniq
     to_user_id_twitter_friends = Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map{|tu| tu.id.to_s }).index_by(&:to_user_id)

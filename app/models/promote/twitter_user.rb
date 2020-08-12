@@ -15,6 +15,9 @@
 #  index_promote_users_on_user_id_and_type  (user_id,type) UNIQUE
 #
 class Promote::TwitterUser < Promote::User
+  has_many :follow_friends, class_name: 'Promote::TwitterFriend', primary_key: "user_id", foreign_key: "to_user_id"
+  has_many :action_tweets, class_name: 'Promote::ActionTweet', primary_key: "user_id", foreign_key: "status_user_id"
+
   def self.import_from_tweets!(tweets: [])
     twitter_users = tweets.map(&:user).uniq
     user_id_promote_tweet_users = Promote::TwitterUser.where(user_id: twitter_users.map{|u| u.id.to_s}).index_by(&:user_id)
