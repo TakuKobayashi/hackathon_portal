@@ -1,4 +1,7 @@
 module Promote
+  # 7日以上前にフォローしたけどフォロー返しされていなければフォローをするのをやめる
+  EFFECTIVE_PROMOTE_FILTER_SECOND = 7 * 24 * 60 * 60
+
   def self.table_name_prefix
     'promote_'
   end
@@ -6,6 +9,7 @@ module Promote
   def self.twitter_promote!
     self.like_major_user!
     self.try_follows!
+    self.organize_follows!
   end
 
   # たぶんハッカソンについて呟いているツイート全て影響力が大きい人を中心にいいねする
@@ -36,6 +40,32 @@ module Promote
         end
       end
       break if follow_counter >= Promote::Friend::DAYLY_LIMIT_FOLLOW_COUNT
+    end
+  end
+
+  # フォロワーを整理する
+  def self.organize_follows!
+    twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+    me_twitter = twitter_client.user
+    follower_ids = twitter_client.follower_ids({count: 5000})
+    Promote::TwitterFriend.where(state: [:unrelated, :only_follow], from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).find_each do |friend|
+      friend.be_follower!
+    end
+
+    unfollow_count = 0
+    unfollow_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).where("followed_at < ?", EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
+    unfollow_friends.each do |friend|
+      is_success = friend.unfollow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+      if is_success
+        unfollow_count = unfollow_count + 1
+      end
+    end
+
+    fail_both_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: me_twitter.id).where.not(to_user_id: follower_ids.to_a)
+    fail_both_friends.each do |friend|
+      result = twitter_client.unfollow(friend.to_user_id)
+      friend.update!(state: :unrelated, followed_at: nil, score: 0)
+      unfollow_count = unfollow_count + 1
     end
   end
 end
