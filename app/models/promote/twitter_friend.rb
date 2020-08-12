@@ -20,7 +20,10 @@ class Promote::TwitterFriend < Promote::Friend
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "to_user_id"
 
   def self.import_from_tweets!(me_user:, tweets: [])
-    twitter_users = tweets.map(&:user).uniq
+    self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq)
+  end
+
+  def self.import_from_users!(me_user:, twitter_users: [])
     to_user_id_twitter_friends = Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map{|tu| tu.id.to_s }).index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|

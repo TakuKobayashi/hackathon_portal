@@ -22,6 +22,9 @@ class Promote::Friend < ApplicationRecord
 
   # scoreがこの値以上になるのならfollowする
   FOLLOW_LIMIT_SCORE = 1
+
+  FOLLOWER_ADD_SCORE = 0.6
+
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
   def follow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
@@ -29,7 +32,11 @@ class Promote::Friend < ApplicationRecord
       return false
     end
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    result = twitter_client.follow(self.to_user_id)
+    begin
+      result = twitter_client.follow(self.to_user_id.to_i)
+    rescue Twitter::Error::TooManyRequests => e
+      return false
+    end
     if self.unrelated?
       self.update!(state: :only_follow, followed_at: Time.current)
     elsif self.only_follower?
@@ -43,12 +50,27 @@ class Promote::Friend < ApplicationRecord
       return false
     end
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    result = twitter_client.unfollow(self.to_user_id)
+    begin
+      result = twitter_client.unfollow(self.to_user_id.to_i)
+    rescue Twitter::Error::TooManyRequests => e
+      return false
+    end
     if self.only_follow?
-      self.update!(state: :unrelated, followed_at: nil)
+      self.update!(state: :unrelated, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)
     elsif self.both_follow?
-      self.update!(state: :only_follower, followed_at: nil)
+      self.update!(state: :only_follower, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)
     end
     return true
+  end
+
+  def be_follower!
+    if self.only_follower? || self.both_follow?
+      return false
+    end
+    if self.unrelated?
+      self.update!(state: :only_follower, score: self.score + FOLLOWER_ADD_SCORE)
+    elsif self.only_follow?
+      self.update!(state: :both_follow, score: self.score + FOLLOWER_ADD_SCORE)
+    end
   end
 end

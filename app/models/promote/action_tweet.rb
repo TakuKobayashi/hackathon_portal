@@ -49,12 +49,17 @@ class Promote::ActionTweet < ApplicationRecord
       return false
     end
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    result = twitter_client.favorite(self.status_id)
+    begin
+      result = twitter_client.favorite(self.status_id)
+    rescue Twitter::Error::TooManyRequests => e
+      return false
+    end
+
     if self.unrelated?
       self.update!(state: :only_liked, score: self.score + LIKE_ADD_SCORE)
     elsif self.only_retweeted?
       self.update!(state: :liked_and_retweet, score: self.score + LIKE_ADD_SCORE)
     end
-    return result.first
+    return true
   end
 end
