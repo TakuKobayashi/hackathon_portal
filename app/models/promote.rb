@@ -6,9 +6,8 @@ module Promote
     'promote_'
   end
 
-  def self.twitter_promote!
+  def self.twitter_promote_action!
     self.like_major_user!
-    self.import_bot_followers!
     self.try_follows!
     self.organize_follows!
   end
@@ -16,13 +15,18 @@ module Promote
   # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
   def self.like_major_user!
     twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
-    action_tweets = Promote::ActionTweet.
+    liked_counter = 0
+    Promote::ActionTweet.
       where(state: [:unrelated, :only_retweeted]).
       includes(:promote_user).
       order("promote_users.follower_count DESC ,promote_action_tweets.created_at DESC").
-      limit(2000)
-    action_tweets.each do |action_tweet|
-      action_tweet.like!(twitter_client: twitter_client)
+      find_each do |action_tweet|
+      if action_tweet.like!(twitter_client: twitter_client)
+        liked_counter = liked_counter + 1
+      end
+      if liked_counter >= 1000
+        break
+      end
     end
   end
 
@@ -39,6 +43,8 @@ module Promote
           is_success = unfollow_friend.follow!(twitter_client: twitter_client)
           if is_success
             follow_counter = follow_counter + 1
+          else
+            break
           end
         end
       end

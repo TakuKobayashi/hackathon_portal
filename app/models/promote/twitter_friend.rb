@@ -28,9 +28,7 @@ class Promote::TwitterFriend < Promote::Friend
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
       promote_twitter_friend = to_user_id_twitter_friends[twitter_user.id.to_s]
-      if promote_twitter_friend.present?
-        promote_twitter_friend.attributes = promote_twitter_friend.attributes.merge(import_options)
-      else
+      if promote_twitter_friend.blank?
         current_time = Time.current
         promote_twitter_friend = Promote::TwitterFriend.new({
           # 現在時刻(マイクロ秒)をidとして記録
@@ -56,7 +54,7 @@ class Promote::TwitterFriend < Promote::Friend
     next_cursor = 0
     all_twitter_users = []
     begin
-      next_cursor = follower_ids.attrs[:next_cursor]
+      next_cursor = follower_id_cursors.attrs[:next_cursor]
       follower_id_cursors.attrs[:ids].each_slice(Twitter::REST::Users::MAX_USERS_PER_REQUEST) do |user_ids|
         twitter_users = []
         begin
@@ -72,13 +70,13 @@ class Promote::TwitterFriend < Promote::Friend
             return []
           end
         end
-        Promote::TwitterUser.import_from_tweets!(tweets: twitter_users)
+        Promote::TwitterUser.import_from_users!(twitter_users: twitter_users)
         self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, is_follower: bot_user.id.to_s == user_id.to_s)
         all_twitter_users += twitter_users
       end
       if next_cursor > 0
         begin
-          follower_ids.send(:fetch_next_page)
+          follower_id_cursors.send(:fetch_next_page)
           retry_count = 0
         rescue Twitter::Error::TooManyRequests => e
           Rails.logger.warn([["TooManyRequest follower fetch_next_page Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))

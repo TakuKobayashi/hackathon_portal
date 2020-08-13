@@ -26,6 +26,10 @@ class Promote::ActionTweet < ApplicationRecord
 
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
 
+  def tweet_url
+    return "https://twitter.com/#{self.status_user_screen_name}/status/#{self.status_id}"
+  end
+
   def self.import_tweets!(me_user:, tweets: [])
     status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map{|t| t.id.to_s}).index_by(&:status_id)
     promote_action_tweets = []
@@ -49,9 +53,12 @@ class Promote::ActionTweet < ApplicationRecord
       return false
     end
     begin
-      result = twitter_client.favorite(self.status_id.to_i)
+      liked_tweets = twitter_client.favorite!({id: self.status_id.to_i, tweet_mode: "extended"})
+      unless liked_tweets.any?{|t| t.id.to_i == self.status_id.to_i }
+        return false
+      end
     rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn([["TooManyRequest like! Error:", e.rate_limit.reset_in, "s"].join, e.message].join('\n'))
+      Rails.logger.warn(["TooManyRequest like! Error:", e.rate_limit.reset_in, "s", self.tweet_url].join(' '))
       return false
     end
 
