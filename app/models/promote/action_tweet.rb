@@ -44,14 +44,14 @@ class Promote::ActionTweet < ApplicationRecord
     Promote::ActionTweet.import!(promote_action_tweets)
   end
 
-  def like!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def like!(twitter_client:)
     if self.only_liked? || self.liked_and_retweet?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
-      result = twitter_client.favorite(self.status_id)
+      result = twitter_client.favorite(self.status_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn([["TooManyRequest like! Error:", e.rate_limit.reset_in, "s"].join, e.message].join('\n'))
       return false
     end
 

@@ -63,6 +63,7 @@ class Promote::TwitterFriend < Promote::Friend
           twitter_users = twitter_client.users(user_ids.map(&:to_i))
           retry_count = 0
         rescue Twitter::Error::TooManyRequests => e
+          Rails.logger.warn([["TooManyRequest users Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
           sleep e.rate_limit.reset_in.to_i
           retry_count = retry_count + 1
           if retry_count < 5
@@ -80,6 +81,7 @@ class Promote::TwitterFriend < Promote::Friend
           follower_ids.send(:fetch_next_page)
           retry_count = 0
         rescue Twitter::Error::TooManyRequests => e
+          Rails.logger.warn([["TooManyRequest follower fetch_next_page Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
           sleep e.rate_limit.reset_in.to_i
           retry_count = retry_count + 1
           if retry_count < 5

@@ -33,14 +33,14 @@ class Promote::Friend < ApplicationRecord
 
   scope :followers, -> { where(state: [:only_follower, :both_follow]) }
 
-  def follow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def follow!(twitter_client:)
     if self.only_follow? || self.both_follow?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
       result = twitter_client.follow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn([["TooManyRequest follow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
       return false
     end
     if self.unrelated?
@@ -51,14 +51,14 @@ class Promote::Friend < ApplicationRecord
     return true
   end
 
-  def unfollow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def unfollow!(twitter_client:)
     if self.unrelated? || self.only_follower?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
       result = twitter_client.unfollow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn([["TooManyRequest unfollow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
       return false
     end
     if self.only_follow?
