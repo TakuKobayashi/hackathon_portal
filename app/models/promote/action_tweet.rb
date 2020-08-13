@@ -22,7 +22,7 @@ class Promote::ActionTweet < ApplicationRecord
   enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 
   # いいねをしたらフォローするかどうか判断するscoreの上昇値
-  LIKE_ADD_SCORE = 0.2
+  LIKE_ADD_SCORE = 0.25
 
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
 
