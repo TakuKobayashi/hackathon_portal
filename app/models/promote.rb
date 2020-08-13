@@ -8,6 +8,7 @@ module Promote
 
   def self.twitter_promote!
     self.like_major_user!
+    self.import_bot_followers!
     self.try_follows!
     self.organize_follows!
   end
@@ -46,17 +47,17 @@ module Promote
   # フォロワーを整理する
   def self.organize_follows!
     twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
-    me_twitter = twitter_client.user
+    twitter_bot = twitter_client.user
     follower_ids = twitter_client.follower_ids({count: 5000})
     twitter_friends = []
-    Promote::TwitterFriend.where(state: [:unrelated, :only_follow], from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).find_each do |friend|
+    Promote::TwitterFriend.where(state: [:unrelated, :only_follow], from_user_id: twitter_bot.id, to_user_id: follower_ids.to_a).find_each do |friend|
       friend.build_be_follower
       twitter_friends << friend
     end
     Promote::TwitterFriend.import!(twitter_friends, on_duplicate_key_update: [:state, :score])
 
     unfollow_count = 0
-    unfollow_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).where("followed_at < ?", EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
+    unfollow_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: twitter_bot.id, to_user_id: follower_ids.to_a).where("followed_at < ?", EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
     unfollow_friends.each do |friend|
       is_success = friend.unfollow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
       if is_success
@@ -64,7 +65,7 @@ module Promote
       end
     end
 
-    fail_follower_friends = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: me_twitter.id).where.not(to_user_id: follower_ids.to_a)
+    fail_follower_friends = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: twitter_bot.id).where.not(to_user_id: follower_ids.to_a)
     fail_follower_friends.each do |friend|
       begin
         result = twitter_client.unfollow(friend.to_user_id.to_i)
@@ -74,5 +75,11 @@ module Promote
       friend.update!(state: :unrelated, followed_at: nil, score: 0)
       unfollow_count = unfollow_count + 1
     end
+  end
+
+  def self.import_bot_followers!
+    twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+    twitter_bot = twitter_client.user
+    self.update_all_followers!(twitter_client: twitter_client, user_id: twitter_bot.id)
   end
 end

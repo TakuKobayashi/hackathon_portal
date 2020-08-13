@@ -72,7 +72,7 @@ class Promote::TwitterFriend < Promote::Friend
           end
         end
         Promote::TwitterUser.import_from_tweets!(tweets: twitter_users)
-        self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, is_follower: true)
+        self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, is_follower: bot_user.id.to_s == user_id.to_s)
         all_twitter_users += twitter_users
       end
       if next_cursor > 0
