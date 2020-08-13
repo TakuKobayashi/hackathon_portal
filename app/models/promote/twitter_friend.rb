@@ -23,18 +23,73 @@ class Promote::TwitterFriend < Promote::Friend
     self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq)
   end
 
-  def self.import_from_users!(me_user:, twitter_users: [])
+  def self.import_from_users!(me_user:, twitter_users: [], is_follower: false)
     to_user_id_twitter_friends = Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map{|tu| tu.id.to_s }).index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
-      next if to_user_id_twitter_friends[twitter_user.id.to_s].present?
-      promote_twitter_friends << Promote::TwitterFriend.new(
-        from_user_id: me_user.id,
-        to_user_id: twitter_user.id,
-        state: :unrelated,
-        score: 0,
-      )
+      promote_twitter_friend = to_user_id_twitter_friends[twitter_user.id.to_s]
+      if promote_twitter_friend.present?
+        promote_twitter_friend.attributes = promote_twitter_friend.attributes.merge(import_options)
+      else
+        current_time = Time.current
+        promote_twitter_friend = Promote::TwitterFriend.new({
+          # 現在時刻(マイクロ秒)をidとして記録
+          id: (current_time.to_i * 1000000) + current_time.usec,
+          from_user_id: me_user.id,
+          to_user_id: twitter_user.id,
+          state: :unrelated,
+          score: 0,
+        })
+      end
+      if is_follower
+        promote_twitter_friend.build_be_follower
+      end
+      promote_twitter_friends << promote_twitter_friend
     end
-    Promote::TwitterFriend.import!(promote_twitter_friends)
+    Promote::TwitterFriend.import!(promote_twitter_friends, on_duplicate_key_update: [:state, :score])
+  end
+
+  def self.update_all_followers!(twitter_client: ,user_id:)
+    bot_user = twitter_client.user
+    follower_id_cursors = twitter_client.follower_ids({user_id: user_id.to_i, count: 5000})
+    retry_count = 0
+    next_cursor = 0
+    all_twitter_users = []
+    begin
+      next_cursor = follower_ids.attrs[:next_cursor]
+      follower_id_cursors.attrs[:ids].each_slice(Twitter::REST::Users::MAX_USERS_PER_REQUEST) do |user_ids|
+        twitter_users = []
+        begin
+          twitter_users = twitter_client.users(user_ids.map(&:to_i))
+          retry_count = 0
+        rescue Twitter::Error::TooManyRequests => e
+          sleep e.rate_limit.reset_in.to_i
+          retry_count = retry_count + 1
+          if retry_count < 5
+            retry
+          else
+            return []
+          end
+        end
+        Promote::TwitterUser.import_from_tweets!(tweets: twitter_users)
+        self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, is_follower: true)
+        all_twitter_users += twitter_users
+      end
+      if next_cursor > 0
+        begin
+          follower_ids.send(:fetch_next_page)
+          retry_count = 0
+        rescue Twitter::Error::TooManyRequests => e
+          sleep e.rate_limit.reset_in.to_i
+          retry_count = retry_count + 1
+          if retry_count < 5
+            retry
+          else
+            return []
+          end
+        end
+      end
+    end while next_cursor > 0
+    return all_twitter_users
   end
 end

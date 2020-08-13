@@ -1,6 +1,7 @@
 class CreatePromoteFriends < ActiveRecord::Migration[6.0]
   def change
-    create_table :promote_friends do |t|
+    create_table(:promote_friends, :id => false) do |t|
+      t.column :id, 'bigint(20) PRIMARY KEY'
       t.string :type
       t.string :from_user_id, null: false
       t.string :to_user_id, null: false

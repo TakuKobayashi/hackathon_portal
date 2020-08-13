@@ -48,9 +48,12 @@ module Promote
     twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     me_twitter = twitter_client.user
     follower_ids = twitter_client.follower_ids({count: 5000})
+    twitter_friends = []
     Promote::TwitterFriend.where(state: [:unrelated, :only_follow], from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).find_each do |friend|
-      friend.be_follower!
+      friend.build_be_follower
+      twitter_friends << friend
     end
+    Promote::TwitterFriend.import!(twitter_friends, on_duplicate_key_update: [:state, :score])
 
     unfollow_count = 0
     unfollow_friends = Promote::TwitterFriend.where(state: :only_follow, from_user_id: me_twitter.id, to_user_id: follower_ids.to_a).where("followed_at < ?", EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
