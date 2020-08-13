@@ -22,9 +22,13 @@ class Promote::ActionTweet < ApplicationRecord
   enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 
   # いいねをしたらフォローするかどうか判断するscoreの上昇値
-  LIKE_ADD_SCORE = 0.2
+  LIKE_ADD_SCORE = 0.25
 
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
+
+  def tweet_url
+    return "https://twitter.com/#{self.status_user_screen_name}/status/#{self.status_id}"
+  end
 
   def self.import_tweets!(me_user:, tweets: [])
     status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map{|t| t.id.to_s}).index_by(&:status_id)
@@ -44,14 +48,17 @@ class Promote::ActionTweet < ApplicationRecord
     Promote::ActionTweet.import!(promote_action_tweets)
   end
 
-  def like!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def like!(twitter_client:)
     if self.only_liked? || self.liked_and_retweet?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
-      result = twitter_client.favorite(self.status_id)
+      liked_tweets = twitter_client.favorite!({id: self.status_id.to_i, tweet_mode: "extended"})
+      unless liked_tweets.any?{|t| t.id.to_i == self.status_id.to_i }
+        return false
+      end
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn(["TooManyRequest like! Error:", e.rate_limit.reset_in, "s", self.tweet_url].join(' '))
       return false
     end
 

@@ -23,18 +23,24 @@ class Promote::Friend < ApplicationRecord
   # scoreがこの値以上になるのならfollowする
   FOLLOW_LIMIT_SCORE = 1
 
-  FOLLOWER_ADD_SCORE = 0.6
+  # Botのフォロワーだった時の上昇するscore値
+  FOLLOWER_ADD_SCORE = 0.9
+
+  # フォロワーのフォロワーだった時の上昇するscore値
+  FOLLOWERS_FOLLOWER_ADD_SCORE = 0.5
 
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
-  def follow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  scope :followers, -> { where(state: [:only_follower, :both_follow]) }
+
+  def follow!(twitter_client:)
     if self.only_follow? || self.both_follow?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
       result = twitter_client.follow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn([["TooManyRequest follow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
       return false
     end
     if self.unrelated?
@@ -45,14 +51,14 @@ class Promote::Friend < ApplicationRecord
     return true
   end
 
-  def unfollow!(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
+  def unfollow!(twitter_client:)
     if self.unrelated? || self.only_follower?
       return false
     end
-    twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
       result = twitter_client.unfollow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
+      Rails.logger.warn([["TooManyRequest unfollow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
       return false
     end
     if self.only_follow?
@@ -64,13 +70,23 @@ class Promote::Friend < ApplicationRecord
   end
 
   def be_follower!
+    success = self.build_be_follower
+    if success
+      self.save!
+    end
+    return success
+  end
+
+  def build_be_follower
     if self.only_follower? || self.both_follow?
       return false
     end
     if self.unrelated?
-      self.update!(state: :only_follower, score: self.score + FOLLOWER_ADD_SCORE)
+      self.state = :only_follower
     elsif self.only_follow?
-      self.update!(state: :both_follow, score: self.score + FOLLOWER_ADD_SCORE)
+      self.state = :both_followå
     end
+    self.score = self.score + FOLLOWER_ADD_SCORE
+    return true
   end
 end
