@@ -84,7 +84,7 @@ class Promote::Friend < ApplicationRecord
     if self.unrelated?
       self.state = :only_follower
     elsif self.only_follow?
-      self.state = :both_followå
+      self.state = :both_follow
     end
     self.score = self.score + FOLLOWER_ADD_SCORE
     return true
