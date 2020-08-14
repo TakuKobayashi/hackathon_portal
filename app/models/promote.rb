@@ -6,8 +6,12 @@ module Promote
     'promote_'
   end
 
-  def self.twitter_promote_action!
+  def self.long_twitter_promote!
     self.like_major_user!
+    self.import_bot_followers!
+  end
+
+  def self.twitter_promote_action!
     self.try_follows!
     self.organize_follows!
   end
@@ -16,6 +20,7 @@ module Promote
   def self.like_major_user!
     twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
     liked_counter = 0
+    start_at = Time.current
     Promote::ActionTweet.
       where(state: [:unrelated, :only_retweeted]).
       includes(:promote_user).
@@ -25,6 +30,10 @@ module Promote
         liked_counter = liked_counter + 1
       end
       if liked_counter >= 1000
+        break
+      end
+      # 30分たったらやめる
+      if (Time.current - start_at).to_i > 30 * 60
         break
       end
     end
@@ -70,6 +79,8 @@ module Promote
       is_success = friend.unfollow!(twitter_client: twitter_client)
       if is_success
         unfollow_count = unfollow_count + 1
+      else
+        break
       end
     end
 
@@ -78,7 +89,7 @@ module Promote
       begin
         result = twitter_client.unfollow(friend.to_user_id.to_i)
       rescue Twitter::Error::TooManyRequests => e
-        next
+        break
       end
       friend.update!(state: :unrelated, followed_at: nil, score: 0)
       unfollow_count = unfollow_count + 1
