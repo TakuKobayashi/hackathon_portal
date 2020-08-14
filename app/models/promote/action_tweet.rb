@@ -53,7 +53,7 @@ class Promote::ActionTweet < ApplicationRecord
       return false
     end
     begin
-      liked_tweets = twitter_client.favorite!({id: self.status_id.to_i, tweet_mode: "extended"})
+      liked_tweets = twitter_client.favorite(self.status_id.to_i)
       unless liked_tweets.any?{|t| t.id.to_i == self.status_id.to_i }
         return false
       end
@@ -62,11 +62,12 @@ class Promote::ActionTweet < ApplicationRecord
       return false
     end
 
+    success = false
     if self.unrelated?
-      self.update!(state: :only_liked, score: self.score + LIKE_ADD_SCORE)
+      success = self.update(state: :only_liked, score: self.score + LIKE_ADD_SCORE)
     elsif self.only_retweeted?
-      self.update!(state: :liked_and_retweet, score: self.score + LIKE_ADD_SCORE)
+      success = self.update(state: :liked_and_retweet, score: self.score + LIKE_ADD_SCORE)
     end
-    return true
+    return success
   end
 end
