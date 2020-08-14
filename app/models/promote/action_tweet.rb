@@ -60,7 +60,6 @@ class Promote::ActionTweet < ApplicationRecord
       end
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn(["TooManyRequest like! Error:", e.rate_limit.reset_in, "s", self.tweet_url].join(' '))
-      sleep 1
       return false
     end
 
