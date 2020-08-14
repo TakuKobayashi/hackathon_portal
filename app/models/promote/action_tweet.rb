@@ -22,6 +22,7 @@ class Promote::ActionTweet < ApplicationRecord
   enum state: { unrelated: 0, only_liked: 1, only_retweeted: 10, liked_and_retweet: 11 }
 
   # いいねをしたらフォローするかどうか判断するscoreの上昇値
+  # APIからのいいねはエラーになることが多いので先にscoreを加算してしまう
   LIKE_ADD_SCORE = 0.25
 
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
@@ -41,7 +42,7 @@ class Promote::ActionTweet < ApplicationRecord
         status_user_screen_name: tweet.user.screen_name,
         status_id: tweet.id,
         state: :unrelated,
-        score: 0,
+        score: LIKE_ADD_SCORE,
         created_at: tweet.created_at,
       )
     end
@@ -59,14 +60,15 @@ class Promote::ActionTweet < ApplicationRecord
       end
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn(["TooManyRequest like! Error:", e.rate_limit.reset_in, "s", self.tweet_url].join(' '))
+      sleep 1
       return false
     end
 
     success = false
     if self.unrelated?
-      success = self.update(state: :only_liked, score: self.score + LIKE_ADD_SCORE)
+      success = self.update(state: :only_liked)
     elsif self.only_retweeted?
-      success = self.update(state: :liked_and_retweet, score: self.score + LIKE_ADD_SCORE)
+      success = self.update(state: :liked_and_retweet)
     end
     return success
   end
