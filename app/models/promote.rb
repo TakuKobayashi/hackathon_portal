@@ -6,9 +6,12 @@ module Promote
     'promote_'
   end
 
-  def self.twitter_promote_action!
+  def self.long_twitter_promote!
     self.like_major_user!
     self.import_bot_followers!
+  end
+
+  def self.twitter_promote_action!
     self.try_follows!
     self.organize_follows!
   end
