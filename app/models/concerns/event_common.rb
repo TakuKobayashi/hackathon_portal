@@ -242,7 +242,7 @@ module EventCommon
     if image_url.present?
       fi = FastImage.new(image_url.to_s)
       width, height = fi.size
-      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
+      size_text = AdjustImage.calc_resize_text(width: width.to_i, height: height.to_i, max_length: 300)
       resize_width, resize_height = size_text.split('x')
       return(
         ActionController::Base.helpers.image_tag(
