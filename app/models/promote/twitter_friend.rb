@@ -19,16 +19,17 @@
 class Promote::TwitterFriend < Promote::Friend
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: 'user_id', foreign_key: 'to_user_id'
 
-  def self.import_from_tweets!(me_user:, tweets: [], is_follower: false, default_score: 0)
-    self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq, is_follower: is_follower)
+  def self.import_from_tweets!(me_user:, tweets: [], to_be_follower: false, default_score: 0)
+    self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq, to_be_follower: to_be_follower)
   end
 
-  def self.import_from_users!(me_user:, twitter_users: [], is_follower: false, default_score: 0)
+  def self.import_from_users!(me_user:, twitter_users: [], to_be_follower: false, default_score: 0)
     to_user_id_twitter_friends =
       Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map { |tu| tu.id.to_s })
         .index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
+      next if me_user.id.to_i == twitter_user.id.to_i
       promote_twitter_friend = to_user_id_twitter_friends[twitter_user.id.to_s]
       if promote_twitter_friend.blank?
         current_time = Time.current
@@ -47,7 +48,8 @@ class Promote::TwitterFriend < Promote::Friend
             },
           )
       end
-      promote_twitter_friend.build_be_follower if is_follower
+      next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
+      promote_twitter_friend.build_be_follower if to_be_follower
       promote_twitter_friend.score = promote_twitter_friend.score + default_score
       promote_twitter_friends << promote_twitter_friend
     end
@@ -80,9 +82,16 @@ class Promote::TwitterFriend < Promote::Friend
           end
         end
         Promote::TwitterUser.import_from_users!(twitter_users: twitter_users)
-        self.import_from_users!(
-          me_user: bot_user, twitter_users: twitter_users, is_follower: bot_user.id.to_s == user_id.to_s,
-        )
+        # BotのフォロワーならBotのフォロワーとして、そうじゃない場合はフォロワーのフォロワーとして記録する
+        if bot_user.id.to_s == user_id.to_s
+          self.import_from_users!(
+            me_user: bot_user, twitter_users: twitter_users, to_be_follower: true)
+          )
+        else
+          self.import_from_users!(
+            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::FOLLOWERS_FOLLOWER_ADD_SCORE)
+          )
+        end
         all_twitter_users += twitter_users
       end
       if next_cursor > 0
