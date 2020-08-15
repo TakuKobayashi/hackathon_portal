@@ -91,10 +91,11 @@ module TwitterEventOperation
       (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)
   end
 
-  def self.import_relation_promote_tweets!(me_user: ,tweets: [])
+  def self.import_relation_promote_tweets!(me_user:, tweets: [])
     all_tweets =
       tweets.map do |tweet|
         tweet_arr = []
+
         if tweet.user.id != me_user.id
           tweet_arr << tweet
           tweet_arr << tweet.quoted_status if tweet.quoted_status?
