@@ -19,21 +19,20 @@ module Promote
   # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
   def self.like_major_user!
     twitter_client = TwitterBot.get_twitter_client(access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''), access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''))
-    liked_counter = 0
+    fail_counter = 0
     start_at = Time.current
-    Promote::ActionTweet.
+    action_tweets = Promote::ActionTweet.
       where(state: [:unrelated, :only_retweeted]).
       includes(:promote_user).
       order("promote_users.follower_count DESC ,promote_action_tweets.created_at DESC").
-      find_each do |action_tweet|
+      limit(1000)
+    action_tweets.each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
-        liked_counter = liked_counter + 1
+        fail_counter = 0
+      else
+        fail_counter = fail_counter + 1
       end
-      if liked_counter >= 1000
-        break
-      end
-      # 30分たったらやめる
-      if (Time.current - start_at).to_i > 30 * 60
+      if fail_counter >= 5
         break
       end
     end
