@@ -19,11 +19,11 @@
 class Promote::TwitterFriend < Promote::Friend
   belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: 'user_id', foreign_key: 'to_user_id'
 
-  def self.import_from_tweets!(me_user:, tweets: [])
-    self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq)
+  def self.import_from_tweets!(me_user:, tweets: [], is_follower: false, default_score: 0)
+    self.import_from_users!(me_user: me_user, twitter_users: tweets.map(&:user).uniq, is_follower: is_follower)
   end
 
-  def self.import_from_users!(me_user:, twitter_users: [], is_follower: false)
+  def self.import_from_users!(me_user:, twitter_users: [], is_follower: false, default_score: 0)
     to_user_id_twitter_friends =
       Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map { |tu| tu.id.to_s })
         .index_by(&:to_user_id)
@@ -48,6 +48,7 @@ class Promote::TwitterFriend < Promote::Friend
           )
       end
       promote_twitter_friend.build_be_follower if is_follower
+      promote_twitter_friend.score = promote_twitter_friend.score + default_score
       promote_twitter_friends << promote_twitter_friend
     end
     Promote::TwitterFriend.import!(promote_twitter_friends, on_duplicate_key_update: %i[state score])
