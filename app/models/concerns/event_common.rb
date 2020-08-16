@@ -84,7 +84,8 @@ module EventCommon
     first_head_dom.css('meta').each do |meta_dom|
       dom_attrs = OpenStruct.new(meta_dom.to_h)
       # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      if dom_attrs.property.to_s == 'og:type' && (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
+      if dom_attrs.property.to_s == 'og:type' &&
+           (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
         return false
       end
 
@@ -128,7 +129,8 @@ module EventCommon
     articles_html_arr = sanitized_main_content_html.scan(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG))
     # article tagの分だけ判定を渋くする
     article_count = articles_html_arr.size
-    sanitized_main_content_html = sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
+    sanitized_main_content_html =
+      sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
     self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
@@ -240,7 +242,7 @@ module EventCommon
     if image_url.present?
       fi = FastImage.new(image_url.to_s)
       width, height = fi.size
-      size_text = AdjustImage.calc_resize_text(width: width, height: height, max_length: 300)
+      size_text = AdjustImage.calc_resize_text(width: width.to_i, height: height.to_i, max_length: 300)
       resize_width, resize_height = size_text.split('x')
       return(
         ActionController::Base.helpers.image_tag(

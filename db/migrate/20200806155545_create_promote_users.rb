@@ -1,6 +1,6 @@
 class CreatePromoteUsers < ActiveRecord::Migration[6.0]
   def change
-    create_table(:promote_users, :id => false) do |t|
+    create_table(:promote_users, id: false) do |t|
       t.column :id, 'bigint(20) PRIMARY KEY'
       t.string :user_id, null: false
       t.string :type

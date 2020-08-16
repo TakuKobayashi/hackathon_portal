@@ -25,41 +25,38 @@ class Promote::ActionTweet < ApplicationRecord
   # APIからのいいねはエラーになることが多いので先にscoreを加算してしまう
   LIKE_ADD_SCORE = 0.25
 
-  belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: "user_id", foreign_key: "status_user_id"
+  belongs_to :promote_user, class_name: 'Promote::TwitterUser', primary_key: 'user_id', foreign_key: 'status_user_id'
 
   def tweet_url
     return "https://twitter.com/#{self.status_user_screen_name}/status/#{self.status_id}"
   end
 
   def self.import_tweets!(me_user:, tweets: [])
-    status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map{|t| t.id.to_s}).index_by(&:status_id)
+    status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map { |t| t.id.to_s }).index_by(&:status_id)
     promote_action_tweets = []
     tweets.each do |tweet|
       next if status_id_promote_tweets[tweet.id.to_s].present?
-      promote_action_tweets << Promote::ActionTweet.new(
-        user_id: me_user.id,
-        status_user_id: tweet.user.id,
-        status_user_screen_name: tweet.user.screen_name,
-        status_id: tweet.id,
-        state: :unrelated,
-        score: LIKE_ADD_SCORE,
-        created_at: tweet.created_at,
-      )
+      promote_action_tweets <<
+        Promote::ActionTweet.new(
+          user_id: me_user.id,
+          status_user_id: tweet.user.id,
+          status_user_screen_name: tweet.user.screen_name,
+          status_id: tweet.id,
+          state: :unrelated,
+          score: LIKE_ADD_SCORE,
+          created_at: tweet.created_at,
+        )
     end
     Promote::ActionTweet.import!(promote_action_tweets)
   end
 
   def like!(twitter_client:)
-    if self.only_liked? || self.liked_and_retweet?
-      return false
-    end
+    return false if self.only_liked? || self.liked_and_retweet?
     begin
       liked_tweets = twitter_client.favorite(self.status_id.to_i)
-      unless liked_tweets.any?{|t| t.id.to_i == self.status_id.to_i }
-        return false
-      end
+      return false unless liked_tweets.any? { |t| t.id.to_i == self.status_id.to_i }
     rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn(["TooManyRequest like! Error:", e.rate_limit.reset_in, "s", self.tweet_url].join(' '))
+      Rails.logger.warn(['TooManyRequest like! Error:', e.rate_limit.reset_in, 's', self.tweet_url].join(' '))
       return false
     end
 

@@ -31,16 +31,14 @@ class Promote::Friend < ApplicationRecord
 
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
-  scope :followers, -> { where(state: [:only_follower, :both_follow]) }
+  scope :followers, -> { where(state: %i[only_follower both_follow]) }
 
   def follow!(twitter_client:)
-    if self.only_follow? || self.both_follow?
-      return false
-    end
+    return false if self.only_follow? || self.both_follow?
     begin
       result = twitter_client.follow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn([["TooManyRequest follow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
+      Rails.logger.warn([['TooManyRequest follow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'))
       return false
     end
     if self.unrelated?
@@ -52,13 +50,13 @@ class Promote::Friend < ApplicationRecord
   end
 
   def unfollow!(twitter_client:)
-    if self.unrelated? || self.only_follower?
-      return false
-    end
+    return false if self.unrelated? || self.only_follower?
     begin
       result = twitter_client.unfollow(self.to_user_id.to_i)
     rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn([["TooManyRequest unfollow Error:", e.rate_limit.reset_in.to_s, "s"].join, e.message].join('\n'))
+      Rails.logger.warn(
+        [['TooManyRequest unfollow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'),
+      )
       return false
     end
     if self.only_follow?
@@ -71,16 +69,12 @@ class Promote::Friend < ApplicationRecord
 
   def be_follower!
     success = self.build_be_follower
-    if success
-      self.save!
-    end
+    self.save! if success
     return success
   end
 
   def build_be_follower
-    if self.only_follower? || self.both_follow?
-      return false
-    end
+    return false if self.only_follower? || self.both_follow?
     if self.unrelated?
       self.state = :only_follower
     elsif self.only_follow?
