@@ -64,7 +64,12 @@ class Promote::TwitterFriend < Promote::Friend
 
   def self.update_all_followers!(twitter_client:, user_id:)
     bot_user = twitter_client.user
-    follower_id_cursors = twitter_client.follower_ids({ user_id: user_id.to_i, count: 5000 })
+    follower_id_cursors = nil
+    begin
+      follower_id_cursors = twitter_client.follower_ids({ user_id: user_id.to_i, count: 5000 })
+    rescue Twitter::Error::Unauthorized, Twitter::Error::TooManyRequests => e
+      return []
+    end
     retry_count = 0
     next_cursor = 0
     all_twitter_users = []
@@ -95,7 +100,7 @@ class Promote::TwitterFriend < Promote::Friend
           )
         else
           self.import_from_users!(
-            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::FOLLOWERS_FOLLOWER_ADD_SCORE
+            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::Friend::FOLLOWERS_FOLLOWER_ADD_SCORE
           )
         end
         all_twitter_users += twitter_users

@@ -138,7 +138,7 @@ module Promote
     )
     twitter_bot = twitter_client.user
     friend_users = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: twitter_bot.id).includes(:to_promote_user).order(
-      'promote_friends.record_followers_follower_counter ASC, promote_users.follower_count DESC',
+      'promote_friends.record_followers_follower_counter ASC',
     )
     api_exec_count = 0
     friend_users.each do |friend_user|
