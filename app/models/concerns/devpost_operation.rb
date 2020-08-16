@@ -38,8 +38,10 @@ module DevpostOperation
       url_event_options.keys.each do |event_url|
         next if url_devpost_events[event_url].present?
         devpost_event = self.analyze_and_build_event(url: event_url, options: url_event_options[event_url])
-        devpost_event.save!
-        devpost_event.import_hashtags!(hashtag_strings: devpost_event.search_hashtags)
+        if devpost_event.place.downcase.match(Sanitizer.online_regexp).present? || devpost_event.place.downcase.include?('japan')
+          devpost_event.save!
+          devpost_event.import_hashtags!(hashtag_strings: devpost_event.search_hashtags)
+        end
       end
       page += 1
       sleep 1
