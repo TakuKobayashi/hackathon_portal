@@ -29,8 +29,8 @@ module Promote
       Promote::ActionTweet.where(state: %i[unrelated only_retweeted]).includes(:promote_user).order(
         'promote_users.follower_count DESC ,promote_action_tweets.created_at DESC',
       )
-    ja_action_tweets = action_tweets.where(lang: 'ja').limit(1000)
-    not_ja_action_tweets = action_tweets.where.not(lang: 'ja').limit(1000 - ja_action_tweets.size)
+    ja_action_tweets = action_tweets.where(lang: 'ja').limit(1000).to_a
+    not_ja_action_tweets = action_tweets.where.not(lang: 'ja').limit(1000 - ja_action_tweets.size).to_a
     (ja_action_tweets + not_ja_action_tweets).each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
         fail_counter = 0
@@ -144,6 +144,7 @@ module Promote
     friend_users.each do |friend_user|
       to_promote_user = friend_user.to_promote_user
       api_exec_count += (to_promote_user.follower_count / 5000) + 1
+      Rails.logger.warn(api_exec_count)
       friend_user.update!(record_followers_follower_counter: friend_user.record_followers_follower_counter + 1)
       Promote::TwitterFriend.update_all_followers!(twitter_client: twitter_client, user_id: friend_user.to_user_id)
       break if api_exec_count >= 15
