@@ -46,6 +46,7 @@ class Promote::TwitterFriend < Promote::Friend
               to_user_id: twitter_user.id,
               state: :unrelated,
               score: 0,
+              record_followers_follower_counter: 0,
             },
           )
       end
