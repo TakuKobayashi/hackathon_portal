@@ -142,13 +142,13 @@ module Promote
       'promote_friends.record_followers_follower_counter ASC',
     )
     api_exec_count = 0
+    rate_limit_res = Twitter::REST::Request.new(twitter_client, :get, '/1.1/application/rate_limit_status.json').perform
     friend_users.each do |friend_user|
       to_promote_user = friend_user.to_promote_user
       api_exec_count += (to_promote_user.follower_count / 5000) + 1
-      Rails.logger.warn(api_exec_count)
       friend_user.update!(record_followers_follower_counter: friend_user.record_followers_follower_counter + 1)
       Promote::TwitterFriend.update_all_followers!(twitter_client: twitter_client, user_id: friend_user.to_user_id)
-      break if api_exec_count >= 15
+      break if api_exec_count >= rate_limit_res[:resources][:followers][:"/followers/ids"][:remaining]
     end
   end
 end
