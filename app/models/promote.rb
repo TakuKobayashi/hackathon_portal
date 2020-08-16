@@ -83,7 +83,12 @@ module Promote
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     twitter_bot = twitter_client.user
-    follower_ids = twitter_client.follower_ids({ count: 5000 })
+    follower_ids = []
+    begin
+      follower_ids = twitter_client.follower_ids({ count: 5000 })
+    rescue Twitter::Error::TooManyRequests => e
+      return nil
+    end
     twitter_friends = []
     Promote::TwitterFriend.where(
       state: %i[unrelated only_follow], from_user_id: twitter_bot.id, to_user_id: follower_ids.to_a,
@@ -133,14 +138,15 @@ module Promote
 
   def self.import_followers_follower!
     twitter_client =
-    TwitterBot.get_twitter_client(
-      access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-      access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-    )
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      )
     twitter_bot = twitter_client.user
-    friend_users = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: twitter_bot.id).includes(:to_promote_user).order(
-      'promote_friends.record_followers_follower_counter ASC',
-    )
+    friend_users =
+      Promote::TwitterFriend.where(state: %i[only_follower both_follow], from_user_id: twitter_bot.id).includes(
+        :to_promote_user,
+      ).order('promote_friends.record_followers_follower_counter ASC')
     api_exec_count = 0
     rate_limit_res = Twitter::REST::Request.new(twitter_client, :get, '/1.1/application/rate_limit_status.json').perform
     friend_users.each do |friend_user|

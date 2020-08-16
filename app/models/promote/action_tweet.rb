@@ -57,11 +57,11 @@ class Promote::ActionTweet < ApplicationRecord
     begin
       liked_tweets = twitter_client.favorite(self.status_id.to_i)
       return false unless liked_tweets.any? { |t| t.id.to_i == self.status_id.to_i }
-    # blockされているユーザーをlikeすることはできない
+      # blockされているユーザーをlikeすることはできない
     rescue Twitter::Error::Unauthorized => e
       Rails.logger.warn(['Unauthorized like! Error:', e.message, self.tweet_url].join(' '))
       return true
-    # 鍵垢をいいねすることはできない
+      # 鍵垢をいいねすることはできない
     rescue Twitter::Error::Forbidden => e
       Rails.logger.warn(['Forbidden like! Error:', e.message, self.tweet_url].join(' '))
       return true

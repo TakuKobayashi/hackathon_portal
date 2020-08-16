@@ -52,8 +52,9 @@ class Promote::TwitterFriend < Promote::Friend
       end
       next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
       promote_twitter_friend.build_be_follower if to_be_follower || twitter_user.following?
+
+      # フォロワーのフォロワーですでにscoreが加算されているものは省く
       if promote_twitter_friend.unrelated?
-        # フォロワーのフォロワーですでにscoreが加算されているものは省く
         next if promote_twitter_friend.score > 0
         promote_twitter_friend.score = promote_twitter_friend.score + default_score
       end
@@ -95,12 +96,13 @@ class Promote::TwitterFriend < Promote::Friend
         Promote::TwitterUser.import_from_users!(twitter_users: twitter_users)
         # BotのフォロワーならBotのフォロワーとして、そうじゃない場合はフォロワーのフォロワーとして記録する
         if bot_user.id.to_s == user_id.to_s
-          self.import_from_users!(
-            me_user: bot_user, twitter_users: twitter_users, to_be_follower: true
-          )
+          self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, to_be_follower: true)
         else
           self.import_from_users!(
-            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::Friend::FOLLOWERS_FOLLOWER_ADD_SCORE
+            me_user: bot_user,
+            twitter_users: twitter_users,
+            to_be_follower: false,
+            default_score: Promote::Friend::FOLLOWERS_FOLLOWER_ADD_SCORE,
           )
         end
         all_twitter_users += twitter_users
