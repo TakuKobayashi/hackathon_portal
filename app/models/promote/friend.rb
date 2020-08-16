@@ -29,6 +29,8 @@ class Promote::Friend < ApplicationRecord
   # フォロワーのフォロワーだった時の上昇するscore値
   FOLLOWERS_FOLLOWER_ADD_SCORE = 0.5
 
+  belongs_to :to_promote_user, class_name: 'Promote::TwitterUser', primary_key: 'user_id', foreign_key: 'to_user_id'
+
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
   scope :followers, -> { where(state: %i[only_follower both_follow]) }
