@@ -338,6 +338,7 @@ module EventCommon
            HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            URI::InvalidURIError,
+           Errno::EHOSTUNREACH,
            Addressable::URI::InvalidURIError => e
       return false
     end
