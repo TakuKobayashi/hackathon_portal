@@ -2,13 +2,14 @@
 #
 # Table name: promote_friends
 #
-#  id           :bigint           not null, primary key
-#  type         :string(255)
-#  from_user_id :string(255)      not null
-#  to_user_id   :string(255)      not null
-#  state        :integer          default("unrelated"), not null
-#  score        :float(24)        default(0.0), not null
-#  followed_at  :datetime
+#  id                                :bigint           not null, primary key
+#  type                              :string(255)
+#  from_user_id                      :string(255)      not null
+#  to_user_id                        :string(255)      not null
+#  state                             :integer          default("unrelated"), not null
+#  score                             :float(24)        default(0.0), not null
+#  followed_at                       :datetime
+#  record_followers_follower_counter :integer          default(0), not null
 #
 # Indexes
 #
@@ -45,12 +46,17 @@ class Promote::TwitterFriend < Promote::Friend
               to_user_id: twitter_user.id,
               state: :unrelated,
               score: 0,
+              record_followers_follower_counter: 0,
             },
           )
       end
       next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
-      promote_twitter_friend.build_be_follower if to_be_follower
-      promote_twitter_friend.score = promote_twitter_friend.score + default_score
+      promote_twitter_friend.build_be_follower if to_be_follower || twitter_user.following?
+      if promote_twitter_friend.unrelated?
+        # フォロワーのフォロワーですでにscoreが加算されているものは省く
+        next if promote_twitter_friend.score > 0
+        promote_twitter_friend.score = promote_twitter_friend.score + default_score
+      end
       promote_twitter_friends << promote_twitter_friend
     end
     Promote::TwitterFriend.import!(promote_twitter_friends, on_duplicate_key_update: %i[state score])
@@ -58,7 +64,12 @@ class Promote::TwitterFriend < Promote::Friend
 
   def self.update_all_followers!(twitter_client:, user_id:)
     bot_user = twitter_client.user
-    follower_id_cursors = twitter_client.follower_ids({ user_id: user_id.to_i, count: 5000 })
+    follower_id_cursors = nil
+    begin
+      follower_id_cursors = twitter_client.follower_ids({ user_id: user_id.to_i, count: 5000 })
+    rescue Twitter::Error::Unauthorized, Twitter::Error::TooManyRequests => e
+      return []
+    end
     retry_count = 0
     next_cursor = 0
     all_twitter_users = []
@@ -85,11 +96,11 @@ class Promote::TwitterFriend < Promote::Friend
         # BotのフォロワーならBotのフォロワーとして、そうじゃない場合はフォロワーのフォロワーとして記録する
         if bot_user.id.to_s == user_id.to_s
           self.import_from_users!(
-            me_user: bot_user, twitter_users: twitter_users, to_be_follower: true)
+            me_user: bot_user, twitter_users: twitter_users, to_be_follower: true
           )
         else
           self.import_from_users!(
-            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::FOLLOWERS_FOLLOWER_ADD_SCORE)
+            me_user: bot_user, twitter_users: twitter_users, to_be_follower: false, default_score: Promote::Friend::FOLLOWERS_FOLLOWER_ADD_SCORE
           )
         end
         all_twitter_users += twitter_users

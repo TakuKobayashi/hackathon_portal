@@ -2,13 +2,14 @@
 #
 # Table name: promote_friends
 #
-#  id           :bigint           not null, primary key
-#  type         :string(255)
-#  from_user_id :string(255)      not null
-#  to_user_id   :string(255)      not null
-#  state        :integer          default("unrelated"), not null
-#  score        :float(24)        default(0.0), not null
-#  followed_at  :datetime
+#  id                                :bigint           not null, primary key
+#  type                              :string(255)
+#  from_user_id                      :string(255)      not null
+#  to_user_id                        :string(255)      not null
+#  state                             :integer          default("unrelated"), not null
+#  score                             :float(24)        default(0.0), not null
+#  followed_at                       :datetime
+#  record_followers_follower_counter :integer          default(0), not null
 #
 # Indexes
 #
@@ -29,6 +30,8 @@ class Promote::Friend < ApplicationRecord
   # フォロワーのフォロワーだった時の上昇するscore値
   FOLLOWERS_FOLLOWER_ADD_SCORE = 0.5
 
+  belongs_to :to_promote_user, class_name: 'Promote::TwitterUser', primary_key: 'user_id', foreign_key: 'to_user_id'
+
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
   scope :followers, -> { where(state: %i[only_follower both_follow]) }
@@ -36,7 +39,8 @@ class Promote::Friend < ApplicationRecord
   def follow!(twitter_client:)
     return false if self.only_follow? || self.both_follow?
     begin
-      result = twitter_client.follow(self.to_user_id.to_i)
+      follow_users = twitter_client.follow!(self.to_user_id.to_i)
+      return false unless follow_users.any? { |t| t.id.to_i == self.to_user_id.to_i }
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn([['TooManyRequest follow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'))
       return false
@@ -52,7 +56,8 @@ class Promote::Friend < ApplicationRecord
   def unfollow!(twitter_client:)
     return false if self.unrelated? || self.only_follower?
     begin
-      result = twitter_client.unfollow(self.to_user_id.to_i)
+      unfollow_users = twitter_client.unfollow!(self.to_user_id.to_i)
+      return false unless unfollow_users.any? { |t| t.id.to_i == self.to_user_id.to_i }
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn(
         [['TooManyRequest unfollow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'),

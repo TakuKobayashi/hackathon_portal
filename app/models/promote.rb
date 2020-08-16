@@ -6,12 +6,13 @@ module Promote
     'promote_'
   end
 
-  def self.long_twitter_promote!
-    self.like_major_user!
+  def self.import_twitter_routine!
     self.import_bot_followers!
+    self.import_followers_follower!
   end
 
   def self.twitter_promote_action!
+    self.like_major_user!
     self.try_follows!
     self.organize_follows!
   end
@@ -28,8 +29,10 @@ module Promote
     action_tweets =
       Promote::ActionTweet.where(state: %i[unrelated only_retweeted]).includes(:promote_user).order(
         'promote_users.follower_count DESC ,promote_action_tweets.created_at DESC',
-      ).limit(1000)
-    action_tweets.each do |action_tweet|
+      )
+    ja_action_tweets = action_tweets.where(lang: 'ja').limit(1000).to_a
+    not_ja_action_tweets = action_tweets.where.not(lang: 'ja').limit(1000 - ja_action_tweets.size).to_a
+    (ja_action_tweets + not_ja_action_tweets).each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
         fail_counter = 0
       else
@@ -47,7 +50,7 @@ module Promote
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     follow_counter = 0
-    Promote::TwitterFriend.where(state: %i[unrelated only_retweeted]).find_in_batches do |unfollow_friends|
+    Promote::TwitterFriend.where(state: %i[unrelated only_follower]).find_in_batches do |unfollow_friends|
       user_id_sum_score =
         Promote::ActionTweet.where(status_user_id: unfollow_friends.map(&:to_user_id)).where(
           'created_at > ?',
@@ -126,5 +129,26 @@ module Promote
       )
     twitter_bot = twitter_client.user
     Promote::TwitterFriend.update_all_followers!(twitter_client: twitter_client, user_id: twitter_bot.id)
+  end
+
+  def self.import_followers_follower!
+    twitter_client =
+    TwitterBot.get_twitter_client(
+      access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+      access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+    )
+    twitter_bot = twitter_client.user
+    friend_users = Promote::TwitterFriend.where(state: [:only_follower, :both_follow], from_user_id: twitter_bot.id).includes(:to_promote_user).order(
+      'promote_friends.record_followers_follower_counter ASC',
+    )
+    api_exec_count = 0
+    rate_limit_res = Twitter::REST::Request.new(twitter_client, :get, '/1.1/application/rate_limit_status.json').perform
+    friend_users.each do |friend_user|
+      to_promote_user = friend_user.to_promote_user
+      api_exec_count += (to_promote_user.follower_count / 5000) + 1
+      friend_user.update!(record_followers_follower_counter: friend_user.record_followers_follower_counter + 1)
+      Promote::TwitterFriend.update_all_followers!(twitter_client: twitter_client, user_id: friend_user.to_user_id)
+      break if api_exec_count >= rate_limit_res[:resources][:followers][:"/followers/ids"][:remaining]
+    end
   end
 end

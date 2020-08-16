@@ -10,6 +10,7 @@
 #  state                   :integer          default("unrelated"), not null
 #  score                   :float(24)        default(0.0), not null
 #  created_at              :datetime         not null
+#  lang                    :string(255)      not null
 #
 # Indexes
 #

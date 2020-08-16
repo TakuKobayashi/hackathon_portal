@@ -2,13 +2,14 @@
 #
 # Table name: promote_friends
 #
-#  id           :bigint           not null, primary key
-#  type         :string(255)
-#  from_user_id :string(255)      not null
-#  to_user_id   :string(255)      not null
-#  state        :integer          default("unrelated"), not null
-#  score        :float(24)        default(0.0), not null
-#  followed_at  :datetime
+#  id                                :bigint           not null, primary key
+#  type                              :string(255)
+#  from_user_id                      :string(255)      not null
+#  to_user_id                        :string(255)      not null
+#  state                             :integer          default("unrelated"), not null
+#  score                             :float(24)        default(0.0), not null
+#  followed_at                       :datetime
+#  record_followers_follower_counter :integer          default(0), not null
 #
 # Indexes
 #

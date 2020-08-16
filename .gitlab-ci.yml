@@ -70,7 +70,7 @@ crawlAndPublish:on-schedule:
     - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
     - git push origin crawled-data
-    - bundle exec rails runner Promote.long_twitter_promote!
+    - bundle exec rails runner Promote.import_twitter_routine!
     - bundle exec rails runner Promote.twitter_promote_action!
     - bundle exec rails backup:export_active_records_data
     - git add db/
