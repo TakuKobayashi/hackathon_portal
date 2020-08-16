@@ -45,6 +45,7 @@ class Promote::ActionTweet < ApplicationRecord
           status_id: tweet.id,
           state: :unrelated,
           score: LIKE_ADD_SCORE,
+          lang: tweet.lang,
           created_at: tweet.created_at,
         )
     end
