@@ -83,7 +83,12 @@ module Promote
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     twitter_bot = twitter_client.user
-    follower_ids = twitter_client.follower_ids({ count: 5000 })
+    follower_ids = []
+    begin
+      follower_ids = twitter_client.follower_ids({ count: 5000 })
+    rescue Twitter::Error::TooManyRequests => e
+      return nil
+    end
     twitter_friends = []
     Promote::TwitterFriend.where(
       state: %i[unrelated only_follow], from_user_id: twitter_bot.id, to_user_id: follower_ids.to_a,
