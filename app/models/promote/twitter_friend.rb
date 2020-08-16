@@ -51,6 +51,8 @@ class Promote::TwitterFriend < Promote::Friend
           )
       end
       next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
+      # 7日前以降にログインしていなければアクティブなユーザーじゃないので記録しない
+      next if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
       promote_twitter_friend.build_be_follower if to_be_follower || twitter_user.following?
 
       # フォロワーのフォロワーですでにscoreが加算されているものは省く
