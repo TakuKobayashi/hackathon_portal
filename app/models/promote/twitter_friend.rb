@@ -49,7 +49,7 @@ class Promote::TwitterFriend < Promote::Friend
           )
       end
       next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
-      promote_twitter_friend.build_be_follower if to_be_follower
+      promote_twitter_friend.build_be_follower if to_be_follower || twitter_user.following?
       if promote_twitter_friend.unrelated?
         # フォロワーのフォロワーですでにscoreが加算されているものは省く
         next if promote_twitter_friend.score > 0
