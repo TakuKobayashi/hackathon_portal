@@ -34,6 +34,7 @@ module Promote
     (ja_action_tweets + not_ja_action_tweets).each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
         fail_counter = 0
+        sleep 1
       else
         fail_counter = fail_counter + 1
       end
@@ -65,6 +66,7 @@ module Promote
           is_success = unfollow_friend.follow!(twitter_client: twitter_client)
           if is_success
             follow_counter = follow_counter + 1
+            sleep 1
           else
             break
           end
@@ -105,6 +107,7 @@ module Promote
       is_success = friend.unfollow!(twitter_client: twitter_client)
       if is_success
         unfollow_count = unfollow_count + 1
+        sleep 1
       else
         break
       end
