@@ -50,13 +50,15 @@ module TwitterEventOperation
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
         retry_count = retry_count + 1
+        return [] if (Time.current - start_time).second + e.rate_limit.reset_in.to_i > limit_execute_second
         sleep e.rate_limit.reset_in.to_i
-        if retry_count < 5
+        if retry_count < 2
           retry
         else
           return []
         end
       end
+      retry_count = 0
       take_tweets = tweets_response.take(PAGE_PER)
       take_tweets.sort_by! { |tweet| -tweet.id }
       twitter_url_tweets = self.expanded_tweets_from_twitter_url(tweets: take_tweets, twitter_client: twitter_client)
