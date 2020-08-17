@@ -109,7 +109,7 @@ module Promote
         unfollow_count = unfollow_count + 1
         sleep 1
       else
-        break
+        return nil
       end
     end
 
@@ -121,10 +121,15 @@ module Promote
       begin
         result = twitter_client.unfollow(friend.to_user_id.to_i)
       rescue Twitter::Error::TooManyRequests => e
-        break
+        Rails.logger.warn(['TooManyRequests fail_follower unfollow Error:', e.message].join(' '))
+        return nil
+      rescue Twitter::Error::Forbidden => e
+        Rails.logger.warn(['Forbidden fail_follower unfollow Error:', e.message].join(' '))
+        return nil
       end
       friend.update!(state: :unrelated, followed_at: nil, score: 0)
       unfollow_count = unfollow_count + 1
+      sleep 1
     end
   end
 

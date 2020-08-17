@@ -44,6 +44,9 @@ class Promote::Friend < ApplicationRecord
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn([['TooManyRequest follow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'))
       return false
+    rescue Twitter::Error::Forbidden => e
+      Rails.logger.warn(['Forbidden follow Error:', e.message].join(' '))
+      return false
     end
     if self.unrelated?
       self.update!(state: :only_follow, followed_at: Time.current)
@@ -62,6 +65,9 @@ class Promote::Friend < ApplicationRecord
       Rails.logger.warn(
         [['TooManyRequest unfollow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'),
       )
+      return false
+    rescue Twitter::Error::Forbidden => e
+      Rails.logger.warn(['Forbidden unfollow Error:', e.message].join(' '))
       return false
     end
     if self.only_follow?
