@@ -38,7 +38,7 @@ module Promote
       else
         fail_counter = fail_counter + 1
       end
-      break if fail_counter >= 5
+      break if fail_counter >= 2
     end
   end
 
