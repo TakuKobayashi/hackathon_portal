@@ -12,7 +12,6 @@ module Promote
   end
 
   def self.twitter_promote_action!
-    self.like_major_user!
     self.try_follows!
     self.organize_follows!
   end
