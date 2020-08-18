@@ -21,9 +21,7 @@ module EventCommon
     self.distribute_event_type
   end
 
-  def build_location_data
-    script_url =
-      'https://script.google.com/macros/s/AKfycbxM1zm-Ep6jsV87pi5U9UQJQM4YvU2BHiCOghOV90wYCae3mtNfrz3JIQLWBxSMoJF0zA/exec'
+  def build_location_data(script_url: "")
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result =
         RequestParser.request_and_parse_json(

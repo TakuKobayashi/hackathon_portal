@@ -33,6 +33,11 @@ module TwitterEventOperation
     retry_count = 0
     tweets = []
     start_time = Time.current
+  
+    script_service = GoogleServices.get_script_service
+    script_deployments = script_service.list_project_deployments(ENV.fetch('LOCATION_GAS_SCRIPT_ID', ''))
+    latest_deployment = script_deployments.deployments.max_by{|d| d.deployment_config.version_number.to_i }
+    script_url = latest_deployment.entry_points.first.try(:web_app).try(:url)
 
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     me_twitter = twitter_client.user
@@ -83,7 +88,7 @@ module TwitterEventOperation
       end
 
       saved_twitter_events.uniq.each do |saved_twitter_event|
-        saved_twitter_event.build_location_data
+        saved_twitter_event.build_location_data(script_url: script_url) if script_url.present?
         saved_twitter_event.save!
       end
 

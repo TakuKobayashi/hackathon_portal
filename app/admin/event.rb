@@ -54,11 +54,16 @@ ActiveAdmin.register Event do
   end
 
   collection_action :create, method: :post do
+    script_service = GoogleServices.get_script_service
+    script_deployments = script_service.list_project_deployments(ENV.fetch('LOCATION_GAS_SCRIPT_ID', ''))
+    latest_deployment = script_deployments.deployments.max_by{|d| d.deployment_config.version_number.to_i }
+    script_url = latest_deployment.entry_points.first.try(:web_app).try(:url)
+
     attributes = params.require(:event).permit!
     hashtags_attr = attributes.delete('hashtags_attributes')
     event = SelfPostEvent.new(attributes)
     event.event_id = SecureRandom.hex if event.event_id.blank?
-    event.build_location_data
+    event.build_location_data(script_url: script_url) if script_url.present?
     event.save!
     event.import_hashtags!(hashtag_strings: hashtags_attr.values.map(&:values).flatten)
     if (Time.current..1.year.since).cover?(event.started_at) && event.hackathon_event?
