@@ -98,6 +98,7 @@ twitterAction:on-schedule:
     - bundle exec rails db:migrate
     - bundle exec rails db:seed
     - bundle exec rails runner Promote.like_major_user!
+    - bundle exec rails runner Promote.twitter_promote_action!
     - bundle exec rails backup:export_active_records_data
     - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` twitter action data"
