@@ -8,6 +8,12 @@ module GoogleFormEventOperation
         Event.google_form_spreadsheet_id,
         fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)',
       )
+
+    script_service = GoogleServices.get_script_service(refresh_token: refresh_token)
+    script_deployments = script_service.list_project_deployments(ENV.fetch('LOCATION_GAS_SCRIPT_ID', ''))
+    latest_deployment = script_deployments.deployments.max_by{|d| d.deployment_config.version_number.to_i }
+    script_url = latest_deployment.entry_points.first.try(:web_app).try(:url)
+
     target_spreadsheet.sheets.each do |sheet|
       sheet.data.each do |sheet_data|
         # urlがかぶるものは無視する
@@ -36,7 +42,7 @@ module GoogleFormEventOperation
             prev_event.merge_event_attributes(attrs: new_attrs)
             save_event = prev_event
           else
-            event.build_location_data
+            event.build_location_data(script_url: script_url) if script_url.present?
             save_event = event
           end
           save_event.informed_from = :google_form
