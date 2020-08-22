@@ -95,6 +95,7 @@ module RequestParser
            HTTPClient::BadResponseError,
            URI::InvalidURIError,
            Errno::EHOSTUNREACH,
+           HTTP::ConnectionError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
         url: url,
