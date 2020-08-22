@@ -9,6 +9,12 @@ module Promote
   def self.import_twitter_routine!
     self.import_bot_followers!
     self.import_followers_follower!
+    TwitterEventOperation.import_events_from_keywords!(
+      keywords: Event::TWITTER_ADDITIONAL_PROMOTE_KEYWORDS,
+      access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+      access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      options: {skip_import_event_flag: true}
+    )
   end
 
   def self.twitter_promote_action!
