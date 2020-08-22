@@ -31,6 +31,7 @@ class Promote::TwitterFriend < Promote::Friend
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
       next if me_user.id.to_i == twitter_user.id.to_i
+      next if twitter_user.followers_count <= Promote::TwitterUser::LIMIT_FOLLOWER_COUNT
       promote_twitter_friend = to_user_id_twitter_friends[twitter_user.id.to_s]
       if promote_twitter_friend.blank?
         current_time = Time.current

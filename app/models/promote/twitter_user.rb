@@ -18,6 +18,9 @@ class Promote::TwitterUser < Promote::User
   has_many :follow_friends, class_name: 'Promote::TwitterFriend', primary_key: 'user_id', foreign_key: 'to_user_id'
   has_many :action_tweets, class_name: 'Promote::ActionTweet', primary_key: 'user_id', foreign_key: 'status_user_id'
 
+  # データ量を絞るためにフォロワー100人以下は記録しない
+  LIMIT_FOLLOWER_COUNT = 100
+
   def self.import_from_tweets!(tweets: [])
     self.import_from_users!(twitter_users: tweets.map(&:user).uniq)
   end
@@ -27,6 +30,8 @@ class Promote::TwitterUser < Promote::User
       Promote::TwitterUser.where(user_id: twitter_users.map { |u| u.id.to_s }).index_by(&:user_id)
     promote_twitter_users = []
     twitter_users.each do |twitter_user|
+      next if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
+      next if twitter_user.followers_count <= Promote::TwitterUser::LIMIT_FOLLOWER_COUNT
       promote_twitter_user = user_id_promote_tweet_users[twitter_user.id.to_s]
       if promote_twitter_user.blank?
         current_time = Time.current
