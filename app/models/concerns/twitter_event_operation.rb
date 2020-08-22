@@ -26,6 +26,7 @@ module TwitterEventOperation
     else
       since_tweet_id = Event.twitter.last.try(:event_id)
     end
+    skip_import_event_flag = execute_option_structs.skip_import_event_flag.present?
     max_tweet_id = execute_option_structs.default_max_tweet_id
     limit_execute_second = execute_option_structs.limit_execute_second || 3600
 
@@ -70,28 +71,29 @@ module TwitterEventOperation
       tweets = take_tweets + twitter_url_tweets
       tweets.uniq!
       tweets.sort_by! { |tweet| -tweet.id }
-      url_twitter_events = self.find_by_all_relative_events_from_tweets(tweets: tweets).index_by(&:url)
+      if skip_import_event_flag.blank?
+        url_twitter_events = self.find_by_all_relative_events_from_tweets(tweets: tweets).index_by(&:url)
 
-      saved_twitter_events = []
-      # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
-      tweets.reverse_each do |tweet|
-        next if me_twitter.id == tweet.user.id
-        tweet_counter = tweet_counter + 1
-        saved_twitter_events +=
-          self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
-        if tweet.quoted_status?
+        saved_twitter_events = []
+        # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
+        tweets.reverse_each do |tweet|
+          next if me_twitter.id == tweet.user.id
+          tweet_counter = tweet_counter + 1
           saved_twitter_events +=
-            self.save_twitter_events_form_tweet!(
-              tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events,
-            )
+            self.save_twitter_events_form_tweet!(tweet: tweet, current_url_twitter_events: url_twitter_events)
+          if tweet.quoted_status?
+            saved_twitter_events +=
+              self.save_twitter_events_form_tweet!(
+                tweet: tweet.quoted_status, current_url_twitter_events: url_twitter_events,
+              )
+          end
+        end
+
+        saved_twitter_events.uniq.each do |saved_twitter_event|
+          saved_twitter_event.build_location_data(script_url: script_url) if script_url.present?
+          saved_twitter_event.save!
         end
       end
-
-      saved_twitter_events.uniq.each do |saved_twitter_event|
-        saved_twitter_event.build_location_data(script_url: script_url) if script_url.present?
-        saved_twitter_event.save!
-      end
-
       self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets)
       max_tweet_id = take_tweets.last.try(:id)
     end while (tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second) ||
