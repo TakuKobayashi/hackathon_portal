@@ -57,6 +57,7 @@ crawlAndPublish:on-schedule:
     - git config --local user.name "${GIT_COMMIT_USER_NAME}"
     - git remote set-url origin "https://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/taptappun/hackathon_portal.git"
     - git checkout -b crawled-data origin/crawled-data
+    - bundle exec rails log:clear
     - bundle exec rails db:drop
     - bundle exec rails db:create
     - bundle exec rails db:migrate
@@ -94,6 +95,7 @@ twitterAction:on-schedule:
     - git config --local user.name "${GIT_COMMIT_USER_NAME}"
     - git remote set-url origin "https://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/taptappun/hackathon_portal.git"
     - git checkout -b crawled-data origin/crawled-data
+    - bundle exec rails log:clear
     - bundle exec rails db:drop
     - bundle exec rails db:create
     - bundle exec rails db:migrate
