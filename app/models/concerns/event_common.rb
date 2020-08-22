@@ -326,20 +326,13 @@ module EventCommon
   end
 
   def url_active?
-    http_client = HTTPClient.new
-    begin
-      response = http_client.get(self.url, { follow_redirect: true })
-      return false if 400 <= response.status && response.status < 500
-    rescue SocketError,
-           HTTPClient::ConnectTimeoutError,
-           HTTPClient::SendTimeoutError,
-           HTTPClient::ReceiveTimeoutError,
-           HTTPClient::BadResponseError,
-           URI::InvalidURIError,
-           Errno::EHOSTUNREACH,
-           Addressable::URI::InvalidURIError => e
-      return false
-    end
+    response =
+      RequestParser.request_and_response(
+        url: self.url,
+        options: { customize_force_redirect: true, timeout_second: 30 },
+      )
+    return false if response.blank?
+    return false if 400 <= response.status && response.status < 500
     return true
   end
 
