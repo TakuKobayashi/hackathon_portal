@@ -20,6 +20,7 @@ module Promote
   def self.twitter_promote_action!
     self.try_follows!
     self.organize_follows!
+    self.remove_unpromoted_data!
   end
 
   # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
@@ -45,6 +46,35 @@ module Promote
         fail_counter = fail_counter + 1
       end
       break if fail_counter >= 2
+    end
+  end
+
+  def self.remove_unpromoted_data!
+    Promote::ActionTweet.where(state: %i[only_liked liked_and_retweet]).where(
+      'created_at < ?',
+      EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago,
+    ).delete_all
+
+    twitter_client =
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      )
+    me_twitter = twitter_client.user
+    Promote::TwitterUser.includes(:follow_friends).find_in_each do |users|
+      check_users = users.select do |user|
+        user.follow_friends.blank? || user.follow_friends.any?{|friend| me_twitter.id.to_s == friend.from_user_id.to_s && friend.unrelated? }
+      end
+      twitter_users = twitter_client.users(check_users.map(&:user_id).map(&:to_i))
+      twitter_users.each do |twitter_user|
+        if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
+          user = check_users.detect{|user| user.user_id.to_s == twitter_user.id.to_s }
+          if user.present?
+            user.follow_friends.where(from_user_id: me_twitter.id, state: :unrelated).delete_all
+            user.destroy
+          end
+        end
+      end
     end
   end
 
