@@ -61,7 +61,7 @@ module Promote
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     me_twitter = twitter_client.user
-    Promote::TwitterUser.includes(:follow_friends).find_in_each do |users|
+    Promote::TwitterUser.includes(:follow_friends).find_in_batches do |users|
       check_users = users.select do |user|
         user.follow_friends.blank? || user.follow_friends.any?{|friend| me_twitter.id.to_s == friend.from_user_id.to_s && friend.unrelated? }
       end
