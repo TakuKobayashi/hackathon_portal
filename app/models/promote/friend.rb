@@ -34,48 +34,6 @@ class Promote::Friend < ApplicationRecord
 
   scope :followers, -> { where(state: %i[only_follower both_follow]) }
 
-  def follow!(twitter_client:)
-    return false if self.only_follow? || self.both_follow?
-    begin
-      follow_users = twitter_client.follow!(self.to_user_id.to_i)
-      return false unless follow_users.any? { |t| t.id.to_i == self.to_user_id.to_i }
-    rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn([['TooManyRequest follow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'))
-      return false
-    rescue Twitter::Error::Forbidden => e
-      Rails.logger.warn(['Forbidden follow Error:', e.message].join(' '))
-      return false
-    end
-    if self.unrelated?
-      self.update!(state: :only_follow, followed_at: Time.current)
-    elsif self.only_follower?
-      self.update!(state: :both_follow, followed_at: Time.current)
-    end
-    return true
-  end
-
-  def unfollow!(twitter_client:)
-    return false if self.unrelated? || self.only_follower?
-    begin
-      unfollow_users = twitter_client.unfollow!(self.to_user_id.to_i)
-      return false unless unfollow_users.any? { |t| t.id.to_i == self.to_user_id.to_i }
-    rescue Twitter::Error::TooManyRequests => e
-      Rails.logger.warn(
-        [['TooManyRequest unfollow Error:', e.rate_limit.reset_in.to_s, 's'].join, e.message].join('\n'),
-      )
-      return false
-    rescue Twitter::Error::Forbidden => e
-      Rails.logger.warn(['Forbidden unfollow Error:', e.message].join(' '))
-      return false
-    end
-    if self.only_follow?
-      self.update!(state: :unrelated, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)
-    elsif self.both_follow?
-      self.update!(state: :only_follower, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)
-    end
-    return true
-  end
-
   def be_follower!
     success = self.build_be_follower
     self.save! if success
