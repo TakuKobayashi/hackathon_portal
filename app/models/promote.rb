@@ -15,12 +15,12 @@ module Promote
       access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       options: {skip_import_event_flag: true}
     )
+    self.remove_unpromoted_data!
   end
 
   def self.twitter_promote_action!
     self.try_follows!
     self.organize_follows!
-    self.remove_unpromoted_data!
   end
 
   # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
