@@ -193,7 +193,7 @@ module TwitterEventOperation
       end
 
     result_tweets = []
-    tweet_ids.each_slice(100) { |ids| result_tweets += twitter_client.statuses(ids) }
+    tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) { |ids| result_tweets += twitter_client.statuses(ids) }
     return result_tweets
   end
 end

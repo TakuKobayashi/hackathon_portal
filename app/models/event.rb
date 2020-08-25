@@ -241,7 +241,7 @@ class Event < ApplicationRecord
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     # Twitter APIの仕様により100件ずつ設定する
-    event_tweet_ids.each_slice(100) do |tweet_ids|
+    event_tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) do |tweet_ids|
       event_tweets = twitter_client.statuses(tweet_ids)
       event_tweets.each do |event_tweet|
         event = events.detect { |event| event.twitter? && event.event_id == event_tweet.id.to_s }
