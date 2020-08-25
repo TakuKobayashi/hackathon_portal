@@ -65,13 +65,21 @@ module Promote
       check_users = users.select do |user|
         user.follow_friends.blank? || user.follow_friends.any?{|friend| me_twitter.id.to_s == friend.from_user_id.to_s && friend.unrelated? }
       end
-      twitter_users = twitter_client.users(check_users.map(&:user_id).map(&:to_i))
-      twitter_users.each do |twitter_user|
-        if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
-          user = check_users.detect{|user| user.user_id.to_s == twitter_user.id.to_s }
-          if user.present?
-            user.follow_friends.where(from_user_id: me_twitter.id, state: :unrelated).delete_all
-            user.destroy
+      check_users.each_slice(Twitter::REST::Users::MAX_USERS_PER_REQUEST) do |users|
+        twitter_users = []
+        begin
+          twitter_users = twitter_client.users(users.map(&:user_id).map(&:to_i))
+        rescue Twitter::Error::TooManyRequests => e
+          Rails.logger.warn(['TooManyRequest remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
+          break
+        end
+        twitter_users.each do |twitter_user|
+          if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
+            user = users.detect{|user| user.user_id.to_s == twitter_user.id.to_s }
+            if user.present?
+              user.follow_friends.where(from_user_id: me_twitter.id, state: :unrelated).delete_all
+              user.destroy
+            end
           end
         end
       end
