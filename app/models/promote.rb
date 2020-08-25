@@ -65,12 +65,14 @@ module Promote
       check_users = users.select do |user|
         user.follow_friends.blank? || user.follow_friends.any?{|friend| me_twitter.id.to_s == friend.from_user_id.to_s && friend.unrelated? }
       end
+      is_force_break = false
       check_users.each_slice(Twitter::REST::Users::MAX_USERS_PER_REQUEST) do |users|
         twitter_users = []
         begin
           twitter_users = twitter_client.users(users.map(&:user_id).map(&:to_i))
         rescue Twitter::Error::TooManyRequests => e
           Rails.logger.warn(['TooManyRequest remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
+          is_force_break = true
           break
         end
         twitter_users.each do |twitter_user|
@@ -83,6 +85,7 @@ module Promote
           end
         end
       end
+      break if is_force_break
     end
   end
 
