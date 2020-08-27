@@ -141,7 +141,7 @@ class Promote::TwitterFriend < Promote::Friend
           Rails.logger.warn(
             ['HTTP::ConnectionError users Error:', e.message].join('\n'),
           )
-          sleep 5
+          sleep 1
           retry_count = retry_count + 1
           if retry_count < 5
             retry
