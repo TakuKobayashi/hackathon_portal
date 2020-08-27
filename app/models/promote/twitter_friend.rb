@@ -137,6 +137,17 @@ class Promote::TwitterFriend < Promote::Friend
           else
             return []
           end
+        rescue HTTP::ConnectionError => e
+          Rails.logger.warn(
+            ['HTTP::ConnectionError users Error:', e.message].join('\n'),
+          )
+          sleep 5
+          retry_count = retry_count + 1
+          if retry_count < 5
+            retry
+          else
+            return []
+          end
         end
         Promote::TwitterUser.import_from_users!(twitter_users: twitter_users)
         # BotのフォロワーならBotのフォロワーとして、そうじゃない場合はフォロワーのフォロワーとして記録する
