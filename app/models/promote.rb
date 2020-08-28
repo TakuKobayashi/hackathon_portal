@@ -37,8 +37,18 @@ module Promote
         'promote_users.follower_count DESC ,promote_action_tweets.created_at DESC',
       )
     ja_action_tweets = action_tweets.where(lang: 'ja').limit(1000).to_a
+    ja_action_tweets.shuffle.each do |action_tweet|
+      if action_tweet.like!(twitter_client: twitter_client)
+        fail_counter = 0
+        sleep 1
+      else
+        fail_counter = fail_counter + 1
+      end
+      break if fail_counter >= 2
+    end
+    return nil if fail_counter >= 2
     not_ja_action_tweets = action_tweets.where.not(lang: 'ja').limit(1000 - ja_action_tweets.size).to_a
-    (ja_action_tweets + not_ja_action_tweets).each do |action_tweet|
+    not_ja_action_tweets.shuffle.each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
         fail_counter = 0
         sleep 1
@@ -103,7 +113,7 @@ module Promote
           'created_at > ?',
           EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago,
         ).group(:status_user_id).sum(:score)
-      unfollow_friends.each do |unfollow_friend|
+      unfollow_friends.shuffle.each do |unfollow_friend|
         if follow_counter >= Promote::Friend::DAYLY_LIMIT_FOLLOW_COUNT ||
              user_id_sum_score[unfollow_friend.to_user_id].blank?
           next
