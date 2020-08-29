@@ -27,6 +27,7 @@ module TwitterEventOperation
       since_tweet_id = Event.twitter.last.try(:event_id)
     end
     skip_import_event_flag = execute_option_structs.skip_import_event_flag.present?
+    default_promote_tweet_score = execute_option_structs.default_promote_tweet_score || Promote::ActionTweet::LIKE_ADD_SCORE
     max_tweet_id = execute_option_structs.default_max_tweet_id
     limit_execute_second = execute_option_structs.limit_execute_second || 3600
 
@@ -111,7 +112,7 @@ module TwitterEventOperation
         end
         tweet_arr
       end.flatten.uniq
-    Promote::ActionTweet.import_tweets!(me_user: me_user, tweets: all_tweets)
+    Promote::ActionTweet.import_tweets!(me_user: me_user, tweets: all_tweets, default_score: default_promote_tweet_score)
     Promote::TwitterUser.import_from_tweets!(tweets: all_tweets)
     Promote::TwitterFriend.import_from_tweets!(me_user: me_user, tweets: all_tweets)
     return all_tweets

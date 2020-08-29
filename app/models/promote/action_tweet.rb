@@ -32,7 +32,7 @@ class Promote::ActionTweet < ApplicationRecord
     return "https://twitter.com/#{self.status_user_screen_name}/status/#{self.status_id}"
   end
 
-  def self.import_tweets!(me_user:, tweets: [])
+  def self.import_tweets!(me_user:, tweets: [], default_score: LIKE_ADD_SCORE)
     status_id_promote_tweets = Promote::ActionTweet.where(status_id: tweets.map { |t| t.id.to_s }).index_by(&:status_id)
     promote_action_tweets = []
     tweets.each do |tweet|
@@ -44,7 +44,7 @@ class Promote::ActionTweet < ApplicationRecord
           status_user_screen_name: tweet.user.screen_name,
           status_id: tweet.id,
           state: :unrelated,
-          score: LIKE_ADD_SCORE,
+          score: default_score,
           lang: tweet.lang,
           created_at: tweet.created_at,
         )

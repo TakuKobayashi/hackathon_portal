@@ -13,7 +13,10 @@ module Promote
       keywords: Event::TWITTER_ADDITIONAL_PROMOTE_KEYWORDS,
       access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
       access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-      options: {skip_import_event_flag: true}
+      options: {
+        skip_import_event_flag: true,
+        default_promote_tweet_score: 0
+      }
     )
     self.remove_unpromoted_data!
   end
