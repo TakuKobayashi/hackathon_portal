@@ -95,13 +95,13 @@ module TwitterEventOperation
           saved_twitter_event.save!
         end
       end
-      self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets)
+      self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets, default_promote_tweet_score: default_promote_tweet_score)
       max_tweet_id = take_tweets.last.try(:id)
     end while (tweets.size >= PAGE_PER && (Time.current - start_time).second < limit_execute_second) ||
       (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)
   end
 
-  def self.import_relation_promote_tweets!(me_user:, tweets: [])
+  def self.import_relation_promote_tweets!(me_user:, tweets: [], default_promote_tweet_score: Promote::ActionTweet::LIKE_ADD_SCORE)
     all_tweets =
       tweets.map do |tweet|
         tweet_arr = []

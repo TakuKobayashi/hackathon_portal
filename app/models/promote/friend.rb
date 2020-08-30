@@ -28,7 +28,7 @@ class Promote::Friend < ApplicationRecord
   FOLLOWER_ADD_SCORE = 0.9
 
   # フォロワーのフォロワーだった時の上昇するscore値
-  FOLLOWERS_FOLLOWER_ADD_SCORE = 0.5
+  FOLLOWERS_FOLLOWER_ADD_SCORE = 0.25
 
   enum state: { unrelated: 0, only_follow: 1, only_follower: 10, both_follow: 11 }
 
