@@ -2,7 +2,8 @@ image: "ruby:2.6"
 
 stages:
   - crawl-and-publish
-  - twitter-action
+  - twitter-promote-importer
+  - twitter-promote-action
 
 .rails-mysql-base-template: &rails-mysql-base-template
   services:
@@ -72,8 +73,8 @@ crawlAndPublish:on-schedule:
     - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
     - git push origin crawled-data
-    - bundle exec rails runner Promote.import_twitter_routine!
     - bundle exec rails runner Promote.like_major_user!
+    - bundle exec rails runner Promote.remove_unpromoted_data!
     - bundle exec rails backup:export_active_records_data
     - git add db/
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted data"
@@ -82,14 +83,40 @@ crawlAndPublish:on-schedule:
     paths:
       - log/
 
-twitterAction:on-schedule:
+twitterPromoteImporter:on-schedule:
   only:
     refs:
       - schedules
     variables:
-      - $WHICH_SCHEDULE == "twitter-action"
+      - $WHICH_SCHEDULE == "twitter-promote-importer"
   <<: *rails-mysql-base-template
-  stage: twitter-action
+  stage: twitter-promote-importer
+  script:
+    - git config --local user.email "${GIT_COMMIT_USER_EMAIL}"
+    - git config --local user.name "${GIT_COMMIT_USER_NAME}"
+    - git remote set-url origin "https://${GITLAB_USER_NAME}:${GITLAB_ACCESS_TOKEN}@gitlab.com/taptappun/hackathon_portal.git"
+    - git checkout -b crawled-data origin/crawled-data
+    - bundle exec rails log:clear
+    - bundle exec rails db:drop
+    - bundle exec rails db:create
+    - bundle exec rails db:migrate
+    - bundle exec rails db:seed
+    - bundle exec rails runner Promote.import_twitter_routine!
+    - git add db/
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted data"
+    - git push origin crawled-data
+  artifacts:
+    paths:
+      - log/
+
+twitterPromoteAction:on-schedule:
+  only:
+    refs:
+      - schedules
+    variables:
+      - $WHICH_SCHEDULE == "twitter-promote-action"
+  <<: *rails-mysql-base-template
+  stage: twitter-promote-action
   script:
     - git config --local user.email "${GIT_COMMIT_USER_EMAIL}"
     - git config --local user.name "${GIT_COMMIT_USER_NAME}"
