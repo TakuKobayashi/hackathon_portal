@@ -99,6 +99,10 @@ class Promote::TwitterFriend < Promote::Friend
     rescue Twitter::Error::Forbidden => e
       Rails.logger.warn(['Forbidden unfollow Error:', e.message].join(' '))
       return false
+    rescue Twitter::Error::NotFound => e
+      self.destroy
+      Rails.logger.warn(['NotFound Error:', e.message].join(' '))
+      return false
     end
     if self.only_follow?
       self.update!(state: :unrelated, followed_at: nil, score: self.score - FOLLOWER_ADD_SCORE)

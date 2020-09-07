@@ -21,11 +21,6 @@ module Promote
     self.remove_unpromoted_data!
   end
 
-  def self.twitter_promote_action!
-    self.try_follows!
-    self.organize_follows!
-  end
-
   # とある内容について呟いているツイート全て影響力が大きい人を中心にいいねする
   def self.like_major_user!
     twitter_client =
@@ -186,6 +181,10 @@ module Promote
       rescue Twitter::Error::Forbidden => e
         Rails.logger.warn(['Forbidden fail_follower unfollow Error:', e.message].join(' '))
         return nil
+      rescue Twitter::Error::NotFound => e
+        friend.destroy
+        Rails.logger.warn(['NotFound Error:', e.message].join(' '))
+        next
       end
       friend.update!(state: :unrelated, followed_at: nil, score: 0)
       unfollow_count = unfollow_count + 1
