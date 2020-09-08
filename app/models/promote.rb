@@ -83,15 +83,14 @@ module Promote
           is_force_break = true
           break
         end
+        will_remove_twitter_users = []
         twitter_users.each do |twitter_user|
           if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
-            user = users.detect{|user| user.user_id.to_s == twitter_user.id.to_s }
-            if user.present?
-              user.follow_friends.where(from_user_id: me_twitter.id, state: :unrelated).delete_all
-              user.destroy
-            end
+            will_remove_twitter_users << twitter_user
           end
         end
+        Promote::TwitterFriend.where(from_user_id: me_twitter.id, to_user_id: will_remove_twitter_users.map{|t| t.id.to_s }, state: :unrelated).delete_all
+        Promote::TwitterUser.where(user_id: will_remove_twitter_users.map{|t| t.id.to_s }).delete_all
       end
       break if is_force_break
     end
