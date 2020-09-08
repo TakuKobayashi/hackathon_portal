@@ -78,7 +78,7 @@ crawlAndPublish:on-schedule:
     - bundle exec rails runner Promote.remove_unpromoted_data!
     - bundle exec rails backup:export_active_records_data
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted data"
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` organize data"
     - git push origin crawled-data
   artifacts:
     paths:
@@ -103,8 +103,9 @@ twitterPromoteImporter:on-schedule:
     - bundle exec rails db:migrate
     - bundle exec rails db:seed
     - bundle exec rails runner Promote.import_twitter_routine!
+    - bundle exec rails backup:export_active_records_data
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted data"
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted importer data"
     - git push origin crawled-data
   artifacts:
     paths:
@@ -131,7 +132,7 @@ twitterPromoteAction:on-schedule:
     - bundle exec rails runner Promote.like_major_user!
     - bundle exec rails backup:export_active_records_data
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` twitter action data"
+    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` twitter promote action data"
     - git push origin crawled-data
   artifacts:
     paths:
