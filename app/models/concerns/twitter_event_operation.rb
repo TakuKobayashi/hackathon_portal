@@ -1,3 +1,5 @@
+require 'objspace'
+
 module TwitterEventOperation
   PAGE_PER = 100
   TWITTER_HOST = 'twitter.com'
