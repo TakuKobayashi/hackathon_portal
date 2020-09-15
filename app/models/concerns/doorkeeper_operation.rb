@@ -52,6 +52,23 @@ module DoorkeeperOperation
         end
       end
       page += 1
+      rss = `ps -o rss= -p #{Process.pid}`.to_i
+      vsz = `ps -o vsz= -p #{Process.pid}`.to_i
+      puts([
+        "Doorkeeper",
+        "Process:",
+        "#{Process.pid}:",
+        "RSS:",
+        rss,
+        "KB",
+        "VSZ:",
+        vsz,
+        "KB",
+        "objectSpace:",
+        ObjectSpace.memsize_of_all,
+        "second:",
+        (start_time - Time.current).second
+      ].join(" "))
     end while events_response.present?
   end
 end

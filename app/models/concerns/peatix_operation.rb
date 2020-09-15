@@ -64,6 +64,23 @@ module PeatixOperation
         end
         sleep 1
       end
+      rss = `ps -o rss= -p #{Process.pid}`.to_i
+      vsz = `ps -o vsz= -p #{Process.pid}`.to_i
+      puts([
+        "Peatix",
+        "Process:",
+        "#{Process.pid}:",
+        "RSS:",
+        rss,
+        "KB",
+        "VSZ:",
+        vsz,
+        "KB",
+        "objectSpace:",
+        ObjectSpace.memsize_of_all,
+        "second:",
+        (start_time - Time.current).second
+      ].join(" "))
     end while json_data['events'].present?
   end
 end
