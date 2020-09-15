@@ -56,8 +56,6 @@ module TwitterEventOperation
           )
       rescue Twitter::Error::TooManyRequests => e
         Rails.logger.warn "twitter retry since:#{e.rate_limit.reset_in.to_i}"
-        break
-=begin
         retry_count = retry_count + 1
         return [] if (Time.current - start_time).second + e.rate_limit.reset_in.to_i > limit_execute_second
         sleep e.rate_limit.reset_in.to_i
@@ -66,7 +64,6 @@ module TwitterEventOperation
         else
           return []
         end
-=end
       end
       retry_count = 0
       take_tweets = tweets_response.take(PAGE_PER)
