@@ -99,9 +99,7 @@ module TwitterEventOperation
       end
       self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets, default_promote_tweet_score: default_promote_tweet_score)
       max_tweet_id = take_tweets.last.try(:id)
-      break if tweets.size < PAGE_PER || max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
-    end while (tweets.size >= PAGE_PER ||
-      (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
+    end while (tweets.size >= PAGE_PER || (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
   end
 
   def self.import_relation_promote_tweets!(me_user:, tweets: [], default_promote_tweet_score: Promote::ActionTweet::LIKE_ADD_SCORE)
