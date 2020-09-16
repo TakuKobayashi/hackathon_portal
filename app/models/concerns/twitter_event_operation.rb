@@ -99,31 +99,7 @@ module TwitterEventOperation
       end
       self.import_relation_promote_tweets!(me_user: me_twitter, tweets: tweets, default_promote_tweet_score: default_promote_tweet_score)
       max_tweet_id = take_tweets.last.try(:id)
-
-      rss = `ps -o rss= -p #{Process.pid}`.to_i
-      vsz = `ps -o vsz= -p #{Process.pid}`.to_i
-      puts([
-        "Process:",
-        "#{Process.pid}:",
-        "RSS:",
-        rss,
-        "KB",
-        "VSZ:",
-        vsz,
-        "KB",
-        "objectSpace:",
-        ObjectSpace.memsize_of_all,
-        "second:",
-        (Time.current - start_time).second,
-        "max_id:",
-        max_tweet_id.to_i,
-        "since_id:",
-        since_tweet_id.to_i,
-        "limit_execute_second:",
-        limit_execute_second,
-        "while:",
-        (tweets.size >= PAGE_PER || (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
-      ].join(" "))
+      break if tweets.size < PAGE_PER || max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
     end while (tweets.size >= PAGE_PER ||
       (max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i)) && (Time.current - start_time).second < limit_execute_second
   end
