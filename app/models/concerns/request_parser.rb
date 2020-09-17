@@ -94,6 +94,7 @@ module RequestParser
            HTTPClient::ReceiveTimeoutError,
            HTTPClient::BadResponseError,
            URI::InvalidURIError,
+           Errno::ETIMEDOUT,
            Errno::EHOSTUNREACH,
            HTTP::ConnectionError,
            Addressable::URI::InvalidURIError => e
