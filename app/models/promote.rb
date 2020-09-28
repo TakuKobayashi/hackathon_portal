@@ -8,7 +8,7 @@ module Promote
 
   def self.import_twitter_routine!
     self.import_bot_followers!
-    self.import_followers_follower!
+    #self.import_followers_follower!
     TwitterEventOperation.import_events_from_keywords!(
       keywords: Event::TWITTER_ADDITIONAL_PROMOTE_KEYWORDS,
       access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
