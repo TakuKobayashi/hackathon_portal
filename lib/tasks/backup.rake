@@ -29,6 +29,9 @@ namespace :backup do
     unless Dir.exists?(Rails.root.join("db", "seeds"))
       FileUtils.mkdir(Rails.root.join("db", "seeds"))
     end
+    # 動いているOSの判別
+    host_os = RbConfig::CONFIG['host_os']
+    puts host_os
     Rails.application.eager_load!
     model_classes = ActiveRecord::Base.descendants.select{|m| m.table_name.present? }.uniq{|m| m.table_name }
     model_classes.each do |model_class|
@@ -44,7 +47,24 @@ namespace :backup do
         FileUtils.remove_dir(export_table_directory_name)
       end
       Dir.mkdir(export_table_directory_name)
-      system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      # 動いているOSの判別
+      case host_os
+      when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+        # windows
+        system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      when /darwin|mac os/
+        # macosx
+        system("gsplit -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      when /linux/
+        # linux
+        system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      when /solaris|bsd/
+        # unix
+        system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      else
+        # unknown
+        system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      end
       FileUtils.rm(export_full_dump_sql)
     end
   end
