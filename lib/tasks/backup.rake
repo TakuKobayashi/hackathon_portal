@@ -44,7 +44,7 @@ namespace :backup do
         FileUtils.remove_dir(export_table_directory_name)
       end
       Dir.mkdir(export_table_directory_name)
-      system("gsplit -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
+      system("split -l 10000 -d --additional-suffix=.sql #{export_full_dump_sql} #{export_table_directory_name}/")
       FileUtils.rm(export_full_dump_sql)
     end
   end
