@@ -99,6 +99,7 @@ module RequestParser
            URI::InvalidURIError,
            Errno::ETIMEDOUT,
            Errno::EHOSTUNREACH,
+           Errno::ECONNRESET,
            HTTP::ConnectionError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
