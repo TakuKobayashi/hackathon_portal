@@ -1377,6 +1377,3 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   whenever
   xml-simple
-
-BUNDLED WITH
-   1.17.3
