@@ -58,7 +58,7 @@ module Promote
   end
 
   def self.remove_unpromoted_data!
-    Promote::ActionTweet.where(state: %i[only_liked liked_and_retweet]).where(
+    Promote::ActionTweet.where(
       'created_at < ?',
       EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago,
     ).delete_all
