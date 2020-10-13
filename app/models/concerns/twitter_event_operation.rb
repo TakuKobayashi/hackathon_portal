@@ -47,6 +47,7 @@ module TwitterEventOperation
     me_twitter = twitter_client.user
     loop do
       break if max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i
+      puts(["max_id:", max_tweet_id, "since_id:", since_tweet_id].join(" "))
       tweets_response = []
       begin
         tweets_response =
