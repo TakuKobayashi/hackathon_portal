@@ -80,9 +80,6 @@ class Event < ApplicationRecord
 
   def self.import_events!
     keywords = HACKATHON_KEYWORDS + %w[はっかそん]
-    self.import_events_from_twitter!
-    ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
-    GC.start
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
     operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
