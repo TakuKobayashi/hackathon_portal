@@ -57,7 +57,6 @@ module RequestParser
   end
 
   def self.request_and_response(url:, method: :get, params: {}, header: {}, body: {}, options: {})
-    puts(["request:", url].join(" "))
     option_struct = OpenStruct.new(options)
     customize_force_redirect = option_struct.customize_force_redirect
     customize_redirect_counter = option_struct.customize_redirect_counter.to_i

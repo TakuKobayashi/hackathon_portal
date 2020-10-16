@@ -46,9 +46,7 @@ module TwitterEventOperation
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     me_twitter = twitter_client.user
     loop do
-      puts(["start", "max_id:", max_tweet_id, "since_id:", since_tweet_id].join(" "))
       break if max_tweet_id.present? && since_tweet_id.present? && max_tweet_id.to_i < since_tweet_id.to_i
-      puts(["second", "max_id:", max_tweet_id, "since_id:", since_tweet_id].join(" "))
       tweets_response = []
       begin
         tweets_response =
@@ -63,7 +61,6 @@ module TwitterEventOperation
         retry_count = retry_count + 1
         return []
       end
-      puts(["3rd", "max_id:", max_tweet_id, "since_id:", since_tweet_id].join(" "))
       retry_count = 0
       take_tweets = tweets_response.take(PAGE_PER)
       take_tweets.sort_by! { |tweet| -tweet.id }
