@@ -116,7 +116,7 @@ module Promote
           next
         end
         sum_score = user_id_sum_score[unfollow_friend.to_user_id]
-        if (unfollow_friend.score + sum_score) >= Promote::Friend::FOLLOW_LIMIT_SCORE
+        if sum_score >= Promote::Friend::FOLLOW_LIMIT_SCORE
           is_success = unfollow_friend.follow!(twitter_client: twitter_client)
           if is_success
             follow_counter = follow_counter + 1
