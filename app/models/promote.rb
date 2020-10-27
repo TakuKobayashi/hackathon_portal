@@ -69,7 +69,7 @@ module Promote
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     me_twitter = twitter_client.user
-    Promote::TwitterUser.includes(:follow_friends).find_in_batches do |users|
+    Promote::TwitterUser.includes([:follow_friends, :action_tweets]).find_in_batches do |users|
       check_users = users.select do |user|
         user.follow_friends.blank? || user.follow_friends.any?{|friend| me_twitter.id.to_s == friend.from_user_id.to_s && friend.unrelated? }
       end
@@ -86,6 +86,10 @@ module Promote
         will_remove_twitter_users = []
         twitter_users.each do |twitter_user|
           if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
+            will_remove_twitter_users << twitter_user
+            next
+          end
+          if twitter_user.action_tweets.blank?
             will_remove_twitter_users << twitter_user
           end
         end
@@ -116,7 +120,7 @@ module Promote
           next
         end
         sum_score = user_id_sum_score[unfollow_friend.to_user_id]
-        if (unfollow_friend.score + sum_score) >= Promote::Friend::FOLLOW_LIMIT_SCORE
+        if sum_score >= Promote::Friend::FOLLOW_LIMIT_SCORE
           is_success = unfollow_friend.follow!(twitter_client: twitter_client)
           if is_success
             follow_counter = follow_counter + 1
