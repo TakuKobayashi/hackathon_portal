@@ -83,13 +83,14 @@ module Promote
           is_force_break = true
           break
         end
+        tweeted_status_user_ids = Promote::ActionTweet.where(status_user_id: twitter_users.map(&:id)).pluck(:status_user_id)
         will_remove_twitter_users = []
         twitter_users.each do |twitter_user|
           if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
             will_remove_twitter_users << twitter_user
             next
           end
-          if twitter_user.action_tweets.blank?
+          if !tweeted_status_user_ids.include?(twitter_user.id)
             will_remove_twitter_users << twitter_user
           end
         end
