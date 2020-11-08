@@ -119,16 +119,12 @@ module EventCommon
             Sanitizer::RegexpParts::HTML_FOOTER_TAG,
             Sanitizer::RegexpParts::HTML_STYLE_TAG,
             Sanitizer::RegexpParts::HTML_IFRAME_TAG,
+            Sanitizer::RegexpParts::HTML_ARTICLE_TAG,
           ].join(')|('),
           ')',
         ].join(''),
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
-    articles_html_arr = sanitized_main_content_html.scan(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG))
-    # article tagの分だけ判定を渋くする
-    article_count = articles_html_arr.size
-    sanitized_main_content_html =
-      sanitized_main_content_html.gsub(Regexp.new(Sanitizer::RegexpParts::HTML_ARTICLE_TAG), '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
     self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
@@ -177,7 +173,7 @@ module EventCommon
     end
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
-    self.check_score_rate = (1.to_f / (1 + article_count))
+    self.check_score_rate = 1.to_f
     return true
   end
 
