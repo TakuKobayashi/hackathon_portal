@@ -82,11 +82,27 @@ module Promote
           Rails.logger.warn(['TooManyRequest remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
           is_force_break = true
           break
+        rescue Twitter::Error::NotFound => e
+          Rails.logger.warn(['NotFound remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
+          users.each do |user|
+            begin
+              twitter_users << twitter_client.user(user.user_id.to_i)
+            rescue Twitter::Error::TooManyRequests => e
+              Rails.logger.warn(['TooManyRequest remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
+              is_force_break = true
+              break
+            rescue Twitter::Error::NotFound => e
+              twitter_users << OpenStruct.new({
+                id: user.user_id.to_i,
+              })
+            end
+          end
+          break if is_force_break
         end
-        tweeted_status_user_ids = Promote::ActionTweet.where(status_user_id: twitter_users.map(&:id)).pluck(:status_user_id)
+        tweeted_status_user_ids = Promote::ActionTweet.where(status_user_id: twitter_users.map(&:id)).pluck(:status_user_id).uniq
         will_remove_twitter_users = []
         twitter_users.each do |twitter_user|
-          if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
+          if twitter_user.status.blank? || twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
             will_remove_twitter_users << twitter_user
             next
           end
