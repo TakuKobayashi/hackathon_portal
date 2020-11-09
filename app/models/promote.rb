@@ -91,7 +91,7 @@ module Promote
               Rails.logger.warn(['TooManyRequest remove_unpromoted_data! Error:', e.rate_limit.reset_in, 's'].join(' '))
               is_force_break = true
               break
-            rescue Twitter::Error::NotFound => e
+            rescue Twitter::Error::NotFound, Twitter::Error::Forbidden => e
               twitter_users << OpenStruct.new({
                 id: user.user_id.to_i,
               })
