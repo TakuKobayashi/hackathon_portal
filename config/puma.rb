@@ -1,13 +1,3 @@
-before_fork do
-  PumaWorkerKiller.config do |config|
-    config.ram = 2_048
-    config.frequency = 5
-    config.percent_usage = 0.8
-    config.rolling_restart_frequency = 12 * 3_600
-    config.reaper_status_logs = true
-  end
-  PumaWorkerKiller.start
-end
 # Puma can serve each request in a thread from an internal thread pool.
 # The `threads` method setting takes two numbers: a minimum and maximum.
 # Any libraries that use thread pools should be configured to match
