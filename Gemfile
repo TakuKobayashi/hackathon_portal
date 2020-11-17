@@ -53,8 +53,6 @@ gem "inherited_resources", git: "https://github.com/activeadmin/inherited_resour
 gem "xml-simple"
 gem "addressable"
 
-gem "puma_worker_killer"
-
 gem "fastimage"
 gem "dotenv-rails", require: "dotenv/rails-now"
 gem "aws-sdk", "~> 3"
