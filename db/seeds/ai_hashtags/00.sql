@@ -1796,3 +1796,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1822,'hack4she');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1823,'designmerced');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1824,'designmerced');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1825,'baselineprotocol');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1826,'HealthHack20');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1827,'HealthHack20');
