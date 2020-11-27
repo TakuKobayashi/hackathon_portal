@@ -1807,3 +1807,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1833,'duth');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1834,'dastaduth');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1835,'δομ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1836,'απασχληση');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1837,'euafricathejourney');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1838,'data');
