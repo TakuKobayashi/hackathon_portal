@@ -246,4 +246,24 @@ class Event < ApplicationRecord
       end
     end
   end
+
+  def revert!
+    remove_twitter_bot = TwitterBot.find_by(from: self)
+    if remove_twitter_bot.present?
+      remove_twitter_bot.reject_tweet!(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+      )
+    end
+    remove_calendar_bot = EventCalendarBot.find_by(from: self)
+    if remove_calendar_bot.present?
+      remove_calendar_bot.remove_calender!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    end
+    QiitaBot.remove_event!(event: self)
+    BloggerBot.remove_event!(
+      event: self,
+      blogger_blog_url: 'https://hackathonportal.blogspot.com/',
+      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+    )
+  end
 end
