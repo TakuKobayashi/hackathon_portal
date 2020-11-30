@@ -3,7 +3,7 @@ require 'objspace'
 module TwitterEventOperation
   PAGE_PER = 100
   TWITTER_HOST = 'twitter.com'
-  EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com github.com]
+  EXCLUDE_CHECK_EVENT_HOSTS = %w[youtu.be youtube.com github.com gamer.ne.jp]
 
   def self.find_tweets(
     keywords:,
