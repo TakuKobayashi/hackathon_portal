@@ -265,5 +265,6 @@ class Event < ApplicationRecord
       blogger_blog_url: 'https://hackathonportal.blogspot.com/',
       refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
     )
+    self.destroy!
   end
 end
