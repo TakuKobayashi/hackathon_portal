@@ -1813,3 +1813,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1839,'challenge');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1840,'creativity');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1841,'ideathon');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1842,'hotnigerianjobs');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1843,'IACEHackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1844,'GR8');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1845,'power');
