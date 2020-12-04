@@ -1816,3 +1816,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1842,'hotnigerianjobs');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1843,'IACEHackathon');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1844,'GR8');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1845,'power');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1846,'GraalVM');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1847,'PolyglotProgramming');
