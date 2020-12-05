@@ -1818,3 +1818,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1844,'GR8');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1845,'power');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1846,'GraalVM');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1847,'PolyglotProgramming');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1848,'OceanHackathon');
