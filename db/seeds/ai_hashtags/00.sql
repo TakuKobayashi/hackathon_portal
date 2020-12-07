@@ -1820,3 +1820,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1846,'GraalVM');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1847,'PolyglotProgramming');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1848,'OceanHackathon');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1849,'AtariLynx');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1850,'Ideathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1851,'BCH');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1852,'BCHN');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1853,'BCHA');
