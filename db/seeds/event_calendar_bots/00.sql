@@ -1702,3 +1702,4 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1753,'Event',647343,'rur0hogmeh3da7p879adqs8028','2020-12-11 06:04:02','2020-12-11 06:04:02');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1754,'Event',647334,'u0coum3f9m4lbo208pdh7tm738','2020-12-11 06:04:03','2020-12-11 06:04:03');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1755,'Event',647364,'0ot6nbeggj44vtk9lffuq6vee0','2020-12-11 06:04:03','2020-12-11 06:04:03');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1756,'Event',647381,'sda1jakscr427gikoqoc4dvg3s','2020-12-12 06:03:47','2020-12-12 06:03:47');
