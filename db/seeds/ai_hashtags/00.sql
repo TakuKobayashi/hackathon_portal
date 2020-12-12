@@ -1837,3 +1837,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1863,'SiaCoin');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1864,'SocialDistancingLARPJam2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1865,'LARP');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1866,'PghCivicHackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1867,'EnLosMedios');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1868,'AuravantHack');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1869,'fhir');
