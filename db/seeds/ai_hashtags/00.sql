@@ -1842,3 +1842,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1868,'AuravantHack');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1869,'fhir');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1870,'オガトレ塾');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1871,'ストレッチ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1872,'that');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1873,'disrupts');
