@@ -1844,3 +1844,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1870,'オガトレ塾');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1871,'ストレッチ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1872,'that');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1873,'disrupts');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1874,'ノーコード');
