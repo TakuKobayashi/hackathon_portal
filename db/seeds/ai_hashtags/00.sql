@@ -1851,3 +1851,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1877,'AMac2021');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1878,'codeforkumamoto');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1879,'SymbolLaunchFest');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1880,'Palermo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1881,'PLATEAU');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1882,'datastax');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1883,'astra');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1884,'unity1week');
