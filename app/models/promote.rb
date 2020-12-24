@@ -164,6 +164,8 @@ module Promote
       follower_ids = twitter_client.follower_ids({ count: 5000 })
     rescue Twitter::Error::TooManyRequests => e
       return nil
+    rescue HTTP::ConnectionError => e
+      Rails.logger.warn(['HTTP::ConnectionError organize_follows! Error'].join(' '))
     end
     twitter_friends = []
     Promote::TwitterFriend.where(
