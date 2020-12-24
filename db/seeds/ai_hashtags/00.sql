@@ -1855,3 +1855,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1881,'PLATEAU');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1882,'datastax');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1883,'astra');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1884,'unity1week');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1885,'PoweringPossibility');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1886,'nem');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1887,'monemaker88882020Team');
