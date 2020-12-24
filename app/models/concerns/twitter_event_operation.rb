@@ -190,7 +190,19 @@ module TwitterEventOperation
       end
 
     result_tweets = []
-    tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) { |ids| result_tweets += twitter_client.statuses(ids) }
+    tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) do |ids|
+      begin
+        result_tweets += twitter_client.statuses(ids)
+      rescue Twitter::Error::TooManyRequests => e
+        Rails.logger.warn(['TooManyRequest expanded_tweets_from_twitter_url Error:', e.rate_limit.reset_in, 's'].join(' '))
+        break
+      rescue Twitter::Error::NotFound => e
+        Rails.logger.warn(['NotFound expanded_tweets_from_twitter_url Error:', e.rate_limit.reset_in, 's'].join(' '))
+        break
+      rescue HTTP::ConnectionError => e
+        Rails.logger.warn(['HTTP::ConnectionError expanded_tweets_from_twitter_url Error'].join(' '))
+      end
+    end
     return result_tweets
   end
 end
