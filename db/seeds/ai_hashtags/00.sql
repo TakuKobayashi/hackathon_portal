@@ -1861,3 +1861,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1887,'monemaker88882020Team'
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1888,'ComputerVision');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1889,'Entrepreneurship');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1890,'marketing');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1891,'css');
