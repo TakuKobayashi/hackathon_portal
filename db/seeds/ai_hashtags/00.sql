@@ -1863,3 +1863,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1889,'Entrepreneurship');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1890,'marketing');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1891,'css');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1892,'h2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1893,'SDL');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1894,'Hacking');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1895,'electrothon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1896,'electrothon3');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1897,'diversity');
