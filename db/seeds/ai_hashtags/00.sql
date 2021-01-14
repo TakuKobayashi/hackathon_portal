@@ -1871,3 +1871,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1897,'diversity');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1898,'Tchibo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1899,'鹿児島mk');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1900,'Datastax');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1901,'SWAT4HCLS');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1902,'Wikidata');
