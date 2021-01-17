@@ -1874,3 +1874,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1900,'Datastax');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1901,'SWAT4HCLS');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1902,'Wikidata');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1903,'Github');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1904,'YahooJAPAN');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1905,'EduHack2021');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1906,'IUW');
