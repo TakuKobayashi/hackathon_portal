@@ -1881,3 +1881,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1907,'data4good');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1908,'IOTA');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1909,'DLT');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1910,'m2m');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1911,'_Technology');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1912,'GovTech');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1913,'Startups');
