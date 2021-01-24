@@ -1884,3 +1884,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1910,'m2m');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1911,'_Technology');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1912,'GovTech');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1913,'Startups');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1914,'起業家');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1915,'起業したい');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1916,'アイデア');
