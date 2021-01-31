@@ -1894,3 +1894,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1920,'ArtSocial21');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1921,'ICYMI');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1922,'dbregio');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1923,'dbhackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1924,'ClimateHacks');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1925,'ClimateHacks');
