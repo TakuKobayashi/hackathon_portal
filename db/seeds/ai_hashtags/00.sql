@@ -1901,3 +1901,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1927,'techevent');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1928,'HackViolet');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1929,'SocialInnovation');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1930,'ASEANIndiaHackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1931,'eosiohackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1932,'OceanHack');
