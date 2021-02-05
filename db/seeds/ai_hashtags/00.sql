@@ -1909,3 +1909,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1935,'construct3');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1936,'ffsjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1937,'digitalhumanities');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1938,'Chatbot');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1939,'Javascript');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1940,'HackSexism');
