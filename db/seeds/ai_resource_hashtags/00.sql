@@ -5618,3 +5618,6 @@ INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hasht
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5700,'Event',647794,99);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5701,'Event',647795,273);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5702,'Event',647797,1940);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5703,'Event',647804,1562);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5704,'Event',647804,1563);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (5705,'Event',647806,1941);
