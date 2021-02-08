@@ -1868,3 +1868,4 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1919,'Event',647784,'ht8eeuqr09clatsdlgd2hau2es','2021-02-06 05:59:23','2021-02-06 05:59:23');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1920,'Event',647793,'sbo6tmk68m5kngcqsp56a45mpk','2021-02-07 06:00:55','2021-02-07 06:00:55');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1921,'Event',647760,'6btf6r9rp63bkljg4evtmeqj14','2021-02-07 06:00:55','2021-02-07 06:00:55');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (1922,'Event',647813,'8k07sc3u2gful6rbihljthle20','2021-02-08 06:03:56','2021-02-08 06:03:56');
