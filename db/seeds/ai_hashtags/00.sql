@@ -1912,3 +1912,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1938,'Chatbot');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1939,'Javascript');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1940,'HackSexism');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1941,'WEIN隊');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1942,'Bitsy');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1943,'PlayAwayFest');
