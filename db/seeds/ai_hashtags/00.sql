@@ -1936,3 +1936,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1962,'civitech');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1963,'localgov');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1964,'techforgood');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1965,'daas');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1966,'地域のニュース');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1967,'ローカルニュース');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1968,'Tezos');
