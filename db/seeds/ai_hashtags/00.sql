@@ -1939,3 +1939,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1965,'daas');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1966,'地域のニュース');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1967,'ローカルニュース');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1968,'Tezos');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1969,'TAIR');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1970,'glaubengemeinsam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1971,'glaubengemeinsam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1972,'savethedate');
