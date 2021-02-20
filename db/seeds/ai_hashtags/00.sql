@@ -1943,3 +1943,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1969,'TAIR');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1970,'glaubengemeinsam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1971,'glaubengemeinsam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1972,'savethedate');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1973,'GirlsInAIPK');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1974,'iso20022');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1975,'Seneca');
