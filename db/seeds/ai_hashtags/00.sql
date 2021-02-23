@@ -1948,3 +1948,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1974,'iso20022');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1975,'Seneca');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1976,'game');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1977,'GameDesigner');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1978,'オンライン');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1979,'参加費無料');
