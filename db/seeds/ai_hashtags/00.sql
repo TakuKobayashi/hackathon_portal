@@ -1950,3 +1950,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1976,'game');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1977,'GameDesigner');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1978,'オンライン');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1979,'参加費無料');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1980,'tezos');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1981,'Kunst');
