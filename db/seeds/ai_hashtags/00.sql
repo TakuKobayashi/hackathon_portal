@@ -1959,3 +1959,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1985,'建築情報学会');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1986,'fermata');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1987,'小学生プログラミング');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1988,'プログラマー');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1989,'webxr');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1990,'xr');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1991,'webvr');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1992,'remo');
