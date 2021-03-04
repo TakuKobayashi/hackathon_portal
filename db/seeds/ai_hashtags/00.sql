@@ -1969,3 +1969,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1995,'FoodInsecurity');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1996,'ええR');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1997,'technews');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1998,'feedly');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1999,'今日の積み上げ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2000,'アイディアカベウチ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2001,'グラレコ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2002,'VirtualReality');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2003,'DogecoinGameJam');
