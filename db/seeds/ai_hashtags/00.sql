@@ -1976,3 +1976,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2002,'VirtualReality');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2003,'DogecoinGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2004,'ispe');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2005,'Sitecore');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2006,'国際女性デー');
