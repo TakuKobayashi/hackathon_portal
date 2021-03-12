@@ -1988,3 +1988,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2014,'HowardUniversity');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2015,'evropa');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2016,'fintech');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2017,'bank');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2018,'rstats');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2019,'駆け出しエンジニアと繋がりたい');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2020,'エンジニア初心者');
