@@ -1991,3 +1991,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2017,'bank');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2018,'rstats');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2019,'駆け出しエンジニアと繋がりたい');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2020,'エンジニア初心者');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2021,'geofeeds');
