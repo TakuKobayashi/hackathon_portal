@@ -2005,3 +2005,4 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2056,'Event',648051,'a5otpjrs1ousl3jhemkv72adjk','2021-03-15 05:33:55','2021-03-15 05:33:55');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2057,'Event',648010,'q1fki7qqg7hm3a46ucg5il7io8','2021-03-15 05:33:59','2021-03-15 05:33:59');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2058,'Event',647995,'lep05gdp9h0kqpunlp7hjjej38','2021-03-16 05:49:57','2021-03-16 05:49:57');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2059,'Event',648059,'vsosc534203f28c282oi3nl70o','2021-03-17 05:49:53','2021-03-17 05:49:53');
