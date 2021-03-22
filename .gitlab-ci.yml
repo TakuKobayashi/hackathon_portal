@@ -10,7 +10,7 @@ stages:
     - mysql:5.7
   variables:
     MYSQL_ROOT_PASSWORD: ""
-    MYSQL_USER: "root"
+    MYSQL_USER: "user"
     MYSQL_PASSWORD: ""
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     RAILS_MAX_THREADS: "5"
