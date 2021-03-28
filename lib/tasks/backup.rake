@@ -22,10 +22,10 @@ namespace :backup do
   task export_active_records_data: :environment do
     environment = Rails.env
     configuration = ActiveRecord::Base.configurations[environment]
-    host = Regexp.escape(configuration['host'].to_s)
-    database = Regexp.escape(configuration['database'].to_s)
-    username = Regexp.escape(configuration['username'].to_s)
-    password = Regexp.escape(configuration['password'].to_s)
+    host = Regexp.escape(configuration[:host].to_s)
+    database = Regexp.escape(configuration[:database].to_s)
+    username = Regexp.escape(configuration[:username].to_s)
+    password = Regexp.escape(configuration[:password].to_s)
     unless Dir.exists?(Rails.root.join("db", "seeds"))
       FileUtils.mkdir(Rails.root.join("db", "seeds"))
     end
