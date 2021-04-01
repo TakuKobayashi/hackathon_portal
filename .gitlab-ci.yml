@@ -71,6 +71,7 @@ crawlAndPublish:on-schedule:
     - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin crawled-data
     - bundle exec rails batch:event_bot_tweet
+    - bundle exec rails backup:export_json_data
     - bundle exec rails backup:export_active_records_data
     - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
     - git add db/
