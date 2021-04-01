@@ -69,6 +69,15 @@ namespace :backup do
     end
   end
 
+  task export_json_data: :environment do
+    events = Event.select(:event_id, :type, :title, :url, :shortener_url, :started_at, :ended_at, :limit_number, :address, :place, :lat, :lon, :informed_from, :state).order(started_at: :desc).all
+    unless Dir.exists?(Rails.root.join("db", "jsons"))
+      FileUtils.mkdir(Rails.root.join("db", "jsons"))
+    end
+    export_json_path = Rails.root.join("db", "jsons", "events.json")
+    File.write(export_json_path, events.to_json)
+  end
+
   task cd_git_commit_and_push: :environment do
     git = Git.open(Rails.root.to_s)
     git.add(Rails.root.join("db", "seeds"))
