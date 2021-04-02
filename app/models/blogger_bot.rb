@@ -42,8 +42,6 @@ class BloggerBot < ApplicationRecord
     blogger_blog_url: 'https://hackathonportal.blogspot.com/',
     refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
   )
-    context = ActionView::LookupContext.new(Rails.root.join('app', 'views'))
-    action_view_renderer = ActionView::Base.new(context)
     service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
 
@@ -51,12 +49,12 @@ class BloggerBot < ApplicationRecord
     events_group.each do |date_number, event_arr|
       blogger_bot = BloggerBot.find_or_initialize_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
       blogger_bot.event_ids = [blogger_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      blogger_bot.build_content(action_view_renderer: action_view_renderer)
+      blogger_bot.build_content
       blogger_bot.update_blogger!(google_api_service: service)
     end
   end
 
-  def build_content(action_view_renderer:)
+  def build_content
     post_events = Event.where(id: self.event_ids).order('started_at ASC')
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
@@ -67,7 +65,7 @@ class BloggerBot < ApplicationRecord
       end
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
     self.body =
-      action_view_renderer.render(
+      ApplicationController.render(
         template: 'blogger/publish',
         format: 'html',
         locals: {
