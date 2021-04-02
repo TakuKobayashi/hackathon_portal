@@ -2016,3 +2016,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2042,'Doコン');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2043,'BioIT');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2044,'BioInformatics');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2045,'toioDo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2046,'GLAMhack');
