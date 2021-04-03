@@ -247,6 +247,18 @@ class Event < ApplicationRecord
     end
   end
 
+  def self.remove_all_deplicate_events!
+    all_event_urls = Event.distinct.pluck(:url)
+    all_event_urls.each do |url|
+      events = Event.where(url: url)
+      if events.size > 1
+        remove_events = events.last(events.size - 1)
+        remove_events.each(&:revert!)
+      end
+    end
+    EventCalendarBot.remove_all_deplicate_events
+  end
+
   def revert!
     remove_twitter_bot = TwitterBot.find_by(from: self)
     if remove_twitter_bot.present?
