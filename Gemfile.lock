@@ -1445,6 +1445,8 @@ GEM
     tzinfo-data (1.2021.1)
       tzinfo (>= 1.0.0)
     uber (0.1.0)
+    uglifier (4.2.0)
+      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
@@ -1512,6 +1514,7 @@ DEPENDENCIES
   tweetstream
   twitter (>= 6.0)
   tzinfo-data
+  uglifier
   web-console (>= 3.3.0)
   webdrivers
   whenever
