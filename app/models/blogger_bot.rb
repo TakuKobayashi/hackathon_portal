@@ -33,8 +33,10 @@ class BloggerBot < ApplicationRecord
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
     date_number = event.started_at.year * 10000 + event.started_at.month
     blogger_bot = BloggerBot.find_by(date_number: date_number, blogger_blog_id: blogger_blog.id)
-    blogger_bot.event_ids = blogger_bot.event_ids.select { |event_id| event_id != event.id }
-    blogger_bot.save!
+    if blogger_bot.present?
+      blogger_bot.event_ids = blogger_bot.event_ids.select { |event_id| event_id != event.id }
+      blogger_bot.save!
+    end
   end
 
   def self.post_or_update_article!(
