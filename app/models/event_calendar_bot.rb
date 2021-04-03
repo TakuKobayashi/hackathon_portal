@@ -33,7 +33,7 @@ class EventCalendarBot < ApplicationRecord
 
     event_calendars = []
     events.each do |event|
-      calender_description = '<h1><a href="' + event.url + '">' + event.title + '</a></h1>\n' + event.description.to_s
+      calender_description = ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
       calender_event =
         Google::Apis::CalendarV3::Event.new(
           {
@@ -84,7 +84,7 @@ class EventCalendarBot < ApplicationRecord
   def remove_calender!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
     service = GoogleServices.get_calender_service(refresh_token: refresh_token)
     calenders = service.list_calendar_lists
-    target_calender = calenders.items.detect { |item| item.summary == 'ハッカソンポータル' }
+    target_calender = calenders.items.detect { |item| item.summary == self.class.calender_title }
     target_calender_id = target_calender.try(:id)
     if target_calender_id.present?
       result = service.delete_event(target_calender_id, self.calender_event_id)
