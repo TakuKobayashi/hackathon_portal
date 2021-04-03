@@ -17,21 +17,21 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_events =
-        Event.connpass.where(event_id: res_events.map { |res| res['event_id'] }.compact).index_by(&:event_id)
+      current_url_events =
+        Event.connpass.where(url: res_events.map { |res| res['event_url'] }.compact).index_by(&:url)
       res_events.each do |res|
         Event.transaction do
-          if current_events[res['event_id'].to_s].present?
-            connpass_event = current_events[res['event_id'].to_s]
+          if current_url_events[res['event_url'].to_s].present?
+            connpass_event = current_url_events[res['event_url'].to_s]
           else
-            connpass_event = Event.new(event_id: res['event_id'].to_s)
+            connpass_event = Event.new(url: res['event_url'].to_s)
           end
           connpass_event.merge_event_attributes(
             attrs: {
               state: :active,
               informed_from: :connpass,
+              event_id: res['event_id'].to_s,
               title: res['title'].to_s,
-              url: res['event_url'].to_s,
               description: Sanitizer.basic_sanitize(res['description'].to_s),
               limit_number: res['limit'],
               address: res['address'],

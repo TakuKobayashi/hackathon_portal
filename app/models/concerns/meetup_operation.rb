@@ -16,13 +16,13 @@ module MeetupOperation
   def self.import_events_from_keywords!(keywords:)
     events_response = self.find_event(keywords: keywords)
     res_events = events_response['events'] || []
-    current_events = Event.meetup.where(event_id: res_events.map { |res| res['id'] }.compact).index_by(&:event_id)
+    current_url_events = Event.meetup.where(url: res_events.map { |res| res['link'] }.compact).index_by(&:url)
     res_events.each do |res|
       Event.transaction do
-        if current_events[res['id'].to_s].present?
-          meetup_event = current_events[res['id'].to_s]
+        if current_url_events[url: res['link'].to_s].present?
+          meetup_event = current_url_events[url: res['link'].to_s]
         else
-          meetup_event = Event.new(event_id: res['id'].to_s)
+          meetup_event = Event.new(url: res['link'].to_s)
         end
         start_time = Time.at(res['time'].to_i / 1_000)
         if res['duration'].present?
@@ -38,8 +38,8 @@ module MeetupOperation
             attrs: {
               state: :active,
               informed_from: :meetup,
+              event_id: res['id'],
               title: Sanitizer.basic_sanitize(res['name'].to_s),
-              url: res['link'].to_s,
               description: Sanitizer.basic_sanitize(res['description'].to_s),
               started_at: start_time,
               ended_at: end_time,
