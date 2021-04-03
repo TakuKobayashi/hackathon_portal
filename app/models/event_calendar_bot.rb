@@ -92,6 +92,27 @@ class EventCalendarBot < ApplicationRecord
     end
   end
 
+  def self.remove_all_deplicate_events(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    service = GoogleServices.get_calender_service(refresh_token: refresh_token)
+    calenders = service.list_calendar_lists
+    target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
+    if target_calender.blank?
+      return false
+    end
+    next_page_token = nil
+    loop do
+      calender_events = service.list_events(target_calender.id, page_token: next_page_token, max_results: 2500)
+      calender_events.items.each do |calender_event|
+        unless EventCalendarBot.exists?(calender_event_id: calender_event.id)
+          service.delete_event(target_calender.id, calender_event.id)
+        end
+      end
+      next_page_token = calender_events.next_page_token
+      break if next_page_token.blank?
+    end
+    return true
+  end
+
   private
 
   def self.record_ratelimit_error_request_log(error:, target_calender_id:, calender_event_id:, calender_event_hash:)
