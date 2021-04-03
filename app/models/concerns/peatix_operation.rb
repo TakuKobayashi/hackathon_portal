@@ -21,23 +21,28 @@ module PeatixOperation
       events_response = self.find_event(keywords: keywords, page: page)
       json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
-      current_events =
-        Event.peatix.where(event_id: json_data['events'].map { |res| res['id'] }.compact).index_by(&:event_id)
+      urls = json_data['events'].map do |res|
+        tracking_url = Addressable::URI.parse(res['tracking_url'])
+        tracking_url.origin.to_s + tracking_url.path.to_s
+      end.compact
+      current_url_events =
+        Event.peatix.where(url: urls).index_by(&:url)
       json_data['events'].each do |res|
+        tracking_url = Addressable::URI.parse(res['tracking_url'])
+        event_url = tracking_url.origin.to_s + tracking_url.path.to_s
         Event.transaction do
-          tracking_url = Addressable::URI.parse(res['tracking_url'])
           lat, lng = res['latlng'].to_s.split(',')
-          if current_events[res['id'].to_s].present?
-            peatix_event = current_events[res['id'].to_s]
+          if current_url_events[event_url].present?
+            peatix_event = current_url_events[event_url]
           else
-            peatix_event = Event.new(event_id: res['id'].to_s)
+            peatix_event = Event.new(url: event_url)
           end
           peatix_event.merge_event_attributes(
             attrs: {
               state: :active,
               informed_from: :peatix,
+              event_id: res['id'].to_s,
               title: res['name'].to_s,
-              url: tracking_url.origin.to_s + tracking_url.path.to_s,
               address: res['address'],
               place: res['venue_name'].to_s,
               lat: lat,
