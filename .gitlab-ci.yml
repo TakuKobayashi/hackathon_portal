@@ -66,25 +66,22 @@ crawlAndPublish:on-schedule:
     - bundle exec rails runner Event.import_events!
     - bundle exec rails runner Event.import_events_from_twitter!
     - bundle exec rails backup:export_active_records_data
-    - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
+    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin crawled-data
     - bundle exec rails batch:event_bot_tweet
     - bundle exec rails backup:export_json_data
     - bundle exec rails backup:export_active_records_data
-    - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
+    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
     - git push origin crawled-data
     - bundle exec rails runner Promote.like_major_user!
     - bundle exec rails runner Promote.try_follows!
     - bundle exec rails runner Promote.organize_follows!
     - bundle exec rails runner Promote.remove_unpromoted_data!
     - bundle exec rails backup:export_active_records_data
-    - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
     - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` organize data"
+    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` organize data"
     - git push origin crawled-data
   artifacts:
     paths:
