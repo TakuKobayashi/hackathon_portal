@@ -68,6 +68,7 @@ module RequestParser
       option_struct.delete_field(:customize_redirect_counter) if option_struct.customize_redirect_counter.present?
       option_struct.delete_field(:follow_redirect) if option_struct.follow_redirect.present?
     end
+    encoded_url = url.to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
     http_client = HTTPClient.new
     http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http_client.connect_timeout = timeout_second
@@ -77,10 +78,10 @@ module RequestParser
     begin
       request_option_hash = { query: params, header: header, body: body }.merge(option_struct.to_h)
       request_option_hash.delete_if { |k, v| v.blank? }
-      response = http_client.send(method, url, request_option_hash)
+      response = http_client.send(method, encoded_url, request_option_hash)
       if response.status >= 400
         self.record_log(
-          url: url,
+          url: encoded_url,
           method: method,
           params: params,
           header: header,
@@ -103,7 +104,7 @@ module RequestParser
            HTTP::ConnectionError,
            Addressable::URI::InvalidURIError => e
       self.record_log(
-        url: url,
+        url: encoded_url,
         method: method,
         params: params,
         header: header,
@@ -116,7 +117,7 @@ module RequestParser
          response.headers['Location'].present? && customize_redirect_counter < 5
       redirect_url = response.headers['Location']
       if redirect_url.present?
-        redirect_full_url = WebNormalizer.merge_full_url(src: redirect_url, org: url)
+        redirect_full_url = WebNormalizer.merge_full_url(src: redirect_url, org: encoded_url)
         response =
           self.request_and_response(
             url: redirect_full_url,
