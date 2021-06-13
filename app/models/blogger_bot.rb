@@ -88,7 +88,11 @@ class BloggerBot < ApplicationRecord
     if self.new_record?
       result_blogger_post = google_api_service.insert_post(self.blogger_blog_id, blogger_post)
     else
-      result_blogger_post = google_api_service.patch_post(self.blogger_blog_id, self.blogger_post_id, blogger_post)
+      begin
+        result_blogger_post = google_api_service.patch_post(self.blogger_blog_id, self.blogger_post_id, blogger_post)
+      rescue Google::Apis::ClientError => e
+        result_blogger_post = google_api_service.insert_post(self.blogger_blog_id, blogger_post)
+      end
     end
     self.update!(
       {
