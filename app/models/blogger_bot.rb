@@ -27,7 +27,7 @@ class BloggerBot < ApplicationRecord
   def self.remove_event!(
     event:,
     blogger_blog_url: 'https://hackathonportal.blogspot.com/',
-    refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+    refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN')
   )
     service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
@@ -42,7 +42,7 @@ class BloggerBot < ApplicationRecord
   def self.post_or_update_article!(
     events: [],
     blogger_blog_url: 'https://hackathonportal.blogspot.com/',
-    refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+    refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN')
   )
     service = GoogleServices.get_blogger_service(refresh_token: refresh_token)
     blogger_blog = service.get_blog_by_url(blogger_blog_url)
