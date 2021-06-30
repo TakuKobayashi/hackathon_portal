@@ -9,7 +9,7 @@ module PeatixOperation
       RequestParser.request_and_parse_json(
         url: PEATIX_SEARCH_URL,
         params: { q: keywords.join(' '), country: 'JP', p: page, size: PAGE_PER },
-        header: { 'X-Requested-With' => 'XMLHttpRequest' },
+        header: { "accept" => "application/json", 'X-Requested-With' => 'XMLHttpRequest' },
         options: { follow_redirect: true },
       )
     )
