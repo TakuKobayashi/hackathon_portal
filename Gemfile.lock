@@ -1344,10 +1344,9 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    listen (3.1.5)
+    listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
     loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -1359,7 +1358,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     method_source (1.0.0)
     mini_mime (1.1.0)
-    mini_portile2 (2.6.1)
     minitest (5.14.4)
     monetize (1.11.0)
       money (~> 6.12)
@@ -1371,8 +1369,7 @@ GEM
     mysql2 (0.5.3)
     naught (1.1.0)
     nio4r (2.5.8)
-    nokogiri (1.12.3)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.12.3-x86_64-darwin)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     os (1.1.1)
@@ -1445,7 +1442,6 @@ GEM
     roauth (0.0.8)
     rouge (3.26.0)
     ruby2_keywords (0.0.5)
-    ruby_dep (1.5.0)
     rubyzip (2.3.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -1536,7 +1532,7 @@ GEM
     zeitwerk (2.4.2)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-20
 
 DEPENDENCIES
   activeadmin!
@@ -1584,4 +1580,4 @@ DEPENDENCIES
   xml-simple
 
 BUNDLED WITH
-   2.2.15
+   2.2.26
