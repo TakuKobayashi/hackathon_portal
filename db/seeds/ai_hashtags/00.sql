@@ -2234,3 +2234,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2260,'Wikimania');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2261,'WCC');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2262,'ClimateCrisis');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2263,'DeFISummer');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2264,'エンジニアの転職動向調査');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2265,'wtmbahirdar');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2266,'wtmeac');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2267,'GDGBahirDar');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2268,'womenonlinesafety21');
