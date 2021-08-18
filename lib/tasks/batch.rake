@@ -52,7 +52,9 @@ namespace :batch do
   end
 
   task export_entity_relationship_diagram_plantuml: :environment do
+    # 使用されている全てのテーブルのModelの情報を取得するために全て読み込む
     Rails.application.eager_load!
+    # 使用されている全てのテーブルを持っていて関係性がわかるModelの情報を取得する
     model_classes = ActiveRecord::Base.descendants.select{|m| m.table_name.present? }
     class_name_model_class_pair = model_classes.index_by(&:to_s)
     relation_entity_components = Set.new
