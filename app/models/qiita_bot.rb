@@ -72,7 +72,7 @@ class QiitaBot < ApplicationRecord
   end
 
   def self.post_or_update_article!(events: [], access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
-    client = self.get_qiita_client(access_token: access_token)
+    authorization_header_string = ["Bearer",  access_token].join(" ")
     events_group = events.group_by(&:season_date_number)
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
@@ -84,9 +84,9 @@ class QiitaBot < ApplicationRecord
       send_params =
         qiita_bot.generate_post_send_params(year_number: year_number, start_month: start_month, end_month: end_month)
       if qiita_bot.new_record?
-        response = client.create_item(send_params).body
+        response = RequestParser.request_and_parse_json(url: "https://qiita.com/api/v2/items", method: :post, header: {Authorization: authorization_header_string, "Content-Type" => "application/json"}, body: send_params.to_json)
       else
-        response = client.update_item(qiita_bot.qiita_id, send_params).body
+        response = RequestParser.request_and_parse_json(url: "https://qiita.com/api/v2/items/" + qiita_bot.qiita_id, method: :patch, header: {Authorization: authorization_header_string, "Content-Type" => "application/json"}, body: send_params.to_json)
       end
       qiita_bot.qiita_id = response['id'] if qiita_bot.qiita_id.blank?
       response_tags = response['tags'] || []
@@ -108,12 +108,5 @@ class QiitaBot < ApplicationRecord
         logger.info(message)
       end
     end
-  end
-
-  private
-
-  def self.get_qiita_client(access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
-    client = Qiita::Client.new(access_token: access_token)
-    return client
   end
 end

@@ -37,7 +37,6 @@ gem "whenever", :require => false
 
 gem "google-api-client"
 
-gem "qiita"
 gem "git"
 
 gem "twitter", ">= 6.0"
