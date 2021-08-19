@@ -53,7 +53,6 @@ class Event < ApplicationRecord
          devpost: 8,
        }
 
-  has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
