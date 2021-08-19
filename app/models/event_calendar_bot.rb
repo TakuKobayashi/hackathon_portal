@@ -33,15 +33,21 @@ class EventCalendarBot < ApplicationRecord
 
     event_calendars = []
     events.each do |event|
-      calender_description = ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
+      calender_description =
+        ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
       calender_event =
         Google::Apis::CalendarV3::Event.new(
           {
             summary: event.title,
             location: [event.address, event.place].join(' '),
             description: calender_description,
-            start: { date_time: event.started_at.to_datetime.rfc3339 },
-            source: { url: event.url, title: event.title },
+            start: {
+              date_time: event.started_at.to_datetime.rfc3339,
+            },
+            source: {
+              url: event.url,
+              title: event.title,
+            },
           },
         )
       if event.ended_at.present?
@@ -49,6 +55,7 @@ class EventCalendarBot < ApplicationRecord
       else
         calender_event.end = { date_time: event.started_at.end_of_day.to_datetime.rfc3339 }
       end
+
       #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
       if event.hackathon_event?
         color_id = colors.calendar.keys[1]
@@ -96,9 +103,7 @@ class EventCalendarBot < ApplicationRecord
     service = GoogleServices.get_calender_service(refresh_token: refresh_token)
     calenders = service.list_calendar_lists
     target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
-    if target_calender.blank?
-      return false
-    end
+    return false if target_calender.blank?
     next_page_token = nil
     loop do
       calender_events = service.list_events(target_calender.id, page_token: next_page_token, max_results: 2500)

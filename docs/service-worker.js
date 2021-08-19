@@ -11,11 +11,9 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
 
-importScripts(
-  "./precache-manifest.cfd66c1f2a9067dd54a349de02b8995a.js"
-);
+importScripts('./precache-manifest.cfd66c1f2a9067dd54a349de02b8995a.js');
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
@@ -33,7 +31,6 @@ workbox.core.clientsClaim();
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("./index.html"), {
-  
-  blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
+workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL('./index.html'), {
+  blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/],
 });

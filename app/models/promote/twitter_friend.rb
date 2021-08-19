@@ -26,7 +26,8 @@ class Promote::TwitterFriend < Promote::Friend
 
   def self.import_from_users!(me_user:, twitter_users: [], to_be_follower: false, default_score: 0)
     to_user_id_twitter_friends =
-      Promote::TwitterFriend.where(from_user_id: me_user.id, to_user_id: twitter_users.map { |tu| tu.id.to_s })
+      Promote::TwitterFriend
+        .where(from_user_id: me_user.id, to_user_id: twitter_users.map { |tu| tu.id.to_s })
         .index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
@@ -41,7 +42,7 @@ class Promote::TwitterFriend < Promote::Friend
               id:
                 (
                   # 現在時刻(マイクロ秒)をidとして記録
-                  current_time.to_i * 1000000
+                  current_time.to_i * 1_000_000
                 ) + current_time.usec,
               from_user_id: me_user.id,
               to_user_id: twitter_user.id,
@@ -52,6 +53,7 @@ class Promote::TwitterFriend < Promote::Friend
           )
       end
       next if promote_twitter_friend.only_follower? && promote_twitter_friend.both_follow?
+
       # 7日前以降にログインしていなければアクティブなユーザーじゃないので記録しない
       next if twitter_user.status.created_at <= Promote::EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago
       promote_twitter_friend.build_be_follower if to_be_follower || twitter_user.following?
@@ -142,9 +144,7 @@ class Promote::TwitterFriend < Promote::Friend
             return []
           end
         rescue HTTP::ConnectionError => e
-          Rails.logger.warn(
-            ['HTTP::ConnectionError users Error:', e.message].join('\n'),
-          )
+          Rails.logger.warn(['HTTP::ConnectionError users Error:', e.message].join('\n'))
           sleep 1
           retry_count = retry_count + 1
           if retry_count < 5
@@ -154,6 +154,7 @@ class Promote::TwitterFriend < Promote::Friend
           end
         end
         Promote::TwitterUser.import_from_users!(twitter_users: twitter_users)
+
         # BotのフォロワーならBotのフォロワーとして、そうじゃない場合はフォロワーのフォロワーとして記録する
         if bot_user.id.to_s == user_id.to_s
           self.import_from_users!(me_user: bot_user, twitter_users: twitter_users, to_be_follower: true)

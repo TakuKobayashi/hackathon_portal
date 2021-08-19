@@ -17,12 +17,12 @@ function doGet(e: any): GoogleAppsScript.Content.TextOutput {
         returnResult.postal_code = postal_code_component.long_name;
       }
     }
-  }else if(lat && lon){
+  } else if (lat && lon) {
     const geocodeResponses = convertReverseGeocode(lat, lon, language);
     if (geocodeResponses[0]) {
       returnResult.place_id = geocodeResponses[0].place_id;
       const formatted_address = geocodeResponses[0].formatted_address.normalize('NFKC');
-      const address_parts = formatted_address.split(" ");
+      const address_parts = formatted_address.split(' ');
       returnResult.address = address_parts[address_parts.length - 1];
       returnResult.latitude = geocodeResponses[0].geometry.location.lat;
       returnResult.longitude = geocodeResponses[0].geometry.location.lng;

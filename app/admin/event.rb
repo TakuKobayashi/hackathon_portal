@@ -56,7 +56,7 @@ ActiveAdmin.register Event do
   collection_action :create, method: :post do
     script_service = GoogleServices.get_script_service
     script_deployments = script_service.list_project_deployments(ENV.fetch('LOCATION_GAS_SCRIPT_ID', ''))
-    latest_deployment = script_deployments.deployments.max_by{|d| d.deployment_config.version_number.to_i }
+    latest_deployment = script_deployments.deployments.max_by { |d| d.deployment_config.version_number.to_i }
     script_url = latest_deployment.entry_points.first.try(:web_app).try(:url)
 
     attributes = params.require(:event).permit!

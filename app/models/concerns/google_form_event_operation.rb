@@ -11,7 +11,7 @@ module GoogleFormEventOperation
 
     script_service = GoogleServices.get_script_service(refresh_token: refresh_token)
     script_deployments = script_service.list_project_deployments(ENV.fetch('LOCATION_GAS_SCRIPT_ID', ''))
-    latest_deployment = script_deployments.deployments.max_by{|d| d.deployment_config.version_number.to_i }
+    latest_deployment = script_deployments.deployments.max_by { |d| d.deployment_config.version_number.to_i }
     script_url = latest_deployment.entry_points.first.try(:web_app).try(:url)
 
     target_spreadsheet.sheets.each do |sheet|
@@ -19,6 +19,7 @@ module GoogleFormEventOperation
         # urlがかぶるものは無視する
         import_url_events = {}
         row_data = sheet_data.row_data
+
         # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
         header_names = (row_data[0].try(:values) || [])
         column_header_names =

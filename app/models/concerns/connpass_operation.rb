@@ -4,7 +4,13 @@ module ConnpassOperation
   def self.find_event(keywords:, start: 1)
     return(
       RequestParser.request_and_parse_json(
-        url: CONNPASS_URL, params: { keyword_or: keywords, count: 100, start: start, order: 1 },
+        url: CONNPASS_URL,
+        params: {
+          keyword_or: keywords,
+          count: 100,
+          start: start,
+          order: 1,
+        },
       )
     )
   end
@@ -17,8 +23,7 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_url_events =
-        Event.connpass.where(url: res_events.map { |res| res['event_url'] }.compact).index_by(&:url)
+      current_url_events = Event.connpass.where(url: res_events.map { |res| res['event_url'] }.compact).index_by(&:url)
       res_events.each do |res|
         Event.transaction do
           if current_url_events[res['event_url'].to_s].present?

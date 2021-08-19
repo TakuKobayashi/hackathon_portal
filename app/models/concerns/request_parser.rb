@@ -5,7 +5,12 @@ module RequestParser
     html_header = { 'Content-Type' => 'text/html; charset=UTF-8' }.merge(header)
     response =
       self.request_and_response(
-        url: url, method: method, params: params, header: html_header, body: body, options: options,
+        url: url,
+        method: method,
+        params: params,
+        header: html_header,
+        body: body,
+        options: options,
       )
     text =
       response.try(:body).to_s.encode('SJIS', 'UTF-8', invalid: :replace, undef: :replace, replace: '').encode('UTF-8')
@@ -16,12 +21,18 @@ module RequestParser
   def self.request_and_get_links_from_html(url:, method: :get, params: {}, header: {}, body: {}, options: {})
     doc =
       self.request_and_parse_html(
-        url: url, method: method, params: params, header: header, body: body, options: options,
+        url: url,
+        method: method,
+        params: params,
+        header: header,
+        body: body,
+        options: options,
       )
     result = {}
-    doc.css('a').select { |anchor| anchor[:href].present? && anchor[:href] != '/' }.each do |anchor|
-      result[anchor[:href]] = anchor.text
-    end
+    doc
+      .css('a')
+      .select { |anchor| anchor[:href].present? && anchor[:href] != '/' }
+      .each { |anchor| result[anchor[:href]] = anchor.text }
     return result
   end
 

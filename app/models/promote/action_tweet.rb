@@ -62,11 +62,12 @@ class Promote::ActionTweet < ApplicationRecord
       return true
     rescue Twitter::Error::Forbidden => e
       Rails.logger.warn(['Forbidden like! Error:', e.message, self.tweet_url].join(' '))
+
       # 鍵垢をいいねすることはできない
       if e.message.include?('protected users')
         return true
       else
-        return false 
+        return false
       end
     rescue Twitter::Error::TooManyRequests => e
       Rails.logger.warn(['TooManyRequest like! Error:', e.rate_limit.reset_in, 's', self.tweet_url].join(' '))

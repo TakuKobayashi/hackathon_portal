@@ -31,7 +31,10 @@ class TwitterBot < ApplicationRecord
     tweet_result = twitter_client.update(text, options)
     twitter_bot =
       TwitterBot.create!(
-        tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: tweet_result.created_at, from: from,
+        tweet: tweet_result.text,
+        tweet_id: tweet_result.id,
+        tweet_time: tweet_result.created_at,
+        from: from,
       )
     return twitter_bot
   end
@@ -43,7 +46,7 @@ class TwitterBot < ApplicationRecord
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     begin
       result = twitter_client.destroy_status(self.tweet_id)
-      Rails.logger.info(["result", result].join(":"))
+      Rails.logger.info(['result', result].join(':'))
     rescue Twitter::Error::NotFound => e
       Rails.logger.warn((["error: #{e.message}"] + e.backtrace).join("\n"))
     end

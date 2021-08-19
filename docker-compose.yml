@@ -4,13 +4,13 @@ services:
     platform: linux/x86_64
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: ""
-      MYSQL_USER: "user"
-      MYSQL_PASSWORD: ""
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      RAILS_MAX_THREADS: "5"
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      RAILS_MAX_THREADS: '5'
     ports:
-      - "3306:3306"
+      - '3306:3306'
 
   web:
     build: .
@@ -22,6 +22,6 @@ services:
       - MYSQL_USERNAME=root
       - MYSQL_PASSWORD=
     ports:
-      - "3000:3000"
+      - '3000:3000'
     links:
       - db

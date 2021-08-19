@@ -7,7 +7,8 @@ module GoogleOauth2Client
       {
         'google_oauth' => {
           refresh_token => {
-            'access_token' => authorization.access_token, 'expires_at' => authorization.expires_at.to_s
+            'access_token' => authorization.access_token,
+            'expires_at' => authorization.expires_at.to_s,
           },
         },
       },

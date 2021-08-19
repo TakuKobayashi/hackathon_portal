@@ -1,4 +1,4 @@
-image: "ruby:3.0"
+image: 'ruby:3.0'
 
 stages:
   - crawl-and-publish
@@ -9,11 +9,11 @@ stages:
   services:
     - mysql:5.7
   variables:
-    MYSQL_ROOT_PASSWORD: ""
-    MYSQL_USER: "user"
-    MYSQL_PASSWORD: ""
-    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    RAILS_MAX_THREADS: "5"
+    MYSQL_ROOT_PASSWORD: ''
+    MYSQL_USER: 'user'
+    MYSQL_PASSWORD: ''
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    RAILS_MAX_THREADS: '5'
     RAILS_ENV: production
   before_script:
     - apt --quiet update --yes

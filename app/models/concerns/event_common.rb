@@ -21,18 +21,31 @@ module EventCommon
     self.distribute_event_type
   end
 
-  def build_location_data(script_url: "")
+  def build_location_data(script_url: '')
     if self.address.present? && self.lat.blank? && self.lon.blank?
       geo_result =
         RequestParser.request_and_parse_json(
-          url: script_url, params: { address: self.address }, options: { follow_redirect: true },
+          url: script_url,
+          params: {
+            address: self.address,
+          },
+          options: {
+            follow_redirect: true,
+          },
         )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
     elsif self.address.blank? && self.lat.present? && self.lon.present?
       geo_result =
         RequestParser.request_and_parse_json(
-          url: script_url, params: { latitude: self.lat, longitude: self.lon }, options: { follow_redirect: true },
+          url: script_url,
+          params: {
+            latitude: self.lat,
+            longitude: self.lon,
+          },
+          options: {
+            follow_redirect: true,
+          },
         )
       self.lat = geo_result['latitude']
       self.lon = geo_result['longitude']
@@ -60,8 +73,13 @@ module EventCommon
     response =
       RequestParser.request_and_response(
         url: self.url,
-        header: { 'Content-Type' => 'text/html; charset=UTF-8' },
-        options: { customize_force_redirect: true, timeout_second: 30 },
+        header: {
+          'Content-Type' => 'text/html; charset=UTF-8',
+        },
+        options: {
+          customize_force_redirect: true,
+          timeout_second: 30,
+        },
       )
     dom = nil
     begin
@@ -78,31 +96,38 @@ module EventCommon
     return false if dom.text.blank?
     first_head_dom = dom.css('head').first
     return false if first_head_dom.try(:text).blank?
-    # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
-    first_head_dom.css('meta').each do |meta_dom|
-      dom_attrs = OpenStruct.new(meta_dom.to_h)
-      # 記事サイトはハッカソン告知サイトでは無いので取り除く
-      if dom_attrs.property.to_s == 'og:type' &&
-           (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
-        return false
-      end
 
-      if self.title.blank?
-        if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
-             dom_attrs.itemprop.to_s.include?('title')
-          self.title = dom_attrs.content.to_s.strip.truncate(140)
+    # Titleとdescriptionはなんかそれらしいものを抜き取って入れておく
+    first_head_dom
+      .css('meta')
+      .each do |meta_dom|
+        dom_attrs = OpenStruct.new(meta_dom.to_h)
+
+        # 記事サイトはハッカソン告知サイトでは無いので取り除く
+        if dom_attrs.property.to_s == 'og:type' &&
+             (dom_attrs.content.to_s.downcase == 'article' || dom_attrs.content.to_s.downcase == 'video')
+          return false
+        end
+
+        if self.title.blank?
+          if dom_attrs.property.to_s.include?('title') || dom_attrs.name.to_s.include?('title') ||
+               dom_attrs.itemprop.to_s.include?('title')
+            self.title = dom_attrs.content.to_s.strip.truncate(140)
+          end
         end
       end
-    end
     self.title = dom.try(:title).to_s.strip.truncate(140) if self.title.blank?
     body_dom = dom.css('body').first
     return false if body_dom.blank?
 
     request_uri = response.header.request_uri
+
     # query(?以降)は全て空っぽにしておく
     request_uri.query_values = nil
+
     # fragment(#以降)は全て空っぽにしておく
     request_uri.fragment = nil
+
     # 最終的に飛んだURLになるように上書きをする
     self.url = request_uri.to_s
     sanitized_body_html = Sanitizer.basic_sanitize(body_dom.to_html)
@@ -140,12 +165,14 @@ module EventCommon
 
     current_time = Time.current
     candidate_dates = Sanitizer.scan_candidate_datetime(sanitized_main_content_html)
+
     # 前後一年以内の日時が候補
     # 時間が早い順にsortした
     filtered_dates =
-      candidate_dates.select do |candidate_date|
-        ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year)
-      end.uniq.sort
+      candidate_dates
+        .select { |candidate_date| ((current_time.year - 1)..(current_time.year + 1)).cover?(candidate_date.year) }
+        .uniq
+        .sort
 
     candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content_html)
     filtered_times =
@@ -153,7 +180,7 @@ module EventCommon
         0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
           candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
       end.uniq
-    filtered_times.sort_by! { |time| time[0].to_i * 10000 + time[1].to_i * 100 + time[2].to_i }
+    filtered_times.sort_by! { |time| time[0].to_i * 10_000 + time[1].to_i * 100 + time[2].to_i }
     start_time_array = filtered_times.first || []
     end_time_array = filtered_times.last || []
     start_at_datetime = filtered_dates.first
@@ -171,6 +198,7 @@ module EventCommon
           { hours: end_time_array[0].to_i, minutes: end_time_array[1].to_i, secounds: end_time_array[2].to_i },
         )
     end
+
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
     self.check_score_rate = 1.to_f
@@ -323,10 +351,7 @@ module EventCommon
 
   def url_active?
     response =
-      RequestParser.request_and_response(
-        url: self.url,
-        options: { customize_force_redirect: true, timeout_second: 30 },
-      )
+      RequestParser.request_and_response(url: self.url, options: { customize_force_redirect: true, timeout_second: 30 })
     return false if response.blank?
     return false if 400 <= response.status && response.status < 500
     return true
@@ -338,10 +363,13 @@ module EventCommon
         url: BITLY_SHORTEN_API_URL,
         method: :post,
         header: {
-          'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}", 'Content-Type' => 'application/json'
+          'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}",
+          'Content-Type' => 'application/json',
         },
         body: { long_url: self.url }.to_json,
-        options: { follow_redirect: true },
+        options: {
+          follow_redirect: true,
+        },
       )
     if result['id'].present?
       return 'https://' + result['id']

@@ -50,8 +50,13 @@ class Ai::TweetResource < ApplicationRecord
     xml_hash =
       RequestParser.request_and_parse_xml(
         url: 'https://jlp.yahooapis.jp/MAService/V1/parse',
-        params: { appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''), sentence: plane_text_body },
-        options: { follow_redirect: true },
+        params: {
+          appid: ENV.fetch('YAHOO_API_CLIENT_ID', ''),
+          sentence: plane_text_body,
+        },
+        options: {
+          follow_redirect: true,
+        },
       )
     words =
       xml_hash['ma_result'].first['word_list'].first['word'].map { |hash| hash['surface'] }.flatten.select(&:present?)
@@ -62,21 +67,23 @@ class Ai::TweetResource < ApplicationRecord
     return self.trigrams if self.trigrams.present?
     import_trigrams = []
     transaction do
-      words.each_cons(3).with_index do |emu_cons_words, index|
-        cons_words = emu_cons_words.flatten
-        trigram = nil
-        if index == 0
-          trigram = self.trigrams.new(position_genre: :bos)
-        elsif index == words.size - 3
-          trigram = self.trigrams.new(position_genre: :eos)
-        else
-          trigram = self.trigrams.new(position_genre: :general)
+      words
+        .each_cons(3)
+        .with_index do |emu_cons_words, index|
+          cons_words = emu_cons_words.flatten
+          trigram = nil
+          if index == 0
+            trigram = self.trigrams.new(position_genre: :bos)
+          elsif index == words.size - 3
+            trigram = self.trigrams.new(position_genre: :eos)
+          else
+            trigram = self.trigrams.new(position_genre: :general)
+          end
+          if trigram.present?
+            trigram.update!(first_word: cons_words[0], second_word: cons_words[1], third_word: cons_words[2])
+            import_trigrams << trigram
+          end
         end
-        if trigram.present?
-          trigram.update!(first_word: cons_words[0], second_word: cons_words[1], third_word: cons_words[2])
-          import_trigrams << trigram
-        end
-      end
     end
     return import_trigrams
   end
