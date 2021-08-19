@@ -42,10 +42,12 @@ class Ai::ResourceAttachment < ApplicationRecord
     if pure_url.size > 255
       word_counter = 0
       srces, other_pathes =
-        pure_url.split('/').partition do |word|
-          word_counter = word_counter + word.size + 1
-          word_counter <= 255
-        end
+        pure_url
+          .split('/')
+          .partition do |word|
+            word_counter = word_counter + word.size + 1
+            word_counter <= 255
+          end
       return srces.join('/'), other_pathes.join('/')
     else
       return pure_url, aurl.query

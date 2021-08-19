@@ -24,9 +24,11 @@ class Ai::TwitterResource < Ai::TweetResource
   def self.crawl_hashtag_tweets!
     crawl_ids = Log::Crawl.where('crawled_at > ?', 6.day.ago).where(from_type: 'Ai::Hashtag').pluck(:from_id)
     events = []
-    Event.preload(:hashtags).find_each do |event|
-      events << event if event.hackathon_event? && event.hashtags.all? { |hashtag| !crawl_ids.include?(hashtag.id) }
-    end
+    Event
+      .preload(:hashtags)
+      .find_each do |event|
+        events << event if event.hackathon_event? && event.hashtags.all? { |hashtag| !crawl_ids.include?(hashtag.id) }
+      end
     hashtags = events.map(&:hashtags).flatten.uniq
     twitter_client = TwitterBot.get_twitter_client
     hashtags.each do |hashtag|
@@ -56,7 +58,7 @@ class Ai::TwitterResource < Ai::TweetResource
             ai_resource.reply_id = tweet.in_reply_to_tweet_id if tweet.in_reply_to_tweet_id.present?
             ai_resource.quote_id = tweet.quoted_tweet.id if tweet.quoted_tweet.present?
             ai_resource.options = {
-              mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } }
+              mentions: tweet.user_mentions.map { |m| { user_id: m.id, user_name: m.screen_name } },
             }
             ai_resource.save!
             ai_resource.register_hashtags!(tweet: tweet)
@@ -94,30 +96,36 @@ class Ai::TwitterResource < Ai::TweetResource
 
   def register_attachments!(tweet:)
     attachments = []
-    tweet.urls.flatten.each do |url|
-      attachment = self.attachments.new(category: :website)
-      attachment.src = url.expanded_url.to_s
-      attachments << attachment
-    end
-    tweet.media.flatten.each do |m|
-      case m
-      when Twitter::Media::Photo
-        attachment = self.attachments.new(category: :image)
-        attachment.src = m.media_url.to_s
-        attachments << attachment
-      when Twitter::Media::Video
-        attachment = self.attachments.new
-        max_bitrate_variant = m.video_info.variants.max_by { |variant| variant.bitrate.to_i }
-        if max_bitrate_variant.present?
-          attachment.category = :image
-          attachment.src = m.media_url.to_s
-        else
-          attachment.category = :video
-          attachment.src = max_bitrate_variant.try(:url).to_s
-        end
+    tweet
+      .urls
+      .flatten
+      .each do |url|
+        attachment = self.attachments.new(category: :website)
+        attachment.src = url.expanded_url.to_s
         attachments << attachment
       end
-    end
+    tweet
+      .media
+      .flatten
+      .each do |m|
+        case m
+        when Twitter::Media::Photo
+          attachment = self.attachments.new(category: :image)
+          attachment.src = m.media_url.to_s
+          attachments << attachment
+        when Twitter::Media::Video
+          attachment = self.attachments.new
+          max_bitrate_variant = m.video_info.variants.max_by { |variant| variant.bitrate.to_i }
+          if max_bitrate_variant.present?
+            attachment.category = :image
+            attachment.src = m.media_url.to_s
+          else
+            attachment.category = :video
+            attachment.src = max_bitrate_variant.try(:url).to_s
+          end
+          attachments << attachment
+        end
+      end
     Ai::ResourceAttachment.import!(attachments, on_duplicate_key_update: %i[options]) if attachments.present?
   end
 end

@@ -1,7 +1,7 @@
 ja:
   activerecord:
     models:
-      event: "イベント"
+      event: 'イベント'
     attributes:
       event:
         title: イベント名

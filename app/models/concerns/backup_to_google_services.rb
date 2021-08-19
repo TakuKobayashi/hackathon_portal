@@ -9,8 +9,10 @@ module BackupToGoogleServices
   def self.backup_and_upload_and_clear_data!(backup_models: [])
     drive = GoogleServices.get_drive_service
     backup_folder =
-      drive.list_files({ q: "name='#{BACKUP_ROOT_DIRECTORY_NAME}' and mimeType='application/vnd.google-apps.folder'" })
-        .files.first
+      drive
+        .list_files({ q: "name='#{BACKUP_ROOT_DIRECTORY_NAME}' and mimeType='application/vnd.google-apps.folder'" })
+        .files
+        .first
     if backup_folder.blank?
       backup_folder =
         drive.create_file(
@@ -19,8 +21,10 @@ module BackupToGoogleServices
         )
     end
     exists_table_name_folders =
-      drive.list_files({ q: "mimeType='application/vnd.google-apps.folder' and parents in '#{backup_folder.id}'" })
-        .files.index_by(&:name)
+      drive
+        .list_files({ q: "mimeType='application/vnd.google-apps.folder' and parents in '#{backup_folder.id}'" })
+        .files
+        .index_by(&:name)
     backup_models.each do |clazz|
       table_name = clazz.table_name
       root_folder = exists_table_name_folders[table_name]
@@ -32,6 +36,7 @@ module BackupToGoogleServices
           )
       end
       local_sql_file_path = Dumpdb.dump_table!(table_name: table_name, output_root_path: Rails.root.join('tmp').to_s)
+
       #s3 = Aws::S3::Client.new
       sql_filename = "#{Time.current.strftime('%Y%m%d_%H%M%S')}_#{table_name}.sql"
       result =
@@ -44,6 +49,7 @@ module BackupToGoogleServices
             supports_team_drives: true,
           },
         )
+
       #      File.open(local_sql_file_path, 'rb') do |sql_file|
       #        s3.put_object(bucket: "taptappun", body: sql_file, key: "backup/hackathon_portal/dbdump/#{sql_filename}", acl: "public-read")
       #      end

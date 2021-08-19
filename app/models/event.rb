@@ -42,7 +42,15 @@ class Event < ApplicationRecord
 
   enum state: { active: 0, unactive: 1, closed: 2 }
   enum informed_from: {
-         web: 0, connpass: 1, atnd: 2, doorkeeper: 3, peatix: 4, meetup: 5, google_form: 6, twitter: 7, devpost: 8
+         web: 0,
+         connpass: 1,
+         atnd: 2,
+         doorkeeper: 3,
+         peatix: 4,
+         meetup: 5,
+         google_form: 6,
+         twitter: 7,
+         devpost: 8,
        }
 
   has_many :summaries, as: :resource, class_name: 'Ai::ResourceSummary'
@@ -50,7 +58,22 @@ class Event < ApplicationRecord
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
 
-  TWITTER_HACKATHON_KEYWORDS = %w[hackathon ッカソン gamejam アイディアソン アイデアソン ideathon 開発合宿 はっかそん アプリコンテスト 開発コンテスト "App Challenge" "Application Challenge"]
+  TWITTER_HACKATHON_KEYWORDS = %w[
+    hackathon
+    ッカソン
+    gamejam
+    アイディアソン
+    アイデアソン
+    ideathon
+    開発合宿
+    はっかそん
+    アプリコンテスト
+    開発コンテスト
+    "App
+    Challenge"
+    "Application
+    Challenge"
+  ]
   TWITTER_ADDITIONAL_PROMOTE_KEYWORDS = %w[エンジニア developer デザイナ]
   HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
@@ -80,6 +103,7 @@ class Event < ApplicationRecord
 
   def self.import_events!
     keywords = HACKATHON_KEYWORDS + %w[はっかそん]
+
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
     operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
@@ -93,7 +117,11 @@ class Event < ApplicationRecord
 
   def self.import_events_from_twitter!
     TwitterEventOperation.import_events_from_keywords!(
-      keywords: Event::TWITTER_HACKATHON_KEYWORDS, options: { limit_execute_second: 3600, default_max_tweet_id: nil },
+      keywords: Event::TWITTER_HACKATHON_KEYWORDS,
+      options: {
+        limit_execute_second: 3600,
+        default_max_tweet_id: nil,
+      },
     )
   end
 
@@ -237,6 +265,7 @@ class Event < ApplicationRecord
         access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
         access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
+
     # Twitter APIの仕様により100件ずつ設定する
     event_tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) do |tweet_ids|
       event_tweets = twitter_client.statuses(tweet_ids)
@@ -264,7 +293,7 @@ class Event < ApplicationRecord
     if remove_twitter_bot.present?
       remove_twitter_bot.reject_tweet!(
         access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
       )
     end
     remove_calendar_bot = EventCalendarBot.find_by(from: self)
@@ -275,7 +304,7 @@ class Event < ApplicationRecord
     BloggerBot.remove_event!(
       event: self,
       blogger_blog_url: 'https://hackathonportal.blogspot.com/',
-      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', '')
+      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
     )
     self.destroy!
   end

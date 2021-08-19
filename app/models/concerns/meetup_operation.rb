@@ -7,8 +7,15 @@ module MeetupOperation
     return(
       RequestParser.request_and_parse_json(
         url: MEETUP_SEARCH_URL,
-        params: { key: ENV.fetch('MEETUP_API_KEY', ''), text: keywords.join('|'), sign: true, page: PAGE_PER },
-        options: { follow_redirect: true },
+        params: {
+          key: ENV.fetch('MEETUP_API_KEY', ''),
+          text: keywords.join('|'),
+          sign: true,
+          page: PAGE_PER,
+        },
+        options: {
+          follow_redirect: true,
+        },
       )
     )
   end

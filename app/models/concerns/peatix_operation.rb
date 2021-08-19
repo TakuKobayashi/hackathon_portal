@@ -8,9 +8,19 @@ module PeatixOperation
     return(
       RequestParser.request_and_parse_json(
         url: PEATIX_SEARCH_URL,
-        params: { q: keywords.join(' '), country: 'JP', p: page, size: PAGE_PER },
-        header: { "accept" => "application/json", 'X-Requested-With' => 'XMLHttpRequest' },
-        options: { follow_redirect: true },
+        params: {
+          q: keywords.join(' '),
+          country: 'JP',
+          p: page,
+          size: PAGE_PER,
+        },
+        header: {
+          'accept' => 'application/json',
+          'X-Requested-With' => 'XMLHttpRequest',
+        },
+        options: {
+          follow_redirect: true,
+        },
       )
     )
   end
@@ -21,12 +31,12 @@ module PeatixOperation
       events_response = self.find_event(keywords: keywords, page: page)
       json_data = events_response['json_data'] || { 'events' => [] }
       page += 1
-      urls = json_data['events'].map do |res|
-        tracking_url = Addressable::URI.parse(res['tracking_url'])
-        tracking_url.origin.to_s + tracking_url.path.to_s
-      end.compact
-      current_url_events =
-        Event.peatix.where(url: urls).index_by(&:url)
+      urls =
+        json_data['events'].map do |res|
+          tracking_url = Addressable::URI.parse(res['tracking_url'])
+          tracking_url.origin.to_s + tracking_url.path.to_s
+        end.compact
+      current_url_events = Event.peatix.where(url: urls).index_by(&:url)
       json_data['events'].each do |res|
         tracking_url = Addressable::URI.parse(res['tracking_url'])
         event_url = tracking_url.origin.to_s + tracking_url.path.to_s

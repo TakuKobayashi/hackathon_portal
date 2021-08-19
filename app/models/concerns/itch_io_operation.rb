@@ -5,6 +5,5 @@ module ItchIoOperation
     self.imoport_gamejam_events!
   end
 
-  def self.imoport_gamejam_events!
-  end
+  def self.imoport_gamejam_events!; end
 end

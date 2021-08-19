@@ -72,21 +72,39 @@ class QiitaBot < ApplicationRecord
   end
 
   def self.post_or_update_article!(events: [], access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
-    authorization_header_string = ["Bearer",  access_token].join(" ")
+    authorization_header_string = ['Bearer', access_token].join(' ')
     events_group = events.group_by(&:season_date_number)
     events_group.each do |date_number, event_arr|
       qiita_bot = QiitaBot.find_or_initialize_by(season_number: date_number)
       qiita_bot.event_ids = [qiita_bot.event_ids].flatten.compact | event_arr.map(&:id)
-      month_range = date_number % 10000
-      year_number = (date_number / 10000).to_i
+      month_range = date_number % 10_000
+      year_number = (date_number / 10_000).to_i
       start_month = (month_range / 100).to_i
       end_month = (month_range % 100).to_i
       send_params =
         qiita_bot.generate_post_send_params(year_number: year_number, start_month: start_month, end_month: end_month)
       if qiita_bot.new_record?
-        response = RequestParser.request_and_parse_json(url: "https://qiita.com/api/v2/items", method: :post, header: {Authorization: authorization_header_string, "Content-Type" => "application/json"}, body: send_params.to_json)
+        response =
+          RequestParser.request_and_parse_json(
+            url: 'https://qiita.com/api/v2/items',
+            method: :post,
+            header: {
+              :Authorization => authorization_header_string,
+              'Content-Type' => 'application/json',
+            },
+            body: send_params.to_json,
+          )
       else
-        response = RequestParser.request_and_parse_json(url: "https://qiita.com/api/v2/items/" + qiita_bot.qiita_id, method: :patch, header: {Authorization: authorization_header_string, "Content-Type" => "application/json"}, body: send_params.to_json)
+        response =
+          RequestParser.request_and_parse_json(
+            url: 'https://qiita.com/api/v2/items/' + qiita_bot.qiita_id,
+            method: :patch,
+            header: {
+              :Authorization => authorization_header_string,
+              'Content-Type' => 'application/json',
+            },
+            body: send_params.to_json,
+          )
       end
       qiita_bot.qiita_id = response['id'] if qiita_bot.qiita_id.blank?
       response_tags = response['tags'] || []
