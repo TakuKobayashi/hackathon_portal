@@ -59,6 +59,7 @@ namespace :batch do
     class_name_model_class_pair = model_classes.index_by(&:to_s)
     relation_entity_components = Set.new
     entity_component_fields = Set.new
+    unique_index_table_columns = Set.new
     foreign_key_pairs = {}
     # ER図においてそれぞれのエンティティとの関連性を記述していく
     class_name_model_class_pair.values.each do |model_class|
@@ -103,6 +104,14 @@ namespace :batch do
           end
         end
       end
+
+      model_class.connection.indexes(model_class.table_name).each do |index_definition|
+        # unique index(単体)カラムには印をつけるため該当するものを集める
+        if index_definition.unique && index_definition.columns.size == 1
+           unique_index_table_column = [model_class.table_name , index_definition.columns.first].join(".")
+           unique_index_table_columns << unique_index_table_column
+        end
+      end
     end
 
     # ER図においてそれぞれのエンティティのカラムの特徴を記述していく
@@ -118,6 +127,9 @@ namespace :batch do
         # 外部キーには目印
         elsif foreign_key_pairs[table_column_string].present?
           entity_components << ["#", model_column.name, "[FK(" + foreign_key_pairs[table_column_string] + ")]", model_column.sql_type].join(" ")
+        # unique indexには目印
+        elsif unique_index_table_columns.include?(table_column_string)
+          entity_components << ["*", model_column.name, model_column.sql_type].join(" ")
         else
           entity_components << [model_column.name, model_column.sql_type].join(" ")
         end
