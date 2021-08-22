@@ -35,25 +35,24 @@ class EventCalendarBot < ApplicationRecord
     events.each do |event|
       calender_description =
         ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
-      calender_event =
-        Google::Apis::CalendarV3::Event.new(
-          {
-            summary: event.title,
-            location: [event.address, event.place].join(' '),
-            description: calender_description,
-            start: {
-              date_time: event.started_at.to_datetime.rfc3339,
-            },
-            source: {
-              url: event.url,
-              title: event.title,
-            },
-          },
-        )
+      calender_event = Google::Apis::CalendarV3::Event.new
+      calender_event.summary = event.title
+      calender_event.location = [event.address, event.place].join(' ')
+      calender_event.description = calender_description
+      start_date_time = Google::Apis::CalendarV3::EventDateTime.new
+      start_date_time.date_time = event.started_at.to_datetime.rfc3339
+      calender_event.start = start_date_time
+      event_source = Google::Apis::CalendarV3::Event::Source.new
+      event_source.url = event.url
+      event_source.title = event.title
+      calender_event.source = event_source
+      end_date_time = Google::Apis::CalendarV3::EventDateTime.new
       if event.ended_at.present?
-        calender_event.end = { date_time: event.ended_at.to_datetime.rfc3339 }
+        end_date_time.date_time = event.ended_at.to_datetime.rfc3339
+        calender_event.end = end_date_time
       else
-        calender_event.end = { date_time: event.started_at.end_of_day.to_datetime.rfc3339 }
+        end_date_time.date_time = event.started_at.end_of_day.to_datetime.rfc3339
+        calender_event.end = end_date_time
       end
 
       #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
