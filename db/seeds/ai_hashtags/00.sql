@@ -2249,3 +2249,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2275,'orcc');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2276,'Vimeo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2277,'wtmhackathon');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2278,'AR_Fukuoka');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2279,'PGMMVSummerGameJam');
