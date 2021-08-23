@@ -85,6 +85,15 @@ module RequestParser
     http_client.connect_timeout = timeout_second
     http_client.send_timeout = timeout_second
     http_client.receive_timeout = timeout_second
+    http_client.redirect_uri_callback = lambda {|uri, res|
+      newuri = HTTPClient::Util.urify(res.header['location'][0])
+      newuri_scheme = newuri.scheme.try(:downcase)
+      if newuri_scheme && (newuri_scheme == "https" || newuri_scheme == "http")
+      else
+        newuri = uri + newuri
+      end
+      newuri
+    }
     response = nil
     begin
       request_option_hash = { query: params, header: header, body: body }.merge(option_struct.to_h)
