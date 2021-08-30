@@ -51,6 +51,8 @@ class Event < ApplicationRecord
          google_form: 6,
          twitter: 7,
          devpost: 8,
+         eventbrite: 9,
+         itchio: 10,
        }
 
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'

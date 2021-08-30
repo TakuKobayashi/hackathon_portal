@@ -66,6 +66,12 @@ module EventCommon
       self.informed_from = :atnd
     elsif aurl.host.include?('meetup.com')
       self.informed_from = :meetup
+    elsif aurl.host.include?('devpost.com')
+      self.informed_from = :devpost
+    elsif aurl.host.include?('eventbrite')
+      self.informed_from = :eventbrite
+    elsif aurl.host.include?('itch.io')
+      self.informed_from = :itchio
     end
   end
 
