@@ -66,6 +66,52 @@ module EventCommon
       self.informed_from = :atnd
     elsif aurl.host.include?('meetup.com')
       self.informed_from = :meetup
+    elsif aurl.host.include?('devpost.com')
+      self.informed_from = :devpost
+    elsif aurl.host.include?('eventbrite')
+      self.informed_from = :eventbrite
+    elsif aurl.host.include?('itch.io')
+      self.informed_from = :itchio
+    end
+  end
+
+  def rebuild_correct_event
+    aurl = Addressable::URI.parse(self.url)
+    if self.connpass?
+      connpass_event_id_string = aurl.path.split("/").last
+      if connpass_event_id_string.present?
+        events_response = RequestParser.request_and_parse_json(
+          url: ConnpassOperation::CONNPASS_URL,
+          params: {
+            event_id: connpass_event_id_string,
+          },
+        )
+        res_event = (events_response['events'] || []).first
+        return false if res_event.blank?
+        self.merge_event_attributes(
+          attrs: {
+            state: :active,
+            event_id: res_event['event_id'].to_s,
+            title: res_event['title'].to_s,
+            description: Sanitizer.basic_sanitize(res_event['description'].to_s),
+            limit_number: res_event['limit'],
+            address: res_event['address'],
+            place: res_event['place'].to_s,
+            lat: res_event['lat'],
+            lon: res_event['lon'],
+            cost: 0,
+            max_prize: 0,
+            currency_unit: 'JPY',
+            owner_id: res_event['owner_id'],
+            owner_nickname: res_event['owner_nickname'],
+            owner_name: res_event['owner_display_name'],
+            attend_number: res_event['accepted'],
+            substitute_number: res_event['waiting'],
+            started_at: res_event['started_at'],
+            ended_at: res_event['ended_at'],
+          },
+        )
+      end
     end
   end
 

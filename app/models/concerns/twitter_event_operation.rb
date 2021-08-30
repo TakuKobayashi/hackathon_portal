@@ -164,17 +164,22 @@ module TwitterEventOperation
 
       # 短縮URLなどで上書きれてしまっている可能性があるので再度チェック
       next if current_url_twitter_events[twitter_event.url.to_s].present?
-      twitter_event.merge_event_attributes(
-        attrs: {
-          event_id: tweet.id,
-          attend_number: 0,
-          max_prize: 0,
-          currency_unit: 'JPY',
-          owner_id: tweet.user.id,
-          owner_nickname: tweet.user.name,
-          owner_name: tweet.user.screen_name,
-        },
-      )
+      twitter_event.build_informed_from_url
+      if twitter_event.twitter?
+        twitter_event.merge_event_attributes(
+          attrs: {
+            event_id: tweet.id,
+            attend_number: 0,
+            max_prize: 0,
+            currency_unit: 'JPY',
+            owner_id: tweet.user.id,
+            owner_nickname: tweet.user.name,
+            owner_name: tweet.user.screen_name,
+          },
+        )
+      else
+        twitter_event.rebuild_correct_event
+      end
       if twitter_event.type.present?
         begin
           twitter_event.save!
