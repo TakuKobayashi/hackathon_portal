@@ -2250,3 +2250,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2276,'Vimeo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2277,'wtmhackathon');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2278,'AR_Fukuoka');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2279,'PGMMVSummerGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2280,'Nasa');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2281,'あぷこん');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2282,'ミライノカイモノ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2283,'osc21hi');
