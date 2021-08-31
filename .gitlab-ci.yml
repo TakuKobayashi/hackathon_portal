@@ -39,6 +39,7 @@ stages:
     - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> .env
     - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> .env
     - echo "LOCATION_GAS_SCRIPT_ID='${LOCATION_GAS_SCRIPT_ID}'" >> .env
+    - echo "EVENTBRITE_API_TOKEN='${EVENTBRITE_API_TOKEN}'" >> .env
     - cat .env
   cache:
     untracked: true
