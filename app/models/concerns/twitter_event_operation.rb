@@ -165,7 +165,7 @@ module TwitterEventOperation
       # 短縮URLなどで上書きれてしまっている可能性があるので再度チェック
       next if current_url_twitter_events[twitter_event.url.to_s].present?
       twitter_event.build_informed_from_url
-      if twitter_event.connpass?
+      if twitter_event.connpass? || twitter_event.eventbrite?
         twitter_event.rebuild_correct_event
       else
         twitter_event.merge_event_attributes(

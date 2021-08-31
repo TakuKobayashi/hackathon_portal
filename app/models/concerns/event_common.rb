@@ -78,34 +78,19 @@ module EventCommon
   def rebuild_correct_event
     aurl = Addressable::URI.parse(self.url)
     if self.connpass?
-      connpass_event_id_string = aurl.path.split("/").last
+      connpass_event_id_string = aurl.path.split('/').last
       if connpass_event_id_string.present?
         events_response = ConnpassOperation.find_event(event_id: connpass_event_id_string)
         res_event = (events_response['events'] || []).first
         return false if res_event.blank?
-        self.merge_event_attributes(
-          attrs: {
-            state: :active,
-            event_id: res_event['event_id'].to_s,
-            title: res_event['title'].to_s,
-            description: Sanitizer.basic_sanitize(res_event['description'].to_s),
-            limit_number: res_event['limit'],
-            address: res_event['address'],
-            place: res_event['place'].to_s,
-            lat: res_event['lat'],
-            lon: res_event['lon'],
-            cost: 0,
-            max_prize: 0,
-            currency_unit: 'JPY',
-            owner_id: res_event['owner_id'],
-            owner_nickname: res_event['owner_nickname'],
-            owner_name: res_event['owner_display_name'],
-            attend_number: res_event['accepted'],
-            substitute_number: res_event['waiting'],
-            started_at: res_event['started_at'],
-            ended_at: res_event['ended_at'],
-          },
-        )
+        ConnpassOperation.setup_event_info(event: self, api_response_hash: res_event)
+      end
+    elsif self.eventbrite?
+      eventbrite_last_string = aurl.path.split('/').last.to_s
+      eventbrite_event_id_string = eventbrite_last_string.split('-').last
+      if eventbrite_event_id_string.present?
+        event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
+        EventbriteOperation.setup_event_info(event: self, api_response_hash: event_response)
       end
     end
     return true
