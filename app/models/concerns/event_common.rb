@@ -80,12 +80,7 @@ module EventCommon
     if self.connpass?
       connpass_event_id_string = aurl.path.split("/").last
       if connpass_event_id_string.present?
-        events_response = RequestParser.request_and_parse_json(
-          url: ConnpassOperation::CONNPASS_URL,
-          params: {
-            event_id: connpass_event_id_string,
-          },
-        )
+        events_response = ConnpassOperation.find_event(event_id: connpass_event_id_string)
         res_event = (events_response['events'] || []).first
         return false if res_event.blank?
         self.merge_event_attributes(
@@ -113,6 +108,7 @@ module EventCommon
         )
       end
     end
+    return true
   end
 
   def build_from_website

@@ -165,7 +165,9 @@ module TwitterEventOperation
       # 短縮URLなどで上書きれてしまっている可能性があるので再度チェック
       next if current_url_twitter_events[twitter_event.url.to_s].present?
       twitter_event.build_informed_from_url
-      if twitter_event.twitter?
+      if twitter_event.connpass?
+        twitter_event.rebuild_correct_event
+      else
         twitter_event.merge_event_attributes(
           attrs: {
             event_id: tweet.id,
@@ -177,8 +179,6 @@ module TwitterEventOperation
             owner_name: tweet.user.screen_name,
           },
         )
-      else
-        twitter_event.rebuild_correct_event
       end
       if twitter_event.type.present?
         begin
