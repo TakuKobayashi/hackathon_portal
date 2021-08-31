@@ -78,7 +78,7 @@ module EventCommon
   def rebuild_correct_event
     aurl = Addressable::URI.parse(self.url)
     if self.connpass?
-      connpass_event_id_string = aurl.path.split("/").last
+      connpass_event_id_string = aurl.path.split('/').last
       if connpass_event_id_string.present?
         events_response = ConnpassOperation.find_event(event_id: connpass_event_id_string)
         res_event = (events_response['events'] || []).first
@@ -86,8 +86,8 @@ module EventCommon
         ConnpassOperation.setup_event_info(event: self, api_response_hash: res_event)
       end
     elsif self.eventbrite?
-      eventbrite_last_string = aurl.path.split("/").last.to_s
-      eventbrite_event_id_string = eventbrite_last_string.split("-").last
+      eventbrite_last_string = aurl.path.split('/').last.to_s
+      eventbrite_event_id_string = eventbrite_last_string.split('-').last
       if eventbrite_event_id_string.present?
         event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
         EventbriteOperation.setup_event_info(event: self, api_response_hash: event_response)
