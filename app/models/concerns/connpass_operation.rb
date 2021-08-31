@@ -1,7 +1,7 @@
 module ConnpassOperation
   CONNPASS_URL = 'https://connpass.com/api/v1/event/'
 
-  def self.find_event(keywords:, start: 1)
+  def self.find_event(keywords: nil, start: 1, event_id: nil)
     return(
       RequestParser.request_and_parse_json(
         url: CONNPASS_URL,
@@ -10,6 +10,7 @@ module ConnpassOperation
           count: 100,
           start: start,
           order: 1,
+          event_id: event_id,
         },
       )
     )
