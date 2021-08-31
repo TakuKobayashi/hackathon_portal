@@ -1,7 +1,7 @@
 module DoorkeeperOperation
   DOORKEEPER_URL = 'https://api.doorkeeper.jp/events'
 
-  def self.find_event(keywords:, page: 1)
+  def self.search_events(keywords:, page: 1)
     return(
       RequestParser.request_and_parse_json(
         url: DOORKEEPER_URL,
@@ -16,10 +16,47 @@ module DoorkeeperOperation
     )
   end
 
+  def self.find_event(event_id:)
+    return(
+      RequestParser.request_and_parse_json(
+        url: DOORKEEPER_URL + "/" + event_id,
+        header: {
+          'Authorization' => ['Bearer', ENV.fetch('DOORKEEPER_API_KEY', '')].join(' '),
+        },
+      )
+    )
+  end
+
+  def self.setup_event_info(event:, api_response_hash:)
+    event.merge_event_attributes(
+      attrs: {
+        state: :active,
+        informed_from: :doorkeeper,
+        event_id: api_response_hash['id'].to_s,
+        title: api_response_hash['title'].to_s,
+        description: Sanitizer.basic_sanitize(api_response_hash['description'].to_s),
+        limit_number: api_response_hash['ticket_limit'],
+        address: api_response_hash['address'],
+        place: api_response_hash['venue_name'].to_s,
+        lat: api_response_hash['lat'],
+        lon: api_response_hash['long'],
+        cost: 0,
+        max_prize: 0,
+        currency_unit: 'JPY',
+        owner_id: api_response_hash['group'],
+        attend_number: api_response_hash['participants'],
+        substitute_number: api_response_hash['waitlisted'],
+        started_at: api_response_hash['starts_at'],
+        ended_at: api_response_hash['ends_at'],
+      },
+    )
+    return event
+  end
+
   def self.import_events_from_keywords!(keywords:)
     page = 1
     begin
-      events_response = self.find_event(keywords: keywords, page: page)
+      events_response = self.search_events(keywords: keywords, page: page)
       current_url_events =
         Event.doorkeeper.where(url: events_response.map { |res| res['event']['public_url'] }.compact).index_by(&:url)
       events_response.each do |res|
@@ -30,28 +67,7 @@ module DoorkeeperOperation
           else
             doorkeeper_event = Event.new(url: event['public_url'].to_s)
           end
-          doorkeeper_event.merge_event_attributes(
-            attrs: {
-              state: :active,
-              informed_from: :doorkeeper,
-              event_id: event['id'].to_s,
-              title: event['title'].to_s,
-              description: Sanitizer.basic_sanitize(event['description'].to_s),
-              limit_number: event['ticket_limit'],
-              address: event['address'],
-              place: event['venue_name'].to_s,
-              lat: event['lat'],
-              lon: event['long'],
-              cost: 0,
-              max_prize: 0,
-              currency_unit: 'JPY',
-              owner_id: event['group'],
-              attend_number: event['participants'],
-              substitute_number: event['waitlisted'],
-              started_at: event['starts_at'],
-              ended_at: event['ends_at'],
-            },
-          )
+          doorkeeper_event = self.setup_event_info(event: doorkeeper_event, api_response_hash: event)
           doorkeeper_event.save!
           doorkeeper_event.import_hashtags!(hashtag_strings: doorkeeper_event.search_hashtags)
         end
