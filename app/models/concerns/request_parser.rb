@@ -1,7 +1,7 @@
 require 'xmlsimple'
 
 module RequestParser
-  def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: "", options: {})
     html_header = { 'Content-Type' => 'text/html; charset=UTF-8' }.merge(header)
     response =
       self.request_and_response(
@@ -18,7 +18,7 @@ module RequestParser
     return doc
   end
 
-  def self.request_and_get_links_from_html(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_get_links_from_html(url:, method: :get, params: {}, header: {}, body: "", options: {})
     doc =
       self.request_and_parse_html(
         url: url,
@@ -36,7 +36,7 @@ module RequestParser
     return result
   end
 
-  def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: "", options: {})
     response =
       self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
     text =
@@ -50,6 +50,7 @@ module RequestParser
         method: method,
         params: params,
         header: header,
+        body: body,
         options: options,
         error_messages: ["error: #{e.message}"] + e.backtrace,
         insert_top_messages: ['exception:' + e.class.to_s],
@@ -58,7 +59,7 @@ module RequestParser
     return parsed_json
   end
 
-  def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: "", options: {})
     response =
       self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
     text =
@@ -67,7 +68,7 @@ module RequestParser
     return parsed_xml
   end
 
-  def self.request_and_response(url:, method: :get, params: {}, header: {}, body: {}, options: {})
+  def self.request_and_response(url:, method: :get, params: {}, header: {}, body: "", options: {})
     option_struct = OpenStruct.new(options)
     customize_force_redirect = option_struct.customize_force_redirect
     customize_redirect_counter = option_struct.customize_redirect_counter.to_i
@@ -107,6 +108,7 @@ module RequestParser
           method: method,
           params: params,
           header: header,
+          body: body,
           options: options,
           insert_top_messages: ["request Error Status Code: #{response.status}"],
         )
@@ -130,6 +132,7 @@ module RequestParser
         method: method,
         params: params,
         header: header,
+        body: body,
         options: options,
         error_messages: ["error: #{e.message}"] + e.backtrace,
         insert_top_messages: ['exception:' + e.class.to_s],
@@ -157,7 +160,7 @@ module RequestParser
 
   private
 
-  def self.record_log(url:, method:, params:, header:, options:, error_messages: [], insert_top_messages: [])
+  def self.record_log(url:, method:, params:, header:, body:, options:, error_messages: [], insert_top_messages: [])
     logger = ActiveSupport::Logger.new('log/request_error.log')
     console = ActiveSupport::Logger.new(STDOUT)
     logger.extend ActiveSupport::Logger.broadcast(console)
@@ -167,6 +170,7 @@ module RequestParser
       'Request Method:' + method.to_s,
       'Request Headers:' + header.to_json,
       'Request Params:' + params.to_json,
+      'Request Body:' + body,
       'Request Options:' + options.to_json,
     ]
     message = (insert_top_messages + messages + error_messages).join("\n") + "\n\n"
