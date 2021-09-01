@@ -90,12 +90,14 @@ module EventCommon
       eventbrite_event_id_string = eventbrite_last_string.split('-').last
       if eventbrite_event_id_string.present?
         event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
+        return false if event_response.blank?
         EventbriteOperation.setup_event_info(event: self, api_response_hash: event_response)
       end
     elsif self.doorkeeper?
       doorkeeper_last_string = aurl.path.split('/').last.to_s
       if doorkeeper_last_string.present?
         event_response = DoorkeeperOperation.find_event(event_id: doorkeeper_last_string)
+        return false if event_response.blank?
         DoorkeeperOperation.setup_event_info(event: self, api_response_hash: event_response["event"])
       end
     end
