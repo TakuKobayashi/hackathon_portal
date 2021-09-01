@@ -20,7 +20,7 @@ module EventbriteOperation
   def self.load_venue(venue_id:)
     return(
       RequestParser.request_and_parse_json(
-        url: EVENTBRITE_API_URL + '/venues/' + event_id + '/',
+        url: EVENTBRITE_API_URL + '/venues/' + venue_id + '/',
         header: {
           'Authorization' => ['Bearer', ENV.fetch('EVENTBRITE_API_TOKEN', '')].join(' '),
         },
