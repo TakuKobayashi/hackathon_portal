@@ -385,11 +385,8 @@ module EventCommon
   end
 
   def url_active?
-    response =
-      RequestParser.request_and_response(url: self.url, options: { customize_force_redirect: true, timeout_second: 30 })
-    return false if response.blank?
-    return false if 400 <= response.status && response.status < 500
-    return true
+    http_ping = Net::Ping::HTTP.new(self.url)
+    return http_ping.ping?
   end
 
   def get_short_url

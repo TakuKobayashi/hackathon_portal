@@ -1366,6 +1366,7 @@ GEM
     multipart-post (2.1.1)
     mysql2 (0.5.3)
     naught (1.1.0)
+    net-ping (2.0.8)
     nio4r (2.5.8)
     nokogiri (1.12.3-x86_64-darwin)
       racc (~> 1.4)
@@ -1546,6 +1547,7 @@ DEPENDENCIES
   monetize
   money
   mysql2
+  net-ping
   parallel
   prettier
   puma (~> 4.0)

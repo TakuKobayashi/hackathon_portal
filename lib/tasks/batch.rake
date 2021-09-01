@@ -7,22 +7,28 @@ require 'fileutils'
 
 namespace :batch do
   task event_bot_tweet: :environment do
-    will_post_events =
+    target_range_events =
       Event
-        .active
         .where.not(type: nil)
-        .where('(? < started_at AND started_at < ?) OR ? < ended_at', Time.current, 1.year.since, Time.current)
+        .where('? < started_at AND started_at < ?', 1.year.ago, 1.year.since)
         .order('started_at ASC')
+    # 既に終わってしまっていることがわかるようなイベントは取り除く
+    will_post_events = target_range_events.select do |event|
+      event.ended_at.blank? || event.ended_at > Time.current
+    end
     future_events = []
-    will_post_events.each { |event| event.url_active? ? future_events << event : event.closed! }
-    will_post_events +=
-      Event
-        .where.not(state: :active)
-        .where.not(type: nil)
-        .where('(? < started_at AND started_at < ?) OR ? < ended_at', Time.current, 1.year.since, Time.current)
-        .to_a
-    will_post_events.sort_by!(&:started_at)
-
+    will_post_events.each do |event|
+      # Activeではないものは除外
+      next unless event.active?
+      # これから始まるものだけ選別する
+      next if event.started_at < Time.current
+      # これから始まるものだけ選別する
+      if event.url_active?
+        future_events << event
+      else
+        event.closed!
+      end
+    end
     Event.preset_tweet_urls!(events: will_post_events)
 
     future_events.each do |event|
