@@ -2254,3 +2254,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2280,'Nasa');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2281,'あぷこん');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2282,'ミライノカイモノ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2283,'osc21hi');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2284,'wakate2021');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2285,'GlobePH');
