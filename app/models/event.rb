@@ -245,6 +245,7 @@ class Event < ApplicationRecord
 
   def og_image_url=(url)
     fi = FastImage.new(url.to_s)
+    # 画像じゃないものも含まれていることもあるので分別する
     if fi.type.blank?
       return {}
     end

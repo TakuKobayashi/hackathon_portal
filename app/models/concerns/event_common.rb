@@ -345,9 +345,6 @@ module EventCommon
     end
     dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
     og_image_dom = dom.css("meta[@property = 'og:image']").first
-
-    # 画像じゃないものも含まれていることもあるので分別する
-
     if og_image_dom.present?
       image_url = og_image_dom['content'].to_s
       self.og_image_url = image_url.to_s
