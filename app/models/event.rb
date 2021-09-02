@@ -242,15 +242,15 @@ class Event < ApplicationRecord
     return ''
   end
 
-  def og_image_url=(url)
-    fi = FastImage.new(url.to_s)
+  def og_image_url=(image_url)
+    fi = FastImage.new(image_url.to_s)
     # 画像じゃないものも含まれていることもあるので分別する
     if fi.type.blank?
       return {}
     end
     width, height = fi.size
     self.og_image_info = {
-      url: url.to_s,
+      image_url: image_url.to_s,
       width: width.to_i,
       height: height.to_i,
       type: fi.type,
@@ -260,12 +260,11 @@ class Event < ApplicationRecord
 
   def og_image_url
     current_og_image_hash = self.og_image_info || {}
-    p og_image_url
-    return current_og_image_hash[:url]
+    return current_og_image_hash["image_url"]
   end
 
-  def tweet_url=(url)
-    @tweet_url = url
+  def tweet_url=(tweet_status_url)
+    @tweet_url = tweet_status_url
   end
 
   # scoreをかけることで判定を渋くする
@@ -301,8 +300,8 @@ class Event < ApplicationRecord
 
   def self.remove_all_deplicate_events!
     all_event_urls = Event.distinct.pluck(:url)
-    all_event_urls.each do |url|
-      events = Event.where(url: url)
+    all_event_urls.each do |event_url|
+      events = Event.where(url: event_url)
       if events.size > 1
         remove_events = events.last(events.size - 1)
         remove_events.each(&:revert!)
