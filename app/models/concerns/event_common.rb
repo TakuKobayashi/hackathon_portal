@@ -346,6 +346,8 @@ module EventCommon
     if self.og_image_url.present?
       return self.og_image_url
     end
+    # activeじゃないものは取得できないはずなのでリクエストを飛ばす前に返しちゃう
+    return nil unless self.active?
     dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
     og_image_dom = dom.css("meta[@property = 'og:image']").first
     if og_image_dom.present?
