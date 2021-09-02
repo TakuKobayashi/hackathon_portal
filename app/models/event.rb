@@ -77,7 +77,6 @@ class Event < ApplicationRecord
     Challenge"
   ]
   TWITTER_ADDITIONAL_PROMOTE_KEYWORDS = %w[エンジニア developer デザイナ]
-  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
     'hackathon' => 2,
@@ -104,12 +103,11 @@ class Event < ApplicationRecord
   end
 
   def self.import_events!
-    keywords = HACKATHON_KEYWORDS + %w[はっかそん]
-
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
+    operation_modules = HackathonEvent::SEARCH_OPERATION_KEYWORDS.keys
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
+      keywords = HackathonEvent::SEARCH_OPERATION_KEYWORDS[operation_module]
       operation_module.import_events_from_keywords!(keywords: keywords)
     end
     ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)

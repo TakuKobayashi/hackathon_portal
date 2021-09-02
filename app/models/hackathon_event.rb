@@ -38,7 +38,12 @@
 #
 
 class HackathonEvent < Event
-  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
+  SEARCH_OPERATION_KEYWORDS = {
+    DevpostOperation => %w[],
+    ConnpassOperation => %w[hackathon ッカソン はっかそん jam ジャム アイディアソン アイデアソン ideathon 合宿],
+    DoorkeeperOperation => %w[hackathon ッカソン はっかそん jam ジャム アイディアソン アイデアソン ideathon 合宿],
+    PeatixOperation => %w[hackathon ハッカソン ゲームジャム gamejam アイディアソン アイデアソン ideathon 開発合宿],
+  }
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
     'hackathon' => 2,
