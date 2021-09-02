@@ -300,7 +300,7 @@ module EventCommon
     return '' unless self.active?
     image_url = self.get_og_image_url
     if image_url.present?
-      size_text = AdjustImage.calc_resize_text(width: self.og_image_info[:width].to_i, height: self.og_image_info[:height].to_i, max_length: 300)
+      size_text = AdjustImage.calc_resize_text(width: self.og_image_info["width"].to_i, height: self.og_image_info["height"].to_i, max_length: 300)
       resize_width, resize_height = size_text.split('x')
       return(
         ActionController::Base.helpers.image_tag(
