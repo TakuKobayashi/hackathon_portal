@@ -57,6 +57,7 @@ class Event < ApplicationRecord
          itchio: 10,
        }
 
+  has_one :twitter_bot, as: :from, class_name: 'TwitterBot'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
