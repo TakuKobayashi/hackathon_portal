@@ -294,12 +294,10 @@ module EventCommon
 
   def og_image_html
     # すでにイベントが閉鎖しているのだからその後の処理をやらないようにしてみる
-    return '' if self.closed?
+    return '' unless self.active?
     image_url = self.get_og_image_url
     if image_url.present?
-      fi = FastImage.new(image_url.to_s)
-      width, height = fi.size
-      size_text = AdjustImage.calc_resize_text(width: width.to_i, height: height.to_i, max_length: 300)
+      size_text = AdjustImage.calc_resize_text(width: self.og_image_info[:width].to_i, height: self.og_image_info[:height].to_i, max_length: 300)
       resize_width, resize_height = size_text.split('x')
       return(
         ActionController::Base.helpers.image_tag(
@@ -342,6 +340,9 @@ module EventCommon
   end
 
   def get_og_image_url
+    if self.og_image_url.present?
+      return self.og_image_url
+    end
     dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
     og_image_dom = dom.css("meta[@property = 'og:image']").first
 
@@ -349,9 +350,9 @@ module EventCommon
 
     if og_image_dom.present?
       image_url = og_image_dom['content'].to_s
-
-      fi = FastImage.new(image_url.to_s)
-      return image_url.to_s if fi.type.present?
+      self.og_image_url = image_url.to_s
+      self.save
+      return self.og_image_url
     end
     return nil
   end

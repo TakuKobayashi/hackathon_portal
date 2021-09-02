@@ -39,6 +39,7 @@
 
 class Event < ApplicationRecord
   include EventCommon
+  serialize :og_image_info, JSON
 
   enum state: { active: 0, unactive: 1, closed: 2 }
   enum informed_from: {
@@ -240,6 +241,27 @@ class Event < ApplicationRecord
       return @tweet_url
     end
     return ''
+  end
+
+  def og_image_url=(url)
+    fi = FastImage.new(url.to_s)
+    if fi.type.blank?
+      return {}
+    end
+    width, height = fi.size
+    self.og_image_info = {
+      url: url.to_s,
+      width: width.to_i,
+      height: height.to_i,
+      type: fi.type,
+    }
+    return self.og_image_info
+  end
+
+  def og_image_url
+    current_og_image_hash = self.og_image_info || {}
+    p og_image_url
+    return current_og_image_hash[:url]
   end
 
   def tweet_url=(url)

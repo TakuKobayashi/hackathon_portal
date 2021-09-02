@@ -68,6 +68,7 @@ module PeatixOperation
         ended_at: ops.ended_at.to_s,
       },
     )
+    event.og_image_url = api_response_hash['cover'].to_s
     return event
   end
 
