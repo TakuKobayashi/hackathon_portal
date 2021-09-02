@@ -2256,3 +2256,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2282,'ミライノカイモ�
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2283,'osc21hi');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2284,'wakate2021');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2285,'GlobePH');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2286,'jamjamjamstack');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2287,'escueladejuegos');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2288,'Digitale');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2289,'ONERecord2021');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2290,'DigitalCargo');
