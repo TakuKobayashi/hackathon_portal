@@ -7,15 +7,12 @@ require 'fileutils'
 
 namespace :batch do
   task event_bot_tweet: :environment do
-    target_range_events =
+    will_post_events =
       Event
         .where.not(type: nil)
-        .where('? < started_at AND started_at < ?', 1.year.ago, 1.year.since)
+        .where('? < started_at AND started_at < ? AND ? < ended_at', 1.year.ago, 1.year.since, Time.current)
         .order('started_at ASC')
     # 既に終わってしまっていることがわかるようなイベントは取り除く
-    will_post_events = target_range_events.select do |event|
-      event.ended_at.blank? || event.ended_at > Time.current
-    end
     future_events = []
     will_post_events.each do |event|
       # Activeではないものは除外
