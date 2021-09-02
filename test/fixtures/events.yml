@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime
+#  ended_at          :datetime         not null
 #  limit_number      :integer
 #  address           :string(255)
 #  place             :string(255)      not null
@@ -28,6 +28,7 @@
 #  updated_at        :datetime         not null
 #  informed_from     :integer          default("web"), not null
 #  state             :integer          default("active"), not null
+#  og_image_info     :text(65535)
 #
 # Indexes
 #
