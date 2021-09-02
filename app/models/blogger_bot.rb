@@ -63,7 +63,7 @@ class BloggerBot < ApplicationRecord
     active_events, closed_events = post_events.partition { |event| event.active? }
     before_events, after_events =
       active_events.partition do |event|
-        event.ended_at.present? ? event.ended_at > Time.current : (event.started_at + 2.day) > Time.current
+        event.ended_at > Time.current
       end
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
     self.body =

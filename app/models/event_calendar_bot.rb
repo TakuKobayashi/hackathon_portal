@@ -47,13 +47,8 @@ class EventCalendarBot < ApplicationRecord
       event_source.title = event.title
       calender_event.source = event_source
       end_date_time = Google::Apis::CalendarV3::EventDateTime.new
-      if event.ended_at.present?
-        end_date_time.date_time = event.ended_at.to_datetime.rfc3339
-        calender_event.end = end_date_time
-      else
-        end_date_time.date_time = event.started_at.end_of_day.to_datetime.rfc3339
-        calender_event.end = end_date_time
-      end
+      end_date_time.date_time = event.ended_at.to_datetime.rfc3339
+      calender_event.end = end_date_time
 
       #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
       if event.hackathon_event?

@@ -236,6 +236,9 @@ module EventCommon
 
     # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
     self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
+    if self.ended_at.blank?
+      self.ended_at = (self.started_at + 2.day).end_of_day
+    end
     self.check_score_rate = 1.to_f
     return true
   end
@@ -273,7 +276,7 @@ module EventCommon
     words << "定員#{self.limit_number}人" if self.limit_number.present?
 
     if self.attend_number >= 0
-      if self.ended_at.present? && self.ended_at < Time.current
+      if self.ended_at < Time.current
         words << "#{self.attend_number}人が参加しました"
       else
         words << "#{Time.now.strftime('%Y年%m月%d日 %H:%M')}現在 #{self.attend_number}人参加中"
