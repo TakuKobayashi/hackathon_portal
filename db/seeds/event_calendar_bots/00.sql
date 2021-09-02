@@ -2158,3 +2158,4 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2386,'Event',648861,'b3k03nb0sbvm8p3t8qrn712t0c','2021-09-01 12:05:22','2021-09-01 12:05:22');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2387,'Event',648854,'4f8cc9rtersnshabmb102u6g90','2021-09-01 12:05:22','2021-09-01 12:05:22');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2388,'Event',648863,'c83tqt8fsmh27dipujusb1tdig','2021-09-01 12:05:25','2021-09-01 12:05:25');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (2389,'Event',648880,'nr9op0btig8ahhec4g0igau9t0','2021-09-02 10:36:19','2021-09-02 10:36:19');
