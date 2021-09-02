@@ -10,7 +10,7 @@
 #  shortener_url     :string(255)
 #  description       :text(65535)
 #  started_at        :datetime         not null
-#  ended_at          :datetime
+#  ended_at          :datetime         not null
 #  limit_number      :integer
 #  address           :string(255)
 #  place             :string(255)      not null
@@ -28,6 +28,7 @@
 #  updated_at        :datetime         not null
 #  informed_from     :integer          default("web"), not null
 #  state             :integer          default("active"), not null
+#  og_image_info     :text(65535)
 #
 # Indexes
 #
@@ -39,6 +40,7 @@
 
 class Event < ApplicationRecord
   include EventCommon
+  serialize :og_image_info, JSON
 
   enum state: { active: 0, unactive: 1, closed: 2 }
   enum informed_from: {
@@ -76,7 +78,6 @@ class Event < ApplicationRecord
     Challenge"
   ]
   TWITTER_ADDITIONAL_PROMOTE_KEYWORDS = %w[エンジニア developer デザイナ]
-  HACKATHON_KEYWORDS = %w[hackathon ッカソン jam ジャム アイディアソン アイデアソン ideathon 合宿]
   DEVELOPMENT_CAMP_KEYWORDS = %w[開発 プログラム プログラミング ハンズオン 勉強会 エンジニア デザイナ デザイン ゲーム]
   HACKATHON_CHECK_SEARCH_KEYWORD_POINTS = {
     'hackathon' => 2,
@@ -103,12 +104,11 @@ class Event < ApplicationRecord
   end
 
   def self.import_events!
-    keywords = HACKATHON_KEYWORDS + %w[はっかそん]
-
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
-    operation_modules = [DevpostOperation, ConnpassOperation, DoorkeeperOperation, PeatixOperation]
+    operation_modules = HackathonEvent::SEARCH_OPERATION_KEYWORDS.keys
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
+      keywords = HackathonEvent::SEARCH_OPERATION_KEYWORDS[operation_module]
       operation_module.import_events_from_keywords!(keywords: keywords)
     end
     ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
@@ -240,6 +240,28 @@ class Event < ApplicationRecord
       return @tweet_url
     end
     return ''
+  end
+
+  def og_image_url=(url)
+    fi = FastImage.new(url.to_s)
+    # 画像じゃないものも含まれていることもあるので分別する
+    if fi.type.blank?
+      return {}
+    end
+    width, height = fi.size
+    self.og_image_info = {
+      url: url.to_s,
+      width: width.to_i,
+      height: height.to_i,
+      type: fi.type,
+    }
+    return self.og_image_info
+  end
+
+  def og_image_url
+    current_og_image_hash = self.og_image_info || {}
+    p og_image_url
+    return current_og_image_hash[:url]
   end
 
   def tweet_url=(url)

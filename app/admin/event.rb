@@ -12,7 +12,7 @@ ActiveAdmin.register Event do
     column(:url) { |a| link_to(a.url, a.url) }
     column('開催期間') do |a|
       message = a.started_at.strftime('%Y年%m月%d日 %H:%M') + ' ~ '
-      message += a.ended_at.strftime('%Y年%m月%d日 %H:%M') if a.ended_at.present?
+      message += a.ended_at.strftime('%Y年%m月%d日 %H:%M')
       message
     end
     column(:limit_number)
