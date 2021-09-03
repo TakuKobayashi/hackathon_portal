@@ -234,10 +234,14 @@ module EventCommon
         )
     end
 
-    # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
-    self.ended_at = self.started_at.try(:end_of_day) if self.started_at.present? && self.started_at == self.ended_at
-    if self.ended_at.blank?
-      self.ended_at = (self.started_at + 2.day).end_of_day
+    if self.started_at.present?
+      # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
+      if self.started_at == self.ended_at
+        self.ended_at = self.started_at.try(:end_of_day)
+      # ended_atがなければとりあえず開始日の2日後に終了すると仮定する
+      elsif self.ended_at.blank?
+        self.ended_at = (self.started_at + 2.day).end_of_day
+      end
     end
     self.check_score_rate = 1.to_f
     return true
