@@ -8,7 +8,7 @@ module DevpostOperation
   def self.imoport_hackathon_events!
     page = 1
     url_event_options = {}
-    begin
+    loop
       doc = RequestParser.request_and_parse_html(url: DEVPOST_HACKATHONS_URL, params: { page: page })
       url_event_options = {}
       doc
@@ -40,6 +40,8 @@ module DevpostOperation
             'attend_number' => attend_text.to_i,
           }
         end
+      # HTML Parseして1件もなかったらその時点でこれ以上のloopをやめるようにする
+      break if url_event_options.blank?
       url_devpost_events = Event.where(url: url_event_options.keys).index_by(&:url)
       url_event_options.keys.each do |event_url|
         next if url_devpost_events[event_url].present?
@@ -52,7 +54,7 @@ module DevpostOperation
       end
       page += 1
       sleep 1
-    end while url_event_options.present?
+    end
   end
 
   def self.analyze_and_build_event(url:, options: {})
