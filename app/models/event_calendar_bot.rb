@@ -24,15 +24,7 @@ class EventCalendarBot < ApplicationRecord
     return 'ハッカソンポータル'
   end
 
-  def self.insert_or_update_calender!(events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
-    service = GoogleServices.get_calender_service(refresh_token: refresh_token)
-    calenders = service.list_calendar_lists
-    target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
-    target_calender_id = target_calender.try(:id)
-    colors = service.get_color
-
-    event_calendars = []
-    events.each do |event|
+  def self.generate_google_calender_event_object(event:)
       calender_description =
         ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
       calender_event = Google::Apis::CalendarV3::Event.new
@@ -49,7 +41,19 @@ class EventCalendarBot < ApplicationRecord
       end_date_time = Google::Apis::CalendarV3::EventDateTime.new
       end_date_time.date_time = event.ended_at.to_datetime.rfc3339
       calender_event.end = end_date_time
+      return calender_event
+  end
 
+  def self.insert_or_update_calender!(events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+    service = GoogleServices.get_calender_service(refresh_token: refresh_token)
+    calenders = service.list_calendar_lists
+    target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
+    target_calender_id = target_calender.try(:id)
+    colors = service.get_color
+
+    event_calendars = []
+    events.each do |event|
+      calender_event = self.generate_google_calender_event_object(event: event)
       #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
       if event.hackathon_event?
         color_id = colors.calendar.keys[1]
@@ -59,7 +63,6 @@ class EventCalendarBot < ApplicationRecord
         color_id = colors.calendar.keys[5]
       end
       calender_event.color_id = color_id if color_id.present?
-
       calender_bot = self.find_or_initialize_by(from: event)
       begin
         if calender_bot.new_record?
