@@ -301,12 +301,13 @@ class Event < ApplicationRecord
   end
 
   def self.remove_all_deplicate_events!
-    all_event_urls = Event.distinct.pluck(:url)
-    all_event_urls.each do |event_url|
-      events = Event.where(url: event_url)
-      if events.size > 1
-        remove_events = events.last(events.size - 1)
-        remove_events.each(&:revert!)
+    remove_event_ids_set = Set.new
+    Event.find_each do |event|
+      next if remove_event_ids_set.include?(event.id)
+      will_remove_events = Event.where.not(id: event.id).where(url: event.url)
+      will_remove_events.each do |event|
+        event.revert!
+        remove_event_ids_set << event.id
       end
     end
     EventCalendarBot.remove_all_deplicate_events
