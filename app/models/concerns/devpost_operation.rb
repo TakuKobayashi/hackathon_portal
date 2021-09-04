@@ -7,9 +7,8 @@ module DevpostOperation
 
   def self.imoport_hackathon_events!
     page = 1
-    url_event_options = {}
     loop do
-      doc = RequestParser.request_and_parse_html(url: DEVPOST_HACKATHONS_URL, params: { page: page })
+      doc = RequestParser.request_and_parse_html(url: DEVPOST_HACKATHONS_URL, params: { page: page }, options: { follow_redirect: true })
       url_event_options = {}
       doc
         .css('article')
