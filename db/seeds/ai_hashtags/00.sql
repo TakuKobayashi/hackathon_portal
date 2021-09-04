@@ -2261,3 +2261,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2287,'escueladejuegos');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2288,'Digitale');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2289,'ONERecord2021');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2290,'DigitalCargo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2291,'IdentityEngineHackathon');
