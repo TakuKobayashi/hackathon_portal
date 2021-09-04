@@ -2,6 +2,7 @@ module EventbriteOperation
   # https://www.eventbrite.com/
   # https://www.eventbrite.com/platform/api
   EVENTBRITE_API_URL = 'https://www.eventbriteapi.com/v3'
+  EVENTBRITE_URL = 'https://www.eventbrite.com'
 
   def self.find_event(event_id:)
     return(
@@ -67,6 +68,23 @@ module EventbriteOperation
   end
 
   def self.import_events_from_keywords!(keywords:)
-    self.imoport_gamejam_events!
+    self.imoport_online_hackathon_events!
+  end
+
+  def self.imoport_online_hackathon_events!
+    page = 1
+    loop do
+      dom = RequestParser.request_and_parse_html(url: EVENTBRITE_URL + "/d/online/hackathon/", params: { page: page }, options: { follow_redirect: true })
+      event_urls = dom.css("ul.search-main-content__events-list").map{|wrap| wrap.css("a").map{|a| Addressable::URI.parse(a[:href]) } }.flatten.uniq
+      event_ids = event_urls.map do |event_url|
+        eventbrite_last_string = event_url.path.split('/').last.to_s
+        eventbrite_event_id_string = eventbrite_last_string.split('-').last
+        eventbrite_event_id_string
+      end.compact
+      destination_events = RequestParser.request_and_parse_json(url: EVENTBRITE_API_URL + "/destination/events/", params: {event_ids: event_ids.join(","), page_size: event_ids.size, expand: "event
+        _sales_status,image,primary_venue,saves,ticket_availability,primary_organizer"})
+      page += 1
+      sleep 1
+    end
   end
 end
