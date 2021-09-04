@@ -2265,3 +2265,13 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2291,'IdentityEngineHackatho
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2292,'nonprofits');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2293,'nonprofit');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2294,'nonprofitorganization');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2295,'opendatacamp');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2296,'sgd1953');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2297,'stadionhack');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2298,'dogadjaji');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2299,'LKDForum');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2300,'CDLEHACKATHON2021');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2301,'CodingBootcamps');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2302,'BSCNews');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2303,'Crypto');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2304,'situsjudislot');
