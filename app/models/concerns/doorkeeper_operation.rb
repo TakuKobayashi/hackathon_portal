@@ -58,7 +58,7 @@ module DoorkeeperOperation
     begin
       events_response = self.search_events(keywords: keywords, page: page)
       current_url_events =
-        Event.doorkeeper.where(url: events_response.map { |res| res['event']['public_url'] }.compact).index_by(&:url)
+        Event.where(url: events_response.map { |res| res['event']['public_url'] }.compact).index_by(&:url)
       events_response.each do |res|
         Event.transaction do
           event = res['event']

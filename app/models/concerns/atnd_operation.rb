@@ -21,16 +21,15 @@ module AtndOperation
     begin
       events_response = self.find_event(keywords: keywords, start: start)
       start += events_response['results_returned']
-      current_events =
+      current_url_events =
         Event
-          .atnd
-          .where(event_id: events_response['events'].map { |res| res['event']['event_id'] }.compact)
-          .index_by(&:event_id)
+          .where(url: events_response['events'].map { |res| (ATND_EVENTPAGE_URL + res['event']['event_id']).to_s })
+          .index_by(&:url)
       events_response['events'].each do |res|
         Event.transaction do
           event = res['event']
-          if current_events[event['event_id'].to_s].present?
-            atnd_event = current_events[event['event_id'].to_s]
+          if current_url_events[event['event_id'].to_s].present?
+            atnd_event = current_url_events[(ATND_EVENTPAGE_URL + event['event_id']).to_s]
           else
             atnd_event = Event.new(event_id: event['event_id'].to_s)
           end
