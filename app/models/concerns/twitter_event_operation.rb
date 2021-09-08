@@ -72,25 +72,34 @@ module TwitterEventOperation
       tweets.uniq!
       tweets.sort_by! { |tweet| -tweet.id }
       if skip_import_event_flag.blank?
-        exist_urls = self.find_by_all_relative_events_from_tweets(tweets: tweets).map(&:url)
-        exist_urls_set = Set.new(exist_urls)
+        will_save_events = []
+        event_tweets = {}
 
         # 降順に並んでいるのでreverse_eachをして古い順にデータを作っていくようにする
         tweets.reverse_each do |tweet|
           next if me_twitter.id == tweet.user.id
-          exist_urls_set +=
-            self.save_twitter_events_form_tweet!(
-              tweet: tweet,
-              exist_urls_set: exist_urls_set,
-              location_script_url: script_url,
-            )
+          quoted_tweet_events = []
+          tweet_events = self.build_will_save_twitter_events(tweet: tweet)
+          tweet_events.each { |new_event| event_tweets[new_event] = tweet }
           if tweet.quoted_status?
-            exist_urls_set +=
-              self.save_twitter_events_form_tweet!(
-                tweet: tweet.quoted_status,
-                exist_urls_set: exist_urls_set,
-                location_script_url: script_url,
-              )
+            quoted_tweet_events += self.build_will_save_twitter_events(tweet: tweet.quoted_status)
+            quoted_tweet_events.each { |new_event| event_tweets[new_event] = tweet.quoted_status }
+          end
+          will_save_events += tweet_events
+          will_save_events += quoted_tweet_events
+        end
+        filtered_new_events = will_save_events.uniq { |event| event.url }.select { |event| event.type.present? }
+        current_url_events = Event.where(url: filtered_new_events.map(&:url)).index_by(&:url)
+
+        filtered_new_events.each do |event|
+          if current_url_events[event].blank?
+            event.build_location_data(script_url: script_url) if script_url.present?
+            begin
+              event.save!
+              event.import_hashtags!(hashtag_strings: event_tweets[event].hashtags.map(&:text))
+            rescue Exception => error
+              Rails.logger.warn("Data save error #{event.attributes}")
+            end
           end
         end
       end
@@ -137,13 +146,12 @@ module TwitterEventOperation
 
   private
 
-  def self.save_twitter_events_form_tweet!(tweet:, exist_urls_set:, location_script_url:)
-    saved_urls_set = Set.new
+  def self.build_will_save_twitter_events(tweet:)
+    will_save_events = []
     urls = tweet.urls.map(&:expanded_url)
-    return saved_urls_set if urls.blank?
+    return will_save_events if urls.blank?
     urls.each do |url|
       Rails.logger.info(url)
-      next if (exist_urls_set + saved_urls_set).include?(url.to_s)
 
       # TwitterのURLは除外する
       next if url.host.include?(TWITTER_HOST)
@@ -159,7 +167,6 @@ module TwitterEventOperation
       next if twitter_event.title.blank? || twitter_event.place.blank? || twitter_event.started_at.blank?
 
       # 短縮URLなどで上書きれてしまっている可能性があるので再度チェック
-      next if (exist_urls_set + saved_urls_set).include?(twitter_event.url.to_s)
       twitter_event.build_informed_from_url
       if twitter_event.connpass? || twitter_event.eventbrite? || twitter_event.doorkeeper?
         twitter_event.rebuild_correct_event
@@ -176,19 +183,10 @@ module TwitterEventOperation
           },
         )
       end
-      if twitter_event.type.present?
-        twitter_event.build_location_data(script_url: location_script_url) if location_script_url.present?
-        begin
-          twitter_event.save!
-          twitter_event.import_hashtags!(hashtag_strings: tweet.hashtags.map(&:text))
-          saved_urls_set << twitter_event.url.to_s
-        rescue Exception => error
-          Rails.logger.warn("Data save error #{twitter_event.attributes}")
-        end
-      end
+      will_save_events << twitter_event
     end
 
-    return saved_urls_set
+    return will_save_events
   end
 
   def self.find_by_all_relative_events_from_tweets(tweets: [])
