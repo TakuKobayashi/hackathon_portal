@@ -79,13 +79,17 @@ module TwitterEventOperation
         tweets.reverse_each do |tweet|
           next if me_twitter.id == tweet.user.id
           exist_urls_set +=
-            self.save_twitter_events_form_tweet!(tweet: tweet, exist_urls_set: exist_urls_set, location_script_url: script_url)
+            self.save_twitter_events_form_tweet!(
+              tweet: tweet,
+              exist_urls_set: exist_urls_set,
+              location_script_url: script_url,
+            )
           if tweet.quoted_status?
             exist_urls_set +=
               self.save_twitter_events_form_tweet!(
                 tweet: tweet.quoted_status,
                 exist_urls_set: exist_urls_set,
-                location_script_url: script_url
+                location_script_url: script_url,
               )
           end
         end
@@ -113,7 +117,6 @@ module TwitterEventOperation
       tweets
         .map do |tweet|
           tweet_arr = []
-
           if tweet.user.id != me_user.id
             tweet_arr << tweet
             tweet_arr << tweet.quoted_status if tweet.quoted_status?
@@ -134,7 +137,7 @@ module TwitterEventOperation
 
   private
 
-  def self.save_twitter_events_form_tweet!(tweet:, exist_urls_set:,location_script_url:)
+  def self.save_twitter_events_form_tweet!(tweet:, exist_urls_set:, location_script_url:)
     saved_urls_set = Set.new
     urls = tweet.urls.map(&:expanded_url)
     return saved_urls_set if urls.blank?

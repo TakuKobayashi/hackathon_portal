@@ -19,7 +19,7 @@ module DoorkeeperOperation
   def self.find_event(event_id:)
     return(
       RequestParser.request_and_parse_json(
-        url: DOORKEEPER_URL + "/" + event_id,
+        url: DOORKEEPER_URL + '/' + event_id,
         header: {
           'Authorization' => ['Bearer', ENV.fetch('DOORKEEPER_API_KEY', '')].join(' '),
         },

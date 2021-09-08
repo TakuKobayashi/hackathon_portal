@@ -37,9 +37,7 @@ class QiitaBot < ApplicationRecord
     qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
     active_events, closed_events = qiita_events.partition { |event| event.active? }
     before_events_from_qiita, after_events_from_qiita =
-      active_events.partition do |event|
-        event.ended_at > Time.current
-      end
+      active_events.partition { |event| event.ended_at > Time.current }
     body = "#{Time.current.strftime('%Y年%m月%d日 %H:%M')}更新\n"
     body +=
       "#{year_number}年#{start_month}月〜#{year_number}年#{

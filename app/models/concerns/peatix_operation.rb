@@ -30,7 +30,7 @@ module PeatixOperation
     ops = OpenStruct.new
     dom = RequestParser.request_and_parse_html(url: event.url, options: { follow_redirect: true })
     ops.description = Sanitizer.basic_sanitize(dom.css('#field-event-description').to_html)
-    end_time_string = dom.css("#field-event-datetime").css("strong").last.try(:text).to_s
+    end_time_string = dom.css('#field-event-datetime').css('strong').last.try(:text).to_s
     price_dom = dom.css("meta[@itemprop = 'price']").min_by { |price_dom| price_dom['content'].to_i }
     if price_dom.present?
       ops.cost = price_dom['content'].to_i
@@ -39,7 +39,7 @@ module PeatixOperation
     end
     ops.started_at = api_response_hash['datetime'].to_s
     parsed_started_at = DateTime.parse(ops.started_at.to_s)
-    end_datetime = (parsed_started_at + (api_response_hash["days"].to_i - 1).day).beginning_of_day
+    end_datetime = (parsed_started_at + (api_response_hash['days'].to_i - 1).day).beginning_of_day
     if end_time_string.present?
       end_time = DateTime.parse(end_time_string)
       end_datetime = end_datetime + end_time.hour.hours + end_time.minute.minutes

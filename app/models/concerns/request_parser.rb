@@ -1,7 +1,7 @@
 require 'xmlsimple'
 
 module RequestParser
-  def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: "", options: {})
+  def self.request_and_parse_html(url:, method: :get, params: {}, header: {}, body: '', options: {})
     html_header = { 'Content-Type' => 'text/html; charset=UTF-8' }.merge(header)
     response =
       self.request_and_response(
@@ -18,7 +18,7 @@ module RequestParser
     return doc
   end
 
-  def self.request_and_get_links_from_html(url:, method: :get, params: {}, header: {}, body: "", options: {})
+  def self.request_and_get_links_from_html(url:, method: :get, params: {}, header: {}, body: '', options: {})
     doc =
       self.request_and_parse_html(
         url: url,
@@ -36,7 +36,7 @@ module RequestParser
     return result
   end
 
-  def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: "", options: {})
+  def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: '', options: {})
     response =
       self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
     text =
@@ -59,7 +59,7 @@ module RequestParser
     return parsed_json
   end
 
-  def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: "", options: {})
+  def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: '', options: {})
     response =
       self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
     text =
@@ -68,7 +68,7 @@ module RequestParser
     return parsed_xml
   end
 
-  def self.request_and_response(url:, method: :get, params: {}, header: {}, body: "", options: {})
+  def self.request_and_response(url:, method: :get, params: {}, header: {}, body: '', options: {})
     option_struct = OpenStruct.new(options)
     customize_force_redirect = option_struct.customize_force_redirect
     customize_redirect_counter = option_struct.customize_redirect_counter.to_i

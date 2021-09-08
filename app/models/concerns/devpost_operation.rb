@@ -39,6 +39,7 @@ module DevpostOperation
             'attend_number' => attend_text.to_i,
           }
         end
+
       # HTML Parseして1件もなかったらその時点でこれ以上のloopをやめるようにする
       break if url_event_options.blank?
       url_devpost_events = Event.where(url: url_event_options.keys).index_by(&:url)

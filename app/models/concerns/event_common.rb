@@ -98,7 +98,7 @@ module EventCommon
       if doorkeeper_last_string.present?
         event_response = DoorkeeperOperation.find_event(event_id: doorkeeper_last_string)
         return false if event_response.blank?
-        DoorkeeperOperation.setup_event_info(event: self, api_response_hash: event_response["event"])
+        DoorkeeperOperation.setup_event_info(event: self, api_response_hash: event_response['event'])
       end
     end
     return true
@@ -238,7 +238,7 @@ module EventCommon
       # 解析した結果、始まりと終わりが同時刻になってしまったのなら、その日の終わりを終了時刻とする
       if self.started_at == self.ended_at
         self.ended_at = self.started_at.try(:end_of_day)
-      # ended_atがなければとりあえず開始日の2日後に終了すると仮定する
+        # ended_atがなければとりあえず開始日の2日後に終了すると仮定する
       elsif self.ended_at.blank?
         self.ended_at = (self.started_at + 2.day).end_of_day
       end
@@ -304,7 +304,12 @@ module EventCommon
     return '' unless self.active?
     image_url = self.get_og_image_url
     if image_url.present?
-      size_text = AdjustImage.calc_resize_text(width: self.og_image_info["width"].to_i, height: self.og_image_info["height"].to_i, max_length: 300)
+      size_text =
+        AdjustImage.calc_resize_text(
+          width: self.og_image_info['width'].to_i,
+          height: self.og_image_info['height'].to_i,
+          max_length: 300,
+        )
       resize_width, resize_height = size_text.split('x')
       return(
         ActionController::Base.helpers.image_tag(
@@ -347,9 +352,8 @@ module EventCommon
   end
 
   def get_og_image_url
-    if self.og_image_url.present?
-      return self.og_image_url
-    end
+    return self.og_image_url if self.og_image_url.present?
+
     # activeじゃないものは取得できないはずなのでリクエストを飛ばす前に返しちゃう
     return nil unless self.active?
     dom = RequestParser.request_and_parse_html(url: self.url, options: { follow_redirect: true })
