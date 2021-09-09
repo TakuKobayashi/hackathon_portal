@@ -76,7 +76,7 @@ module EventbriteOperation
     loop do
       dom =
         RequestParser.request_and_parse_html(
-          url: EVENTBRITE_URL + '/d/online/hackathon/',
+          url: EventbriteOperation::EVENTBRITE_URL + '/d/online/hackathon/',
           params: {
             page: page,
           },
@@ -87,26 +87,38 @@ module EventbriteOperation
       event_urls =
         dom
           .css('ul.search-main-content__events-list')
-          .map { |wrap| wrap.css('a').map { |a| Addressable::URI.parse(a[:href]) } }
+          .map do |wrap|
+            wrap
+              .css('a')
+              .map do |a|
+                aurl = Addressable::URI.parse(a[:href])
+                aurl.query = nil
+                aurl
+              end
+          end
           .flatten
+          .compact
           .uniq
-      event_ids =
-        event_urls.map do |event_url|
-          eventbrite_last_string = event_url.path.split('/').last.to_s
+      break if event_urls.blank?
+      current_url_events = Event.where(url: event_urls.map(&:to_s)).index_by(&:url)
+      event_urls.each do |event_url|
+        Event.transaction do
+          if current_url_events[event_url.to_s].present?
+            eventbrite_event = current_url_events[event_url.to_s]
+          else
+            eventbrite_event = Event.new(url: event_url.to_s)
+          end
+          aurl = Addressable::URI.parse(event_url)
+          eventbrite_last_string = aurl.path.split('/').last.to_s
           eventbrite_event_id_string = eventbrite_last_string.split('-').last
-          eventbrite_event_id_string
-        end.compact
-      destination_events =
-        RequestParser.request_and_parse_json(
-          url: EVENTBRITE_API_URL + '/destination/events/',
-          params: {
-            event_ids: event_ids.join(','),
-            page_size: event_ids.size,
-            expand:
-              'event
-        _sales_status,image,primary_venue,saves,ticket_availability,primary_organizer',
-          },
-        )
+          if eventbrite_event_id_string.present?
+            event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
+            next if event_response.blank?
+            EventbriteOperation.setup_event_info(event: eventbrite_event, api_response_hash: event_response)
+            eventbrite_event.save!
+          end
+        end
+      end
       page += 1
       sleep 1
     end
