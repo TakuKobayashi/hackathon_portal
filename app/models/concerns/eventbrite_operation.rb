@@ -68,59 +68,57 @@ module EventbriteOperation
   end
 
   def self.import_events_from_keywords!(keywords:)
-    self.imoport_online_hackathon_events!
-  end
-
-  def self.imoport_online_hackathon_events!
-    page = 1
-    loop do
-      dom =
-        RequestParser.request_and_parse_html(
-          url: EventbriteOperation::EVENTBRITE_URL + '/d/online/hackathon/',
-          params: {
-            page: page,
-          },
-          options: {
-            follow_redirect: true,
-          },
-        )
-      event_urls =
-        dom
-          .css('ul.search-main-content__events-list')
-          .map do |wrap|
-            wrap
-              .css('a')
-              .map do |a|
-                aurl = Addressable::URI.parse(a[:href])
-                aurl.query = nil
-                aurl
-              end
-          end
-          .flatten
-          .compact
-          .uniq
-      break if event_urls.blank?
-      current_url_events = Event.where(url: event_urls.map(&:to_s)).index_by(&:url)
-      event_urls.each do |event_url|
-        Event.transaction do
-          if current_url_events[event_url.to_s].present?
-            eventbrite_event = current_url_events[event_url.to_s]
-          else
-            eventbrite_event = Event.new(url: event_url.to_s)
-          end
-          aurl = Addressable::URI.parse(event_url)
-          eventbrite_last_string = aurl.path.split('/').last.to_s
-          eventbrite_event_id_string = eventbrite_last_string.split('-').last
-          if eventbrite_event_id_string.present?
-            event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
-            next if event_response.blank?
-            EventbriteOperation.setup_event_info(event: eventbrite_event, api_response_hash: event_response)
-            eventbrite_event.save!
+    keywords.each do |keyword|
+      page = 1
+      loop do
+        dom =
+          RequestParser.request_and_parse_html(
+            url: EventbriteOperation::EVENTBRITE_URL + '/d/online/' + keyword + '/',
+            params: {
+              page: page,
+            },
+            options: {
+              follow_redirect: true,
+            },
+          )
+        event_urls =
+          dom
+            .css('ul.search-main-content__events-list')
+            .map do |wrap|
+              wrap
+                .css('a')
+                .map do |a|
+                  aurl = Addressable::URI.parse(a[:href])
+                  aurl.query = nil
+                  aurl
+                end
+            end
+            .flatten
+            .compact
+            .uniq
+        break if event_urls.blank?
+        current_url_events = Event.where(url: event_urls.map(&:to_s)).index_by(&:url)
+        event_urls.each do |event_url|
+          Event.transaction do
+            if current_url_events[event_url.to_s].present?
+              eventbrite_event = current_url_events[event_url.to_s]
+            else
+              eventbrite_event = Event.new(url: event_url.to_s)
+            end
+            aurl = Addressable::URI.parse(event_url)
+            eventbrite_last_string = aurl.path.split('/').last.to_s
+            eventbrite_event_id_string = eventbrite_last_string.split('-').last
+            if eventbrite_event_id_string.present?
+              event_response = EventbriteOperation.find_event(event_id: eventbrite_event_id_string)
+              next if event_response.blank?
+              EventbriteOperation.setup_event_info(event: eventbrite_event, api_response_hash: event_response)
+              eventbrite_event.save!
+            end
           end
         end
+        page += 1
+        sleep 1
       end
-      page += 1
-      sleep 1
     end
   end
 end
