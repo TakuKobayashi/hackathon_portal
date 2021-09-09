@@ -25,23 +25,23 @@ class EventCalendarBot < ApplicationRecord
   end
 
   def self.generate_google_calender_event_object(event:)
-      calender_description =
-        ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
-      calender_event = Google::Apis::CalendarV3::Event.new
-      calender_event.summary = event.title
-      calender_event.location = [event.address, event.place].join(' ')
-      calender_event.description = calender_description
-      start_date_time = Google::Apis::CalendarV3::EventDateTime.new
-      start_date_time.date_time = event.started_at.to_datetime.rfc3339
-      calender_event.start = start_date_time
-      event_source = Google::Apis::CalendarV3::Event::Source.new
-      event_source.url = event.url
-      event_source.title = event.title
-      calender_event.source = event_source
-      end_date_time = Google::Apis::CalendarV3::EventDateTime.new
-      end_date_time.date_time = event.ended_at.to_datetime.rfc3339
-      calender_event.end = end_date_time
-      return calender_event
+    calender_description =
+      ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
+    calender_event = Google::Apis::CalendarV3::Event.new
+    calender_event.summary = event.title
+    calender_event.location = [event.address, event.place].join(' ')
+    calender_event.description = calender_description
+    start_date_time = Google::Apis::CalendarV3::EventDateTime.new
+    start_date_time.date_time = event.started_at.to_datetime.rfc3339
+    calender_event.start = start_date_time
+    event_source = Google::Apis::CalendarV3::Event::Source.new
+    event_source.url = event.url
+    event_source.title = event.title
+    calender_event.source = event_source
+    end_date_time = Google::Apis::CalendarV3::EventDateTime.new
+    end_date_time.date_time = event.ended_at.to_datetime.rfc3339
+    calender_event.end = end_date_time
+    return calender_event
   end
 
   def self.insert_or_update_calender!(events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
@@ -54,6 +54,7 @@ class EventCalendarBot < ApplicationRecord
     event_calendars = []
     events.each do |event|
       calender_event = self.generate_google_calender_event_object(event: event)
+
       #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
       if event.hackathon_event?
         color_id = colors.calendar.keys[1]

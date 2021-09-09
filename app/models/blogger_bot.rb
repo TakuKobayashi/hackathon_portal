@@ -61,10 +61,7 @@ class BloggerBot < ApplicationRecord
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
     active_events, closed_events = post_events.partition { |event| event.active? }
-    before_events, after_events =
-      active_events.partition do |event|
-        event.ended_at > Time.current
-      end
+    before_events, after_events = active_events.partition { |event| event.ended_at > Time.current }
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
     self.body =
       ApplicationController.render(

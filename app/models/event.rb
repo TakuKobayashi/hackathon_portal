@@ -246,23 +246,17 @@ class Event < ApplicationRecord
 
   def og_image_url=(image_url)
     fi = FastImage.new(image_url.to_s)
+
     # 画像じゃないものも含まれていることもあるので分別する
-    if fi.type.blank?
-      return {}
-    end
+    return {} if fi.type.blank?
     width, height = fi.size
-    self.og_image_info = {
-      image_url: image_url.to_s,
-      width: width.to_i,
-      height: height.to_i,
-      type: fi.type,
-    }
+    self.og_image_info = { image_url: image_url.to_s, width: width.to_i, height: height.to_i, type: fi.type }
     return self.og_image_info
   end
 
   def og_image_url
     current_og_image_hash = self.og_image_info || {}
-    return current_og_image_hash["image_url"]
+    return current_og_image_hash['image_url']
   end
 
   def tweet_url=(tweet_status_url)

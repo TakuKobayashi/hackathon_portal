@@ -6,6 +6,6 @@ class AddColumnAndChangeMetaEvents < ActiveRecord::Migration[6.1]
 
   def down
     remove_column :events, :og_image_info
-    change_column :events, :ended_at,:datetime, null: true
+    change_column :events, :ended_at, :datetime, null: true
   end
 end

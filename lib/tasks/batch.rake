@@ -12,13 +12,16 @@ namespace :batch do
         .where.not(type: nil)
         .where('? < started_at AND started_at < ? AND ? < ended_at', 1.year.ago, 1.year.since, Time.current)
         .order('started_at ASC')
+
     # 既に終わってしまっていることがわかるようなイベントは取り除く
     future_events = []
     will_post_events.each do |event|
       # Activeではないものは除外
       next unless event.active?
+
       # これから始まるものだけ選別する
       next if event.started_at < Time.current
+
       # これから始まるものだけ選別する
       if event.url_active?
         future_events << event
