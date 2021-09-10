@@ -32,7 +32,7 @@ namespace :batch do
     Event.preset_tweet_urls!(events: will_post_events)
 
     future_events.each do |event|
-      if !TwitterBot.exists?(from: event)
+      unless TwitterBot.exists?(from: event)
         tweet_options = { lat: event.lat, long: event.lon }
         TwitterBot.tweet!(
           text: event.generate_tweet_text,
@@ -45,10 +45,12 @@ namespace :batch do
     end
     QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
     future_events.each do |future_event|
-      EventCalendarBot.insert_or_update_calender!(
-        event: future_event,
-        refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
-      )
+      unless EventCalendarBot.exists?(from: future_event)
+        EventCalendarBot.insert_or_update_calender!(
+          event: future_event,
+          refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
+        )
+      end
     end
     BloggerBot.post_or_update_article!(
       events: will_post_events,
