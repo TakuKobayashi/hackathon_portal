@@ -44,10 +44,12 @@ namespace :batch do
       end
     end
     QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
-    EventCalendarBot.insert_or_update_calender!(
-      events: future_events,
-      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
-    )
+    future_events.each do |future_event|
+      EventCalendarBot.insert_or_update_calender!(
+        event: future_event,
+        refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
+      )
+    end
     BloggerBot.post_or_update_article!(
       events: will_post_events,
       blogger_blog_url: 'https://hackathonportal.blogspot.com/',

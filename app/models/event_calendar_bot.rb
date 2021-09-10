@@ -44,46 +44,45 @@ class EventCalendarBot < ApplicationRecord
     return calender_event
   end
 
-  def self.insert_or_update_calender!(events: [], refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
+  def self.insert_or_update_calender!(event:, refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
     service = GoogleServices.get_calender_service(refresh_token: refresh_token)
     calenders = service.list_calendar_lists
     target_calender = calenders.items.detect { |item| item.summary == self.calender_title }
     target_calender_id = target_calender.try(:id)
     colors = service.get_color
 
-    event_calendars = []
-    events.each do |event|
-      calender_event = self.generate_google_calender_event_object(event: event)
+    calender_bot = self.find_or_initialize_by(from: event)
+    calender_event = self.generate_google_calender_event_object(event: event)
 
-      #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
-      if event.hackathon_event?
-        color_id = colors.calendar.keys[1]
-      elsif event.development_camp?
-        color_id = colors.calendar.keys[4]
-      else
-        color_id = colors.calendar.keys[5]
-      end
-      calender_event.color_id = color_id if color_id.present?
-      calender_bot = self.find_or_initialize_by(from: event)
-      begin
-        if calender_bot.new_record?
-          result = service.insert_event(target_calender_id, calender_event)
-          calender_bot.calender_event_id = result.id
-          calender_bot.save!
-        else
-          service.update_event(target_calender_id, calender_bot.calender_event_id, calender_event)
-        end
-      rescue Google::Apis::RateLimitError => e
-        self.record_ratelimit_error_request_log(
-          error: e,
-          target_calender_id: target_calender_id,
-          calender_event_id: calender_bot.try(:calender_event_id),
-          calender_event_hash: calender_event.to_h,
-        )
-      end
-      event_calendars << calender_bot
+    #本当は ハッカソンは1, アイディアソンは2, ゲームジャムは3, 開発合宿は4
+    if event.hackathon_event?
+      color_id = colors.calendar.keys[1]
+    elsif event.development_camp?
+      color_id = colors.calendar.keys[4]
+    else
+      color_id = colors.calendar.keys[5]
     end
-    return event_calendars
+    calender_event.color_id = color_id if color_id.present?
+
+    begin
+      if calender_bot.new_record?
+        result = service.insert_event(target_calender_id, calender_event)
+        calender_bot.calender_event_id = result.id
+        calender_bot.save!
+      else
+        result = service.update_event(target_calender_id, calender_bot.calender_event_id, calender_event)
+        calender_bot.calender_event_id = result.id
+        calender_bot.save!
+      end
+    rescue Google::Apis::RateLimitError => e
+      self.record_ratelimit_error_request_log(
+        error: e,
+        target_calender_id: target_calender_id,
+        calender_event_id: calender_bot.try(:calender_event_id),
+        calender_event_hash: calender_event.to_h,
+      )
+    end
+    return calender_bot
   end
 
   def remove_calender!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''))
