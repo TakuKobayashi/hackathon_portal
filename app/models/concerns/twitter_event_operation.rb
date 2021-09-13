@@ -98,7 +98,7 @@ module TwitterEventOperation
               event.save!
               event.import_hashtags!(hashtag_strings: event_tweets[event].hashtags.map(&:text))
             rescue Exception => error
-              Rails.logger.warn("Data save error #{event.attributes}")
+              Rails.logger.warn(["Data save error #{event.attributes} ", error.message].join("\n"))
             end
           end
         end
