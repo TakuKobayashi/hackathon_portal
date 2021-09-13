@@ -92,13 +92,13 @@ module TwitterEventOperation
         current_url_events = Event.where(url: filtered_new_events.map(&:url)).index_by(&:url)
 
         filtered_new_events.each do |event|
-          if current_url_events[event].blank?
+          if current_url_events[event.url].blank?
             event.build_location_data(script_url: script_url) if script_url.present?
             begin
               event.save!
               event.import_hashtags!(hashtag_strings: event_tweets[event].hashtags.map(&:text))
             rescue Exception => error
-              Rails.logger.warn("Data save error #{event.attributes}")
+              Rails.logger.warn(["Data save error #{event.attributes} ", error.message].join("\n"))
             end
           end
         end
