@@ -73,6 +73,17 @@ namespace :batch do
     service.batch_update_presentation(new_presentation.presentation_id, batch, {})
   end
 
+  task event_revive_challenge: :environment do
+    # 復活させる可能性があるのは基本的に未来のイベント
+    Event
+      .closed
+      .where.not(type: nil)
+      .where('? < started_at AND started_at < ? AND ? < ended_at', 1.year.ago, 1.year.since, Time.current)
+      .find_in_batches do |closed_events|
+        Parallel.each(closed_events, in_threads: closed_events.size) { |closed_event| closed_event.zaoraru! }
+      end
+  end
+
   task export_entity_relationship_diagram_plantuml: :environment do
     # 使用されている全てのテーブルのModelの情報を取得するために全て読み込む
     Rails.application.eager_load!
