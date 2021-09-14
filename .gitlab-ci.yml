@@ -71,6 +71,7 @@ crawlAndPublish:on-schedule:
     - git add db/
     - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
     - git push origin crawled-data
+    - bundle exec rails batch:event_revive_challenge
     - bundle exec rails runner Promote.like_major_user!
     - bundle exec rails runner Promote.try_follows!
     - bundle exec rails runner Promote.organize_follows!

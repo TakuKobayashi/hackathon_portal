@@ -404,6 +404,13 @@ module EventCommon
     return http_ping.ping?
   end
 
+  def zaoraru!
+    return false unless self.closed?
+    return false unless self.url_active?
+    self.update!(state: :active)
+    return true
+  end
+
   def get_short_url
     result =
       RequestParser.request_and_parse_json(
