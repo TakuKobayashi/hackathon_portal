@@ -42,6 +42,7 @@ class HackathonEvent < Event
   SEARCH_OPERATION_KEYWORDS = {
     EventbriteOperation => %w[hackathon ideathon gamejam],
     DevpostOperation => %w[],
+    ItchIoOperation => %w[],
     ConnpassOperation => %w[hackathon ッカソン はっかそん jam ジャム アイディアソン アイデアソン ideathon 合宿],
     DoorkeeperOperation => %w[hackathon ッカソン はっかそん jam ジャム アイディアソン アイデアソン ideathon 合宿],
     PeatixOperation => %w[hackathon ハッカソン ゲームジャム gamejam アイディアソン アイデアソン ideathon 開発合宿],
