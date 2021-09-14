@@ -100,6 +100,15 @@ module EventCommon
         return false if event_response.blank?
         DoorkeeperOperation.setup_event_info(event: self, api_response_hash: event_response['event'])
       end
+    elsif self.itchio?
+      event_detail_dom = RequestParser.request_and_parse_html(
+        url: aurl.to_s,
+        options: {
+          follow_redirect: true,
+        },
+      )
+      return false if event_detail_dom.text.blank?
+      ItchIoOperation.setup_event_info(event: self, event_detail_dom: event_detail_dom)
     end
     return true
   end
