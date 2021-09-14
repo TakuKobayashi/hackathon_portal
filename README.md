@@ -26,6 +26,8 @@ Qiita や Blogger の方がよりまとまった情報として紹介してい�
 - [Peatix](https://peatix.com/)
 - [Twitter](https://twitter.com/search?q=hackathon%20OR%20%E3%83%83%E3%82%AB%E3%82%BD%E3%83%B3%20OR%20gamejam%20OR%20%E3%82%A2%E3%82%A4%E3%83%87%E3%82%A3%E3%82%A2%E3%82%BD%E3%83%B3%20OR%20%E3%82%A2%E3%82%A4%E3%83%87%E3%82%A2%E3%82%BD%E3%83%B3%20OR%20ideathon%20OR%20%E9%96%8B%E7%99%BA%E5%90%88%E5%AE%BF%20OR%20%E3%81%AF%E3%81%A3%E3%81%8B%E3%81%9D%E3%82%93&src=typed_query&f=live)
 - [Devpost](https://devpost.com/hackathons)
+- [Eventbrite](https://www.eventbrite.com/)
+- [Itch.io](https://itch.io/jams)
 
 このほかに追加で収集してほしいサービスとかありましたら、issue などで述べてください。
 
