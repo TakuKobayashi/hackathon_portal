@@ -70,7 +70,7 @@ module EventCommon
       self.informed_from = :devpost
     elsif aurl.host.include?('eventbrite')
       self.informed_from = :eventbrite
-    elsif aurl.host.include?('itch.io')
+    elsif aurl.host.include?('itch.io/jams')
       self.informed_from = :itchio
     end
   end
