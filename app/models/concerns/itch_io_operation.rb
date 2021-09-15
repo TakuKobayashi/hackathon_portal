@@ -62,13 +62,14 @@ module ItchIoOperation
       break if event_url_set.blank?
       current_url_events = Event.where(url: event_url_set).index_by(&:url)
       event_url_set.each do |event_url|
+        if current_url_events[event_url].present?
+          gamejam_event = current_url_events[event_url]
+        else
+          gamejam_event = Event.new(url: event_url)
+        end
+        event_detail_dom = RequestParser.request_and_parse_html(url: event_url, options: { follow_redirect: true })
+        next if event_detail_dom.title.blank?
         Event.transaction do
-          if current_url_events[event_url].present?
-            gamejam_event = current_url_events[event_url]
-          else
-            gamejam_event = Event.new(url: event_url)
-          end
-          event_detail_dom = RequestParser.request_and_parse_html(url: event_url, options: { follow_redirect: true })
           hashtags =
             event_detail_dom
               .css('.jam_host_header')
