@@ -68,7 +68,7 @@ module ItchIoOperation
           gamejam_event = Event.new(url: event_url)
         end
         event_detail_dom = RequestParser.request_and_parse_html(url: event_url, options: { follow_redirect: true })
-        next if event_detail_dom.title.blank?
+        next if event_detail_dom.css('.date_format').text.blank?
         Event.transaction do
           hashtags =
             event_detail_dom
