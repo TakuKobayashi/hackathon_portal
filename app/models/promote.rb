@@ -34,8 +34,8 @@ module Promote
     action_tweets =
       Promote::ActionTweet
         .where(state: %i[unrelated only_retweeted])
-        .includes(:promote_user)
-        .order('promote_users.follower_count DESC ,promote_action_tweets.created_at DESC')
+        .includes({promote_user: :follow_friends})
+        .order('promote_friends.score ASC,promote_users.follower_count DESC,promote_action_tweets.created_at DESC')
     ja_action_tweets = action_tweets.where(lang: 'ja').limit(1000).to_a
     ja_action_tweets.shuffle.each do |action_tweet|
       if action_tweet.like!(twitter_client: twitter_client)
