@@ -53,6 +53,7 @@ module PeatixOperation
         informed_from: :peatix,
         event_id: api_response_hash['id'].to_s,
         title: api_response_hash['name'].to_s,
+        description: ops.description.to_s,
         address: api_response_hash['address'],
         place: api_response_hash['venue_name'].to_s,
         lat: lat,

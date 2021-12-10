@@ -12,4 +12,5 @@
 #  index_event_details_on_event_id  (event_id)
 #
 class EventDetail < ApplicationRecord
+  serialize :og_image_info, JSON
 end

@@ -17,6 +17,17 @@ module EventCommon
       ops.delete_field(:lat) unless ops.lat.nil?
       ops.delete_field(:lon) unless ops.lon.nil?
     end
+
+    if ops.description.present?
+      self.event_detail.description = ops.description
+      ops.delete_field(:description)
+    end
+
+    if ops.og_image_info.present?
+      self.event_detail.og_image_info = ops.og_image_info
+      ops.delete_field(:og_image_info)
+    end
+
     self.attributes = self.attributes.merge(ops.to_h)
     self.distribute_event_type
   end

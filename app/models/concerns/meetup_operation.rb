@@ -40,31 +40,30 @@ module MeetupOperation
         vanue_hash = res['venue'] || {}
         fee_hash = res['fee'] || {}
         group_hash = res['group'] || {}
-        meetup_event.attributes =
-          meetup_event.attributes.merge_event_attributes(
-            attrs: {
-              state: :active,
-              informed_from: :meetup,
-              event_id: res['id'],
-              title: Sanitizer.basic_sanitize(res['name'].to_s),
-              description: Sanitizer.basic_sanitize(res['description'].to_s),
-              started_at: start_time,
-              ended_at: end_time,
-              limit_number: res['rsvp_limit'],
-              address: vanue_hash['address_1'],
-              place: vanue_hash['name'].to_s,
-              lat: vanue_hash['lat'],
-              lon: vanue_hash['lon'],
-              cost: fee_hash['amount'].to_i,
-              max_prize: 0,
-              currency_unit: fee_hash['currency'] || 'JPY',
-              owner_id: group_hash['id'],
-              owner_nickname: group_hash['urlname'],
-              owner_name: Sanitizer.basic_sanitize(group_hash['name'].to_s),
-              attend_number: res['yes_rsvp_count'] || res['attendance_count'],
-              substitute_number: res['waitlist_count'],
-            },
-          )
+        meetup_event.merge_event_attributes(
+          attrs: {
+            state: :active,
+            informed_from: :meetup,
+            event_id: res['id'],
+            title: Sanitizer.basic_sanitize(res['name'].to_s),
+            description: Sanitizer.basic_sanitize(res['description'].to_s),
+            started_at: start_time,
+            ended_at: end_time,
+            limit_number: res['rsvp_limit'],
+            address: vanue_hash['address_1'],
+            place: vanue_hash['name'].to_s,
+            lat: vanue_hash['lat'],
+            lon: vanue_hash['lon'],
+            cost: fee_hash['amount'].to_i,
+            max_prize: 0,
+            currency_unit: fee_hash['currency'] || 'JPY',
+            owner_id: group_hash['id'],
+            owner_nickname: group_hash['urlname'],
+            owner_name: Sanitizer.basic_sanitize(group_hash['name'].to_s),
+            attend_number: res['yes_rsvp_count'] || res['attendance_count'],
+            substitute_number: res['waitlist_count'],
+          },
+        )
         meetup_event.save!
         meetup_event.import_hashtags!(hashtag_strings: meetup_event.search_hashtags)
       end

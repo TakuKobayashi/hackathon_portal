@@ -36,7 +36,6 @@
 
 class Event < ApplicationRecord
   include EventCommon
-  serialize :og_image_info, JSON
 
   enum state: { active: 0, unactive: 1, closed: 2 }
   enum informed_from: {
@@ -59,6 +58,9 @@ class Event < ApplicationRecord
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
+  accepts_nested_attributes_for :event_detail, :allow_destroy => true
+
+  after_initialize :initialize_event_detail, :if => :new_record?
 
   with_options to: :event_detail do |attr|
     attr.delegate :description
@@ -252,8 +254,8 @@ class Event < ApplicationRecord
     # 画像じゃないものも含まれていることもあるので分別する
     return {} if fi.type.blank?
     width, height = fi.size
-    self.og_image_info = { image_url: image_url.to_s, width: width.to_i, height: height.to_i, type: fi.type }
-    return self.og_image_info
+    self.event_detail.og_image_info = { image_url: image_url.to_s, width: width.to_i, height: height.to_i, type: fi.type }
+    return self.event_detail.og_image_info
   end
 
   def og_image_url
@@ -328,5 +330,10 @@ class Event < ApplicationRecord
       refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
     )
     self.destroy!
+  end
+
+  private
+  def initialize_event_detail
+    self.build_event_detail if self.new_record?
   end
 end
