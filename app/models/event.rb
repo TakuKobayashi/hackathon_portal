@@ -8,7 +8,6 @@
 #  title             :string(255)      not null
 #  url               :string(255)      not null
 #  shortener_url     :string(255)
-#  description       :text(65535)
 #  started_at        :datetime         not null
 #  ended_at          :datetime         not null
 #  limit_number      :integer
@@ -24,11 +23,8 @@
 #  owner_name        :string(255)
 #  attend_number     :integer          default(0), not null
 #  substitute_number :integer          default(0), not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
 #  informed_from     :integer          default("web"), not null
 #  state             :integer          default("active"), not null
-#  og_image_info     :text(65535)
 #
 # Indexes
 #
@@ -57,11 +53,17 @@ class Event < ApplicationRecord
          itchio: 10,
        }
 
+  has_one :event_detail, class_name: 'EventDetail', foreign_key: 'event_id'
   has_one :event_calendar_bot, as: :from, class_name: 'EventCalendarBot'
   has_one :twitter_bot, as: :from, class_name: 'TwitterBot'
   has_many :resource_hashtags, as: :resource, class_name: 'Ai::ResourceHashtag'
   has_many :hashtags, through: :resource_hashtags, source: :hashtag
   accepts_nested_attributes_for :hashtags
+
+  with_options to: :event_detail do |attr|
+    attr.delegate :description
+    attr.delegate :og_image_info
+  end
 
   TWITTER_HACKATHON_KEYWORDS = %w[
     hackathon

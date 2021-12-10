@@ -8,7 +8,6 @@
 #  title             :string(255)      not null
 #  url               :string(255)      not null
 #  shortener_url     :string(255)
-#  description       :text(65535)
 #  started_at        :datetime         not null
 #  ended_at          :datetime         not null
 #  limit_number      :integer
@@ -24,11 +23,8 @@
 #  owner_name        :string(255)
 #  attend_number     :integer          default(0), not null
 #  substitute_number :integer          default(0), not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
 #  informed_from     :integer          default("web"), not null
 #  state             :integer          default("active"), not null
-#  og_image_info     :text(65535)
 #
 # Indexes
 #

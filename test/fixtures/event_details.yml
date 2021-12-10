@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: event_details
+#
+#  id            :bigint           not null, primary key
+#  event_id      :bigint           not null
+#  description   :text(65535)
+#  og_image_info :text(65535)
+#
+# Indexes
+#
+#  index_event_details_on_event_id  (event_id)
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value
