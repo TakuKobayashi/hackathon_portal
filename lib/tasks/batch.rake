@@ -98,59 +98,54 @@ namespace :batch do
 
     # ER図においてそれぞれのエンティティとの関連性を記述していく
     class_name_model_class_pair.values.each do |model_class|
-      model_class
-        .reflections
-        .values
-        .each do |relation_info|
-          # polymorphic の belongs_to の構造はリレーション関係がわからないのでスルー
-          next if relation_info.polymorphic?
+      model_class.reflections.values.each do |relation_info|
+        # polymorphic の belongs_to の構造はリレーション関係がわからないのでスルー
+        next if relation_info.polymorphic?
 
-          # belongs_to 参照元を取得する場合はfrom と toの対象を交換する
-          if relation_info.instance_of?(ActiveRecord::Reflection::BelongsToReflection)
-            to_model_class = model_class
-            from_model_class = class_name_model_class_pair[relation_info.class_name]
-          else
-            from_model_class = model_class
-            to_model_class = class_name_model_class_pair[relation_info.class_name]
-          end
-          primary_keys = [from_model_class.primary_key].flatten
-          to_foreign_key_string = [to_model_class.table_name, relation_info.foreign_key].join('.')
-          if relation_info.options[:primary_key].present?
-            from_foreign_key_string = [from_model_class.table_name, relation_info.options[:primary_key]].join('.')
-          else
-            from_foreign_key_string =
-              primary_keys.map { |primary_key| [from_model_class.table_name, primary_key].join('.') }.join(',')
-          end
+        # belongs_to 参照元を取得する場合はfrom と toの対象を交換する
+        if relation_info.instance_of?(ActiveRecord::Reflection::BelongsToReflection)
+          to_model_class = model_class
+          from_model_class = class_name_model_class_pair[relation_info.class_name]
+        else
+          from_model_class = model_class
+          to_model_class = class_name_model_class_pair[relation_info.class_name]
+        end
+        primary_keys = [from_model_class.primary_key].flatten
+        to_foreign_key_string = [to_model_class.table_name, relation_info.foreign_key].join('.')
+        if relation_info.options[:primary_key].present?
+          from_foreign_key_string = [from_model_class.table_name, relation_info.options[:primary_key]].join('.')
+        else
+          from_foreign_key_string =
+            primary_keys.map { |primary_key| [from_model_class.table_name, primary_key].join('.') }.join(',')
+        end
 
-          # 外部キーのカラムとの関係性を記録する
-          foreign_key_pairs[to_foreign_key_string] = from_foreign_key_string
+        # 外部キーのカラムとの関係性を記録する
+        foreign_key_pairs[to_foreign_key_string] = from_foreign_key_string
 
-          # has_many 関係性を表現 1対多の場合
-          if relation_info.instance_of?(ActiveRecord::Reflection::HasManyReflection)
-            # 0 ~ 複数
+        # has_many 関係性を表現 1対多の場合
+        if relation_info.instance_of?(ActiveRecord::Reflection::HasManyReflection)
+          # 0 ~ 複数
+          relation_entity_components << [from_model_class.table_name, '--o{', to_model_class.table_name].join(' ')
+          # has_one 関係性を表現 1対1の場合
+        elsif relation_info.instance_of?(ActiveRecord::Reflection::HasOneReflection)
+          # belongs_toの要素が先に登録されていたら消す
+          relation_entity_components.delete([from_model_class.table_name, '--o{', to_model_class.table_name].join(' '))
+
+          # 0 ~ 1
+          relation_entity_components << [from_model_class.table_name, '|o--o|', to_model_class.table_name].join(' ')
+          # has_many :through 関係性を表現 多対多の場合
+        elsif relation_info.instance_of?(ActiveRecord::Reflection::ThroughReflection)
+          relation_entity_components << [from_model_class.table_name, '}o--o{', to_model_class.table_name].join(' ')
+          # belongs_to 参照元を取得 とりあえず 1対多として記録
+        elsif relation_info.instance_of?(ActiveRecord::Reflection::BelongsToReflection)
+          # has_one の要素が記録されていたらスキップ
+          unless relation_entity_components.include?(
+                   [from_model_class.table_name, '|o--o|', to_model_class.table_name].join(' '),
+                 )
             relation_entity_components << [from_model_class.table_name, '--o{', to_model_class.table_name].join(' ')
-            # has_one 関係性を表現 1対1の場合
-          elsif relation_info.instance_of?(ActiveRecord::Reflection::HasOneReflection)
-            # belongs_toの要素が先に登録されていたら消す
-            relation_entity_components.delete(
-              [from_model_class.table_name, '--o{', to_model_class.table_name].join(' '),
-            )
-
-            # 0 ~ 1
-            relation_entity_components << [from_model_class.table_name, '|o--o|', to_model_class.table_name].join(' ')
-            # has_many :through 関係性を表現 多対多の場合
-          elsif relation_info.instance_of?(ActiveRecord::Reflection::ThroughReflection)
-            relation_entity_components << [from_model_class.table_name, '}o--o{', to_model_class.table_name].join(' ')
-            # belongs_to 参照元を取得 とりあえず 1対多として記録
-          elsif relation_info.instance_of?(ActiveRecord::Reflection::BelongsToReflection)
-            # has_one の要素が記録されていたらスキップ
-            unless relation_entity_components.include?(
-                     [from_model_class.table_name, '|o--o|', to_model_class.table_name].join(' '),
-                   )
-              relation_entity_components << [from_model_class.table_name, '--o{', to_model_class.table_name].join(' ')
-            end
           end
         end
+      end
 
       model_class
         .connection

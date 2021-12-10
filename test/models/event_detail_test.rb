@@ -11,7 +11,7 @@
 #
 #  index_event_details_on_event_id  (event_id)
 #
-require "test_helper"
+require 'test_helper'
 
 class EventDetailTest < ActiveSupport::TestCase
   # test "the truth" do
