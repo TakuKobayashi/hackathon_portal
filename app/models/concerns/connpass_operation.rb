@@ -52,7 +52,8 @@ module ConnpassOperation
       results_available = events_response['results_available'] if events_response['results_available'].present?
       start += events_response['results_returned'].to_i
       res_events = events_response['events'] || []
-      current_url_events = Event.where(url: res_events.map { |res| res['event_url'] }.compact).includes(:event_detail).index_by(&:url)
+      current_url_events =
+        Event.where(url: res_events.map { |res| res['event_url'] }.compact).includes(:event_detail).index_by(&:url)
       res_events.each do |res|
         Event.transaction do
           if current_url_events[res['event_url'].to_s].present?

@@ -411,7 +411,7 @@ module EventCommon
   end
 
   def url_active?
-    response = RequestParser.request_and_response(url: self.url, method: :head, options: {follow_redirect: true})
+    response = RequestParser.request_and_response(url: self.url, method: :head, options: { follow_redirect: true })
     return response.present? && response.status < 400
   end
 
