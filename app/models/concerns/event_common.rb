@@ -201,7 +201,7 @@ module EventCommon
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
-    self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
+    self.event_detail.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
     if match_address.present?
