@@ -74,6 +74,8 @@ namespace :batch do
   end
 
   task event_revive_challenge: :environment do
+    # Parallelではマルチスレッドにて実行されるがeader_loadしていないとエラーで落ちるのでその対応
+    Rails.application.eager_load!
     # 復活させる可能性があるのは基本的に未来のイベント
     Event
       .closed
