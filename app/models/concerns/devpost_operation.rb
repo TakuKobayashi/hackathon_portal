@@ -51,7 +51,7 @@ module DevpostOperation
 
       # HTML Parseして1件もなかったらその時点でこれ以上のloopをやめるようにする
       break if url_event_options.blank?
-      url_devpost_events = Event.where(url: url_event_options.keys).index_by(&:url)
+      url_devpost_events = Event.where(url: url_event_options.keys).includes(:event_detail).index_by(&:url)
       url_event_options.keys.each do |event_url|
         next if url_devpost_events[event_url].present?
         devpost_event = self.analyze_and_build_event(url: event_url, options: url_event_options[event_url])
@@ -70,28 +70,33 @@ module DevpostOperation
     detail_page = RequestParser.request_and_parse_html(url: url)
     event_json = JSON.parse(detail_page.css('#challenge-json-ld').text.strip)
     event_struct = OpenStruct.new(event_json)
-    devpost_event =
-      Event.new(
-        url: event_struct.url.to_s,
-        informed_from: :devpost,
-        title: event_struct.name.to_s,
-        description: event_struct.description.to_s,
-        state: :active,
-        started_at: Time.parse(event_struct.startDate),
-        ended_at: Time.parse(event_struct.endDate),
-      )
+    devpost_event = Event.new(url: event_struct.url.to_s)
     organizer_struct = OpenStruct.new(event_struct.organizer || {})
     location_struct = OpenStruct.new(event_struct.location || {})
     address_struct = OpenStruct.new(location_struct.address || {})
     if address_struct.name.downcase == 'online'
-      devpost_event.place = address_struct.name
+      event_struct.place = address_struct.name
     else
-      devpost_event.address = address_struct.streetAddress
-      devpost_event.place = detail_page.css('.location').css('p').first.try(:text) || address_struct.streetAddress
-      devpost_event.place = devpost_event.place.to_s.strip
+      event_struct.address = address_struct.streetAddress
+      event_struct.place = detail_page.css('.location').css('p').first.try(:text) || address_struct.streetAddress
+      event_struct.place = event_struct.place.to_s.strip
     end
     devpost_event.merge_event_attributes(
-      attrs: { attend_number: 0, max_prize: 0, currency_unit: 'JPY', owner_name: organizer_struct.name }.merge(options),
+      attrs:
+        {
+          informed_from: :devpost,
+          title: event_struct.name.to_s,
+          description: event_struct.description.to_s,
+          state: :active,
+          started_at: Time.parse(event_struct.startDate),
+          ended_at: Time.parse(event_struct.endDate),
+          place: event_struct.place,
+          address: event_struct.address,
+          attend_number: 0,
+          max_prize: 0,
+          currency_unit: 'JPY',
+          owner_name: organizer_struct.name,
+        }.merge(options),
     )
     return devpost_event
   end

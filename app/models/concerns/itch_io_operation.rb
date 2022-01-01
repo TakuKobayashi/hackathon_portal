@@ -60,7 +60,7 @@ module ItchIoOperation
             end
         end
       break if event_url_set.blank?
-      current_url_events = Event.where(url: event_url_set).index_by(&:url)
+      current_url_events = Event.where(url: event_url_set).includes(:event_detail).index_by(&:url)
       event_url_set.each do |event_url|
         if current_url_events[event_url].present?
           gamejam_event = current_url_events[event_url]

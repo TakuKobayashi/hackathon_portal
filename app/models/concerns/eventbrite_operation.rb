@@ -98,7 +98,7 @@ module EventbriteOperation
               .compact
               .uniq
           break if event_urls.blank?
-          current_url_events = Event.where(url: event_urls.map(&:to_s)).index_by(&:url)
+          current_url_events = Event.where(url: event_urls.map(&:to_s)).includes(:event_detail).index_by(&:url)
           event_urls.each do |event_url|
             Event.transaction do
               if current_url_events[event_url.to_s].present?

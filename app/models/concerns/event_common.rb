@@ -17,6 +17,17 @@ module EventCommon
       ops.delete_field(:lat) unless ops.lat.nil?
       ops.delete_field(:lon) unless ops.lon.nil?
     end
+
+    if ops.description.present?
+      self.event_detail.description = ops.description
+      ops.delete_field(:description)
+    end
+
+    if ops.og_image_info.present?
+      self.event_detail.og_image_info = ops.og_image_info
+      ops.delete_field(:og_image_info)
+    end
+
     self.attributes = self.attributes.merge(ops.to_h)
     self.distribute_event_type
   end
@@ -190,7 +201,7 @@ module EventCommon
       )
     sanitized_main_content_html = sanitized_body_html.gsub(delete_reg_exp, '')
     description_text = Nokogiri::HTML.parse(sanitized_main_content_html).text
-    self.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
+    self.event_detail.description = description_text.split(Sanitizer.empty_words_regexp).map(&:strip).select(&:present?).join("\n")
     match_address = Sanitizer.japan_address_regexp.match(sanitized_body_text)
 
     if match_address.present?
@@ -400,7 +411,7 @@ module EventCommon
   end
 
   def url_active?
-    response = RequestParser.request_and_response(url: self.url, method: :head, options: {follow_redirect: true})
+    response = RequestParser.request_and_response(url: self.url, method: :head, options: { follow_redirect: true })
     return response.present? && response.status < 400
   end
 

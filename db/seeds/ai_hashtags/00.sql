@@ -2605,3 +2605,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2631,'priorityjam2021');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2632,'NJamL1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2633,'teamjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2634,'cjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2635,'GGJ21');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2636,'GGJ22');
