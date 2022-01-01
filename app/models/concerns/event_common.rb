@@ -411,8 +411,8 @@ module EventCommon
   end
 
   def url_active?
-    http_ping = Net::Ping::HTTP.new(self.url)
-    return http_ping.ping?
+    response = RequestParser.request_and_response(url: self.url, method: :head, options: {follow_redirect: true})
+    return response.present? && response.status < 400
   end
 
   def zaoraru!
