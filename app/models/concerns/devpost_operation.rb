@@ -51,7 +51,7 @@ module DevpostOperation
 
       # HTML Parseして1件もなかったらその時点でこれ以上のloopをやめるようにする
       break if url_event_options.blank?
-      url_devpost_events = Event.where(url: url_event_options.keys).index_by(&:url)
+      url_devpost_events = Event.where(url: url_event_options.keys).includes(:event_detail).index_by(&:url)
       url_event_options.keys.each do |event_url|
         next if url_devpost_events[event_url].present?
         devpost_event = self.analyze_and_build_event(url: event_url, options: url_event_options[event_url])

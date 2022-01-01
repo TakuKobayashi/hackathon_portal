@@ -89,7 +89,7 @@ module TwitterEventOperation
           will_save_events += quoted_tweet_events
         end
         filtered_new_events = will_save_events.uniq { |event| event.url }.select { |event| event.type.present? }
-        current_url_events = Event.where(url: filtered_new_events.map(&:url)).index_by(&:url)
+        current_url_events = Event.where(url: filtered_new_events.map(&:url)).includes(:event_detail).index_by(&:url)
 
         filtered_new_events.each do |event|
           if current_url_events[event.url].blank?

@@ -23,7 +23,7 @@ module AtndOperation
       start += events_response['results_returned']
       current_url_events =
         Event
-          .where(url: events_response['events'].map { |res| (ATND_EVENTPAGE_URL + res['event']['event_id']).to_s })
+          .where(url: events_response['events'].map { |res| (ATND_EVENTPAGE_URL + res['event']['event_id']).to_s }).includes(:event_detail)
           .index_by(&:url)
       events_response['events'].each do |res|
         Event.transaction do

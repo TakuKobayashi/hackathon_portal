@@ -85,7 +85,7 @@ module PeatixOperation
             tracking_url = Addressable::URI.parse(res['tracking_url'])
             tracking_url.origin.to_s + tracking_url.path.to_s
           end.compact
-        current_url_events = Event.where(url: urls).index_by(&:url)
+        current_url_events = Event.where(url: urls).includes(:event_detail).index_by(&:url)
         json_data['events'].each do |res|
           tracking_url = Addressable::URI.parse(res['tracking_url'])
           event_url = tracking_url.origin.to_s + tracking_url.path.to_s

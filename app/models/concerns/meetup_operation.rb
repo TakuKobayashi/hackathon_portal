@@ -23,7 +23,7 @@ module MeetupOperation
   def self.import_events_from_keywords!(keywords:)
     events_response = self.find_event(keywords: keywords)
     res_events = events_response['events'] || []
-    current_url_events = Event.where(url: res_events.map { |res| res['link'] }.compact).index_by(&:url)
+    current_url_events = Event.where(url: res_events.map { |res| res['link'] }.compact).includes(:event_detail).index_by(&:url)
     res_events.each do |res|
       Event.transaction do
         if current_url_events[url: res['link'].to_s].present?
