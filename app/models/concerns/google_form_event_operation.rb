@@ -1,7 +1,7 @@
 require 'google/apis/sheets_v4'
 
 module GoogleFormEventOperation
-  def self.load_and_imoport_events!(
+  def self.load_and_imoport_events_and_clear_sheet!(
     refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
     target_spreadsheet_id: HackathonEvent.google_form_spreadsheet_id
   )
@@ -16,23 +16,7 @@ module GoogleFormEventOperation
       sheet.data.each do |sheet_data|
         row_data = sheet_data.row_data
 
-        # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
-        header_values = (row_data[0].try(:values) || [])
-        column_names = header_values.map { |name_property| name_property.formatted_value.downcase }
-        rows = row_data[1..(row_data.size - 1)] || []
-        event_attr_values = []
-        rows.each do |row|
-          next if row.values.blank?
-          event_attr = OpenStruct.new
-          row.values.each_with_index do |row_value, index|
-            next if index == 0
-            event_attr.send(column_names[index] + '=', row_value.formatted_value)
-          end
-
-          # addressが空欄だったらオンラインイベントとする
-          event_attr.place = 'online' if event_attr.address.blank?
-          event_attr_values << event_attr
-        end
+        event_attr_values = self.constract_event_attrs_from_sheet(row_data: row_data)
         current_url_events = Event.where(url: event_attr_values.map(&:url)).includes(:event_detail).index_by(&:url)
         event_attr_values.each do |event_attr|
           Event.transaction do
@@ -49,8 +33,8 @@ module GoogleFormEventOperation
         self.clear_spreadsheet(
           refresh_token: refresh_token,
           target_spreadsheet_id: target_spreadsheet_id,
-          row_count: rows.size,
-          column_count: column_names.size,
+          row_count: [row_data.size - 1, 0].max,
+          column_count: row_data.first.try(:values).try(:size).to_i,
         )
       end
     end
@@ -76,5 +60,28 @@ module GoogleFormEventOperation
         value_input_option: 'USER_ENTERED',
       )
     end
+  end
+
+  private
+
+  def self.constract_event_attrs_from_sheet(row_data:)
+    # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
+    header_values = (row_data[0].try(:values) || [])
+    column_names = header_values.map { |name_property| name_property.formatted_value.downcase }
+    event_attr_values = []
+    row_data.each_with_index do |row, row_index|
+      next if row_index == 0
+      next if row.values.blank?
+      event_attr = OpenStruct.new
+      row.values.each_with_index do |row_value, index|
+        next if index == 0 || index == row.values.size - 1
+        event_attr.send(column_names[index] + '=', row_value.formatted_value)
+      end
+
+      # addressが空欄だったらオンラインイベントとする
+      event_attr.place = 'online' if event_attr.address.blank?
+      event_attr_values << event_attr
+    end
+    return event_attr_values
   end
 end
