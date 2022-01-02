@@ -115,7 +115,10 @@ class Event < ApplicationRecord
     end
     ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
     GC.start
-    GoogleFormEventOperation.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''), target_spreadsheet_id: HackathonEvent.google_form_spreadsheet_id)
+    GoogleFormEventOperation.load_and_imoport_events!(
+      refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
+      target_spreadsheet_id: HackathonEvent.google_form_spreadsheet_id,
+    )
   end
 
   def self.import_events_from_twitter!
