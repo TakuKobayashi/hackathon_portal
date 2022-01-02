@@ -19,35 +19,37 @@ module GoogleFormEventOperation
         row_data = sheet_data.row_data
 
         # 1行目はそれぞれの名前に対応するカラム名をあてはめていく
-        header_names = (row_data[0].try(:values) || [])
-        column_header_names =
-          (header_names[1..(header_names.size)] || []).map { |name_property| name_property.formatted_value.downcase }
+        header_values = (row_data[0].try(:values) || [])
+        column_names = header_values.map { |name_property| name_property.formatted_value.downcase }
         rows = row_data[1..(row_data.size - 1)] || []
-        rows.each do |row|
-          columns = row.values[1..(row.values.size - 1)]
-          event = Event.new
-          columns.each_with_index do |column, index|
-            next if column.formatted_value.nil?
-            event.send(column_header_names[index] + '=', Sanitizer.basic_sanitize(column.formatted_value))
+        event_attr_values = rows.map do |row|
+          event_attr = OpenStruct.new
+          row.values.each_with_index do |row_value, index|
+            next if index == 0
+            event_attr.send(column_names[index] + "=", row_value.formatted_value)
           end
-          import_url_events[event.url] = event
+          # addressが空欄だったらオンラインイベントとする
+          if event_attr.address.blank?
+            event_attr.place = 'online'
+          end
+          event_attr
         end
-        exists_url_events = Event.where(url: import_url_events.keys).index_by(&:url)
-        import_url_events.each do |url, event|
-          prev_event = exists_url_events[url]
-          if prev_event.present?
-            new_attrs = event.attributes
-            new_attrs.delete_if { |key, val| val.blank? }
-            prev_event.merge_event_attributes(attrs: new_attrs)
-            save_event = prev_event
-          else
-            event.build_location_data(script_url: script_url) if script_url.present?
-            save_event = event
-          end
-          save_event.informed_from = :google_form
-          save_event.transaction do
-            save_event.save!
-            save_event.import_hashtags!(hashtag_strings: save_event.search_hashtags)
+        current_url_events = Event.where(url: event_attr_values.map(&:url)).includes(:event_detail).index_by(&:url)
+        event_attr_values.each do |event_attr|
+          Event.transaction do
+            if current_url_events[event_attr.url].present?
+              event = current_url_events[event_attr.url]
+            else
+              event = Event.new(url: event_attr.url)
+            end
+            event.merge_event_attributes(
+              attrs: {
+                state: :active,
+                informed_from: :google_form,
+              }.merge(event_attr.to_h),
+            )
+            event.save!
+            event.import_hashtags!(hashtag_strings: event.search_hashtags)
           end
         end
       end
