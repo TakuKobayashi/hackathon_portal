@@ -38,7 +38,7 @@ module TwitterEventOperation
     tweets = []
     start_time = Time.current
 
-    script_url = GoogleServices.get_location_script_url(refresh_token: refresh_token)
+    script_url = GoogleServices.get_location_script_url
     twitter_client = TwitterBot.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     me_twitter = twitter_client.user
     loop do
