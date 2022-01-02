@@ -115,7 +115,7 @@ class Event < ApplicationRecord
     end
     ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
     GC.start
-    GoogleFormEventOperation.load_and_imoport_events!(
+    GoogleFormEventOperation.load_and_imoport_events_and_clear_sheet!(
       refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
       target_spreadsheet_id: HackathonEvent.google_form_spreadsheet_id,
     )
