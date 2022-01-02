@@ -1,11 +1,11 @@
 require 'google/apis/sheets_v4'
 
 module GoogleFormEventOperation
-  def self.load_and_imoport_events!(refresh_token:)
+  def self.load_and_imoport_events!(refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''), target_spreadsheet_id: HackathonEvent.google_form_spreadsheet_id)
     service = GoogleServices.get_sheet_service(refresh_token: refresh_token)
     target_spreadsheet =
       service.get_spreadsheet(
-        Event.google_form_spreadsheet_id,
+        target_spreadsheet_id,
         fields: 'sheets.data.rowData.values(formattedValue,userEnteredValue,effectiveValue)',
       )
 

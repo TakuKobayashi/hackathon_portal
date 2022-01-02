@@ -58,6 +58,10 @@ class HackathonEvent < Event
     'ハック' => 1,
   }
 
+  def self.google_form_spreadsheet_id
+    return '1KbKcNoUXThP5pMz_jDne7Mcvl1aFdUHeV9cDNI1OUfY'
+  end
+
   def default_hashtags
     return %w[#hackathon #ハッカソン]
   end
