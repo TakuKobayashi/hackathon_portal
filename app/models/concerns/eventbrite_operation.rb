@@ -114,6 +114,7 @@ module EventbriteOperation
                 next if event_response.blank?
                 EventbriteOperation.setup_event_info(event: eventbrite_event, api_response_hash: event_response)
                 eventbrite_event.save!
+                eventbrite_event.import_hashtags!(hashtag_strings: eventbrite_event.search_hashtags)
               end
             end
           end
