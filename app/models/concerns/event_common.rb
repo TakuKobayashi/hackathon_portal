@@ -18,12 +18,13 @@ module EventCommon
       ops.delete_field(:lon) unless ops.lon.nil?
     end
 
-    if ops.description.present?
+    # 空文字の場合もある、nilの時はそもそもkeyがない時
+    unless ops.description.nil?
       self.event_detail.description = ops.description
       ops.delete_field(:description)
     end
 
-    if ops.og_image_info.present?
+    unless ops.og_image_info.nil?
       self.event_detail.og_image_info = ops.og_image_info
       ops.delete_field(:og_image_info)
     end
