@@ -41,7 +41,11 @@ stages:
     - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> .env
     - echo "LOCATION_GAS_SCRIPT_ID='${LOCATION_GAS_SCRIPT_ID}'" >> .env
     - echo "EVENTBRITE_API_TOKEN='${EVENTBRITE_API_TOKEN}'" >> .env
-    - cat .env
+  after_script:
+    - git add db/
+    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` ${WHICH_SCHEDULE}"
+    - git pull --rebase origin crawled-data
+    - git push origin crawled-data
   cache:
     untracked: true
     paths:
@@ -77,9 +81,6 @@ crawlAndPublish:on-schedule:
     - bundle exec rails runner Promote.organize_follows!
     - bundle exec rails runner Promote.remove_unpromoted_data!
     - bundle exec rails backup:export_active_records_data
-    - git add db/
-    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` organize data"
-    - git push origin crawled-data
   artifacts:
     paths:
       - log/
@@ -105,9 +106,6 @@ tweetFromLastUpdateData:on-schedule:
     - bundle exec rails batch:event_bot_tweet
     - bundle exec rails backup:export_json_data
     - bundle exec rails backup:export_active_records_data
-    - git add db/
-    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` tweeted data"
-    - git push origin crawled-data
   artifacts:
     paths:
       - log/
@@ -132,10 +130,6 @@ twitterPromoteImporter:on-schedule:
     - bundle exec rails db:seed
     - bundle exec rails runner Promote.import_twitter_routine!
     - bundle exec rails backup:export_active_records_data
-    - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
-    - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` promoted importer data"
-    - git push origin crawled-data
   artifacts:
     paths:
       - log/
@@ -160,10 +154,6 @@ twitterPromoteAction:on-schedule:
     - bundle exec rails db:seed
     - bundle exec rails runner Promote.like_major_user!
     - bundle exec rails backup:export_active_records_data
-    - echo `date +%Y-%m-%d-%H:%M:%S` > db/auto-committed-date-log
-    - git add db/
-    - git commit -m "add `date +%Y-%m-%d-%H:%M:%S` twitter promote action data"
-    - git push origin crawled-data
   artifacts:
     paths:
       - log/
