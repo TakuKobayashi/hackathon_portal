@@ -44,6 +44,7 @@ stages:
   after_script:
     - git add db/
     - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` ${WHICH_SCHEDULE}"
+    - git pull --rebase origin crawled-data
     - git push origin crawled-data
   cache:
     untracked: true
