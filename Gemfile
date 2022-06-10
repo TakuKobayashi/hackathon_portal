@@ -16,7 +16,7 @@ gem 'turbolinks', '~> 5'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', github: 'rails/jbuilder', branch: 'master'
+gem 'jbuilder', github: 'rails/jbuilder'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
