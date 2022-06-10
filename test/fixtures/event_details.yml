@@ -4,7 +4,7 @@
 #
 #  id            :bigint           not null, primary key
 #  event_id      :bigint           not null
-#  description   :text(65535)
+#  description   :text(16777215)
 #  og_image_info :text(65535)
 #
 # Indexes

@@ -2,7 +2,7 @@ class SeparateEventTable < ActiveRecord::Migration[6.1]
   def up
     create_table :event_details do |t|
       t.integer :event_id, null: false, limit: 8
-      t.text :description
+      t.text :description, limit: 16.megabytes - 1
       t.text :og_image_info
     end
     add_index :event_details, :event_id

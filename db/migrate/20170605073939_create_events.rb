@@ -6,7 +6,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
       t.string :title, null: false
       t.string :url, null: false
       t.string :shortener_url
-      t.text :description
+      t.text :description, limit: 16.megabytes - 1
       t.datetime :started_at, null: false
       t.datetime :ended_at
       t.integer :limit_number
