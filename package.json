@@ -1,5 +1,9 @@
 {
   "name": "hackathon_portal",
   "private": true,
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@prettier/plugin-ruby": "^3.1.2",
+    "prettier": "^2.6.2"
+  }
 }
