@@ -1580,6 +1580,14 @@ GEM
     roauth (0.0.8)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
+    sassc (2.4.0)
+      ffi (~> 1.9)
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     selenium-webdriver (4.2.1)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -1702,6 +1710,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.3)
   rails-i18n (~> 7.0.0)
+  sassc-rails
   selenium-webdriver
   sprockets-rails
   stimulus-rails
