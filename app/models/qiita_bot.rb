@@ -34,7 +34,7 @@ class QiitaBot < ApplicationRecord
   end
 
   def generate_post_send_params(year_number:, start_month:, end_month:)
-    qiita_events = Event.where(id: self.event_ids).order('started_at ASC')
+    qiita_events = Event.where(id: self.event_ids).includes(:event_detail).order('started_at ASC')
     active_events, closed_events = qiita_events.partition { |event| event.active? }
     before_events_from_qiita, after_events_from_qiita =
       active_events.partition { |event| event.ended_at > Time.current }

@@ -9,7 +9,6 @@ namespace :batch do
   task event_bot_tweet: :environment do
     will_post_events =
       Event
-        .includes(:event_detail)
         .where.not(type: nil)
         .where('? < started_at AND started_at < ? AND ? < ended_at', 1.year.ago, 1.year.since, Time.current)
         .order('started_at ASC')
