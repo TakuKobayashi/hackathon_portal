@@ -57,7 +57,7 @@ class BloggerBot < ApplicationRecord
   end
 
   def build_content
-    post_events = Event.where(id: self.event_ids).order('started_at ASC')
+    post_events = Event.where(id: self.event_ids).includes(:event_detail).order('started_at ASC')
     start_month = date_number % 10000
     year_number = (date_number / 10000).to_i
     active_events, closed_events = post_events.partition { |event| event.active? }
