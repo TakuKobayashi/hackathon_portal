@@ -214,6 +214,9 @@ module Promote
       rescue Twitter::Error::Forbidden => e
         Rails.logger.warn(['Forbidden fail_follower unfollow Error:', e.message].join(' '))
         return nil
+      rescue Twitter::Error::ServiceUnavailable => e
+        Rails.logger.warn(['ServiceUnavailable fail_follower unfollow Error:', e.rate_limit.reset_in, 's'].join(' '))
+        return nil
       rescue Twitter::Error::NotFound => e
         friend.destroy
         Rails.logger.warn(['NotFound Error:', e.message].join(' '))
