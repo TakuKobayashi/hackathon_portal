@@ -3115,3 +3115,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3141,'slimyjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3142,'utasplayjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3143,'district-june-jam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3144,'saamarcade');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3145,'OneixJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3146,'rustygamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3147,'TotemLegacyJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3148,'DevsAlAsadorGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3149,'midjam2022');
