@@ -32,7 +32,7 @@ namespace :backup do
     # 動いているOSの判別
     host_os = RbConfig::CONFIG['host_os']
     Rails.application.eager_load!
-    model_classes = ActiveRecord::Base.descendants.select { |m| m.table_name.present? }.uniq { |m| m.table_name }
+    model_classes = ApplicationRecord.descendants.select { |m| m.table_name.present? }.uniq { |m| m.table_name }
     model_classes.each do |model_class|
       export_table_directory_name = Rails.root.join('db', 'seeds', model_class.table_name)
       export_full_dump_sql = Rails.root.join('db', 'seeds', model_class.table_name + '.sql')
