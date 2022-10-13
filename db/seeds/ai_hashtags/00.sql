@@ -3468,3 +3468,9 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3494,'AlternativeEngineJam')
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3495,'lispgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3496,'codevember2022');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3497,'SimplerRPG');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3498,'xj7');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3499,'vidityajam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3500,'DeadLettersJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3501,'UnidosTogether');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3502,'JoinIntellIoT');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3503,'futureofwork');
