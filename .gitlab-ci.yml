@@ -23,7 +23,8 @@ stages:
     # https://qiita.com/masayuki14/items/c34eafb9d6130e2c5b67 より更新が必要そう
     - sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf
     - gem install bundler --no-document
-    - bundle install --jobs $(nproc) --path vendor/bundle --clean
+    - bundle config set --local path 'vendor/bundle'
+    - bundle install --jobs $(nproc)
     - echo "MYSQL_USERNAME='root'" > .env
     - echo "MYSQL_PASSWORD=''" >> .env
     - echo "MYSQL_HOST='mysql'" >> .env
@@ -50,6 +51,9 @@ stages:
     - git push origin crawled-data
   cache:
     untracked: true
+    key:
+      files:
+        - Gemfile.lock
     paths:
       - vendor
 
