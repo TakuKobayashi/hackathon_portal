@@ -52,11 +52,13 @@ namespace :batch do
         )
       end
     end
+=begin
     BloggerBot.post_or_update_article!(
       events: will_post_events,
       blogger_blog_url: 'https://hackathonportal.blogspot.com/',
       refresh_token: ENV.fetch('GOOGLE_OAUTH_BOT_REFRESH_TOKEN', ''),
     )
+=end
   end
 
   task generate_slide: :environment do
