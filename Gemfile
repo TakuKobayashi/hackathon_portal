@@ -63,9 +63,8 @@ gem 'chronic'
 gem 'parallel'
 # gem 'natto'
 
-gem 'monetize'
-gem 'money'
 gem 'uglifier'
+gem 'redcarpet'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
