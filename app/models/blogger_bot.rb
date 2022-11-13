@@ -63,18 +63,75 @@ class BloggerBot < ApplicationRecord
     active_events, closed_events = post_events.partition { |event| event.active? }
     before_events, after_events = active_events.partition { |event| event.ended_at > Time.current }
     self.title = "#{year_number}年#{start_month}月のハッカソン開催情報まとめ!"
-    self.body =
-      ApplicationController.render(
-        template: 'blogger/publish',
-        format: 'html',
-        locals: {
-          before_events: before_events,
-          after_events: after_events,
-          closed_events: closed_events,
-          year_number: year_number,
-          start_month: start_month,
-        },
-      )
+    self.body = BloggerBot.generate_html_body(events: post_events, year_number: year_number, start_month: start_month)
+  end
+
+  def self.generate_html_body(events:, year_number:, start_month:)
+    active_events, closed_events = events.partition { |event| event.active? }
+    before_events, after_events = active_events.partition { |event| event.ended_at > Time.current }
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, hard_wrap: true)
+    render_lines = []
+    render_lines << markdown.render("#{Time.current.strftime("%Y年%m月%d日 %H:%M")}更新")
+    render_lines << markdown.render("#{year_number}年#{start_month}月のハッカソン・ゲームジャム・開発合宿の開催情報を定期的に紹介!!")
+    render_lines << ""
+    render_lines << markdown.render("# これから開催されるイベント")
+    render_lines << ""
+
+    before_events.each do |event|
+      render_lines << BloggerBot.event_html_field(event: event)
+    end
+
+    if after_events.present?
+      render_lines << markdown.render("---")
+      render_lines << markdown.render("# すでに終了したイベント")
+      after_events.each do |event|
+        render_lines << BloggerBot.event_html_field(event: event)
+      end
+    end
+
+    if closed_events.present?
+      render_lines << markdown.render("---")
+      render_lines << markdown.render("# 中止したイベント")
+      closed_events.each do |event|
+        render_lines << BloggerBot.event_html_field(event: event)
+      end
+    end
+    return render_lines.join("<br>")
+  end
+
+  def self.event_html_field(event:)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, hard_wrap: true)
+    html_arr = []
+    html_arr << markdown.render("## [#{event.title}](#{event.url})")
+    if event.active?
+      html_arr << markdown.render(event.og_image_html.to_s)
+    end
+    html_arr << markdown.render("<span style=\"color: #0000FF;\">#{event.started_at.strftime('%Y年%m月%d日')}</span>")
+    html_arr << markdown.render(event.place.to_s)
+    if event.address.present? && event.lat.present? && event.lon.present?
+      html_arr << markdown.render("[#{event.address}](#{event.generate_google_map_url})")
+    end
+    if event.lat.present? && event.lon.present?
+      html_arr << markdown.render(event.generate_google_map_embed_tag)
+    end
+    if event.limit_number.present?
+      html_arr << markdown.render("定員#{event.limit_number}人")
+    end
+    if event.attend_number >= 0
+      if event.ended_at.present? && event.ended_at < Time.current
+        html_arr << markdown.render("#{event.attend_number}人が参加しました")
+      else
+        html_arr << markdown.render("#{Time.current.strftime('%Y年%m月%d日 %H:%M')}現在 #{event.attend_number}人参加中")
+        if event.limit_number.present?
+          if (event.limit_number - event.attend_number) > 0
+            html_arr << markdown.render("<span style=\"color: #FF0000;\">あと残り#{(event.limit_number - event.attend_number)}人</span> 参加可能")
+          else
+            html_arr << markdown.render("今だと補欠登録されると思います。<span style=\"color: #FF0000;\">(#{event.substitute_number}人が補欠登録中)</span>")
+          end
+        end
+      end
+    end
+    return html_arr.join.html_safe
   end
 
   def update_blogger!(google_api_service:)
