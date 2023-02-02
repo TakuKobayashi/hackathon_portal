@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://tsnext-tw.thcl.dev
+
+# Sitemaps
+Sitemap: https://tsnext-tw.thcl.dev/sitemap.xml
