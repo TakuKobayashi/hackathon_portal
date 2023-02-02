@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build && next export && next-export-optimize-images",
+    "export": "next build && next export",
     "lint:fix": "eslint src --fix && yarn format",
     "lint:strict": "eslint --max-warnings=0 src",
     "typecheck": "tsc --noEmit --incremental false",
@@ -16,7 +16,7 @@
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "deploy:gh-pages": "npm run build && gh-pages -d out"
+    "deploy:gh-pages": "DEPLOY_GITHUB_PAGES=1 npm run export && gh-pages -d out -t true"
   },
   "dependencies": {
     "clsx": "^1.2.1",
