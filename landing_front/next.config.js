@@ -1,3 +1,5 @@
+const withExportImages = require('next-export-optimize-images')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -34,4 +36,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withExportImages(nextConfig);
