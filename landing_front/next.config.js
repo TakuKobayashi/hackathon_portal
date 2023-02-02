@@ -1,5 +1,3 @@
-const withExportImages = require('next-export-optimize-images')
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -8,6 +6,9 @@ const nextConfig = {
 
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    unoptimized: true
+  },
 
   // Uncoment to add domain whitelist
   // images: {
@@ -36,4 +37,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withExportImages(nextConfig);
+module.exports = nextConfig;
