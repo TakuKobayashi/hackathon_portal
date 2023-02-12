@@ -42,9 +42,14 @@ export default function HomePage() {
                 See the repository
               </ArrowLink>
             </p>
-
             <ButtonLink className='mt-6' href='/components' variant='light'>
               See all components
+            </ButtonLink>
+            <ButtonLink className='mt-6' href='/signin' variant='light'>
+              Signin
+            </ButtonLink>
+            <ButtonLink className='mt-6' href='/signup' variant='light'>
+              Signup
             </ButtonLink>
 
             <UnstyledLink

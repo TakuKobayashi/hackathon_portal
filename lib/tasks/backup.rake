@@ -94,14 +94,16 @@ namespace :backup do
           :place,
           :lat,
           :lon,
-          :informed_from,
           :state,
         )
-        .order(started_at: :desc)
         .all
-    FileUtils.mkdir(Rails.root.join('db', 'jsons')) unless Dir.exists?(Rails.root.join('db', 'jsons'))
-    export_json_path = Rails.root.join('db', 'jsons', 'events.json')
-    File.write(export_json_path, events.to_json)
+    event_json_files_directory = Rails.root.join('landing_front', 'public', 'jsons', 'events')
+    FileUtils.mkdir(event_json_files_directory) unless Dir.exists?(event_json_files_directory)
+    started_at_month_events = events.group_by{|event| event.started_at.strftime("%Y%m") }
+    started_at_month_events.each do |year_month, events|
+      json_filename = Rails.root.join('landing_front', 'public', 'jsons', 'events', "#{year_month}.json")
+      File.write(json_filename, events.to_json)
+    end
   end
 
   task cd_git_commit_and_push: :environment do
