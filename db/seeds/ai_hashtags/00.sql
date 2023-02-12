@@ -3746,3 +3746,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3772,'scientificgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3773,'RayuelaJam2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3774,'gdwtrier');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3775,'AIGeneratedJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3776,'unwrapjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3777,'保険APIハッカソン');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3778,'NaNoRenO2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3779,'SGGO2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3780,'gnoj9');
