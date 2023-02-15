@@ -44,6 +44,7 @@ stages:
     - echo "EVENTBRITE_API_TOKEN='${EVENTBRITE_API_TOKEN}'" >> .env
   after_script:
     - git add db/
+    - git add landing_front/public/
     - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` ${WHICH_SCHEDULE}"
     # Gemfile.lock に多少の差分が出てしまうのでそこは消しておく
     - git checkout .
