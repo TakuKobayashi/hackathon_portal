@@ -36,8 +36,6 @@ namespace :batch do
         tweet_options = { lat: event.lat, long: event.lon }
         TwitterBot.tweet!(
           text: event.generate_tweet_text,
-          access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-          access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
           from: event,
           options: tweet_options,
         )
