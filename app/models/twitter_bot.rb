@@ -23,10 +23,9 @@ class TwitterBot < ApplicationRecord
   def self.tweet!(
     text:,
     from: nil,
-    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-    access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
     options: {}
   )
+=begin
     twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     tweet_result = twitter_client.update(text, options)
     twitter_bot =
@@ -37,6 +36,7 @@ class TwitterBot < ApplicationRecord
         from: from,
       )
     return twitter_bot
+=end
   end
 
   def reject_tweet!(
