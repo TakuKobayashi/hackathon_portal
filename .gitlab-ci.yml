@@ -79,9 +79,6 @@ crawlAndPublish:on-schedule:
     - bundle exec rails runner Event.import_events!
     - bundle exec rails batch:event_revive_challenge
     - bundle exec rails backup:export_active_records_data
-    - git add db/
-    - git commit --allow-empty -m "add `date +%Y-%m-%d-%H:%M:%S` crawled data"
-    - git push origin crawled-data
   artifacts:
     paths:
       - log/

@@ -231,25 +231,6 @@ class Event < ApplicationRecord
     end
   end
 
-  def tweet_url
-    return @tweet_url if @tweet_url.present?
-    if self.twitter? && self.event_id.present?
-      twitter_client =
-        TwitterBot.get_twitter_client(
-          access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-          access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-        )
-      tweet = nil
-      begin
-        tweet = twitter_client.status(self.event_id)
-      rescue Exception => e
-      end
-      @tweet_url = tweet.try(:url).to_s
-      return @tweet_url
-    end
-    return ''
-  end
-
   def og_image_url=(image_url)
     fi = FastImage.new(image_url.to_s)
 
@@ -270,10 +251,6 @@ class Event < ApplicationRecord
     return current_og_image_hash['image_url']
   end
 
-  def tweet_url=(tweet_status_url)
-    @tweet_url = tweet_status_url
-  end
-
   # scoreをかけることで判定を渋くする
   def check_score_rate
     if @score_rate.present?
@@ -285,24 +262,6 @@ class Event < ApplicationRecord
 
   def check_score_rate=(score_rate)
     @score_rate = score_rate
-  end
-
-  def self.preset_tweet_urls!(events: [])
-    event_tweet_ids = events.select(&:twitter?).map(&:event_id)
-    twitter_client =
-      TwitterBot.get_twitter_client(
-        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-      )
-
-    # Twitter APIの仕様により100件ずつ設定する
-    event_tweet_ids.each_slice(Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST) do |tweet_ids|
-      event_tweets = twitter_client.statuses(tweet_ids)
-      event_tweets.each do |event_tweet|
-        event = events.detect { |event| event.twitter? && event.event_id == event_tweet.id.to_s }
-        event.tweet_url = event_tweet.url.to_s
-      end
-    end
   end
 
   def self.remove_all_deplicate_events!
