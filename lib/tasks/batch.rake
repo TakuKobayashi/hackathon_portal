@@ -29,7 +29,6 @@ namespace :batch do
         event.closed!
       end
     end
-    Event.preset_tweet_urls!(events: will_post_events)
 
     future_events.each do |event|
       unless TwitterBot.exists?(from: event)
