@@ -25,18 +25,26 @@ class TwitterBot < ApplicationRecord
     from: nil,
     options: {}
   )
-=begin
-    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    tweet_result = twitter_client.update(text, options)
+  tweet_result_hash = RequestParser.request_and_parse_json(
+    url: "https://api.twitter.com/2/tweets",
+    method: :post,
+    header: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: ["Bearer", "dnd4MDdIS3B0UjZEUU9raXhQbzlSNWNnYVhFQkwxdi0yVWotcm55N2RmMHlROjE2OTAxMjQ2NTI3NDg6MTowOmF0OjE"].join(" "),
+    },
+    body: {text: text}.to_json
+  )
+  tweet_result = OpenStruct.new(tweet_result_hash["data"])
+#    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
+#    tweet_result = twitter_client.update(text, options)
     twitter_bot =
       TwitterBot.create!(
         tweet: tweet_result.text,
         tweet_id: tweet_result.id,
-        tweet_time: tweet_result.created_at,
+        tweet_time: Time.current,
         from: from,
       )
     return twitter_bot
-=end
   end
 
   def reject_tweet!(
