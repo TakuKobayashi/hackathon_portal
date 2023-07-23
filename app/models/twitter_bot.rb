@@ -25,12 +25,32 @@ class TwitterBot < ApplicationRecord
     from: nil,
     options: {}
   )
+  refreshed_token_hash = RequestParser.request_and_parse_json(
+    url: "https://api.twitter.com/2/oauth2/token",
+    method: :post,
+    header: {
+      "Content-Type" => "application/x-www-form-urlencoded",
+      Authorization: [
+        "Basic",
+        Base64.strict_encode64([
+          ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', ''),
+          ENV.fetch('TWITTER_OAUTH2_CLIENT_SECRET', ''),
+        ].join(":"))
+      ].join(" ")
+    },
+    body: URI.encode_www_form({
+      refresh_token: "UkZsdG5Fa2lDRk16d3diR1JyT2c0NWZ4bktIWHFyMmkyRGF3M0FJQ1BPQW9XOjE2OTAxMzcwMDk5NDg6MTowOnJ0OjE",
+      grant_type: "refresh_token",
+      client_id: ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', '')
+    })
+  )
+  refreshed_token = OpenStruct.new(refreshed_token_hash)
   tweet_result_hash = RequestParser.request_and_parse_json(
     url: "https://api.twitter.com/2/tweets",
     method: :post,
     header: {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: ["Bearer", "dnd4MDdIS3B0UjZEUU9raXhQbzlSNWNnYVhFQkwxdi0yVWotcm55N2RmMHlROjE2OTAxMjQ2NTI3NDg6MTowOmF0OjE"].join(" "),
+      Authorization: ["Bearer", refreshed_token.access_token].join(" "),
     },
     body: {text: text}.to_json
   )
