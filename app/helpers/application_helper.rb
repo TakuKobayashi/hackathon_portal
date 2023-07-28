@@ -21,20 +21,15 @@ module ApplicationHelper
         if event.limit_number.present?
           if (event.limit_number - event.attend_number) > 0
             arr = [
-              content_tag(
-                'div',
-                "あと残り#{(event.limit_number - event.attend_number)}人",
-                { style: 'color: #FF0000;' },
-              ),
+              content_tag('div', "あと残り#{(event.limit_number - event.attend_number)}人", { style: 'color: #FF0000;' }),
             ]
             arr << '参加可能'
             html_arr << arr.join(' ')
           else
-            html_arr <<
-              content_tag(
-                'div',
-                "今だと補欠登録されると思います。<span style=\"color: #FF0000;\">(#{event.substitute_number}人が補欠登録中)</span>",
-              )
+            html_arr << content_tag(
+              'div',
+              "今だと補欠登録されると思います。<span style=\"color: #FF0000;\">(#{event.substitute_number}人が補欠登録中)</span>",
+            )
           end
         end
       end

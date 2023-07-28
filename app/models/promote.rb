@@ -188,9 +188,11 @@ module Promote
 
     unfollow_count = 0
     unfollow_friends =
-      Promote::TwitterFriend
-        .where(state: :only_follow, from_user_id: twitter_bot.id, to_user_id: follower_ids.to_a)
-        .where('followed_at < ?', EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
+      Promote::TwitterFriend.where(
+        state: :only_follow,
+        from_user_id: twitter_bot.id,
+        to_user_id: follower_ids.to_a,
+      ).where('followed_at < ?', EFFECTIVE_PROMOTE_FILTER_SECOND.second.ago)
     unfollow_friends.each do |friend|
       is_success = friend.unfollow!(twitter_client: twitter_client)
       if is_success
@@ -262,15 +264,17 @@ module Promote
   end
 
   def self.remove_all_depulicate_event_tweets
-    twitter_client = TwitterBot.get_twitter_client(
-      access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-      access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
-    )
+    twitter_client =
+      TwitterBot.get_twitter_client(
+        access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
+        access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', ''),
+      )
     tweet_count = twitter_client.user.statuses_count
     current_tweet_count = 0
     max_tweet_id = twitter_client.user.status.id.to_s
     loop do
-      tweets = twitter_client.user_timeline({ count: Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST, max_id: max_tweet_id })
+      tweets =
+        twitter_client.user_timeline({ count: Twitter::REST::Tweets::MAX_TWEETS_PER_REQUEST, max_id: max_tweet_id })
       exists_tweet_ids = TwitterBot.where(tweet_id: tweets.map(&:id)).pluck(:tweet_id)
       tweets.each do |tweet|
         next if exists_tweet_ids.include?(tweet.id.to_s)

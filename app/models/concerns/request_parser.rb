@@ -91,7 +91,6 @@ module RequestParser
         newuri = HTTPClient::Util.urify(res.header['location'][0])
         newuri_scheme = newuri.scheme.try(:downcase)
         if newuri_scheme && (newuri_scheme == 'https' || newuri_scheme == 'http')
-
         else
           newuri = uri + newuri
         end

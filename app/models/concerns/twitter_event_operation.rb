@@ -233,7 +233,9 @@ module TwitterEventOperation
         Rails.logger.warn(['NotFound expanded_tweets_from_twitter_url Error:', e.rate_limit.reset_in, 's'].join(' '))
         break
       rescue Twitter::Error::ServiceUnavailable => e
-        Rails.logger.warn(['ServiceUnavailable expanded_tweets_from_twitter_url Error:', e.rate_limit.reset_in, 's'].join(' '))
+        Rails.logger.warn(
+          ['ServiceUnavailable expanded_tweets_from_twitter_url Error:', e.rate_limit.reset_in, 's'].join(' '),
+        )
         break
       rescue HTTP::ConnectionError => e
         Rails.logger.warn(['HTTP::ConnectionError expanded_tweets_from_twitter_url Error'].join(' '))

@@ -37,17 +37,16 @@ class Promote::ActionTweet < ApplicationRecord
     promote_action_tweets = []
     tweets.each do |tweet|
       next if status_id_promote_tweets[tweet.id.to_s].present?
-      promote_action_tweets <<
-        Promote::ActionTweet.new(
-          user_id: me_user.id,
-          status_user_id: tweet.user.id,
-          status_user_screen_name: tweet.user.screen_name,
-          status_id: tweet.id,
-          state: :unrelated,
-          score: default_score,
-          lang: tweet.lang,
-          created_at: tweet.created_at,
-        )
+      promote_action_tweets << Promote::ActionTweet.new(
+        user_id: me_user.id,
+        status_user_id: tweet.user.id,
+        status_user_screen_name: tweet.user.screen_name,
+        status_id: tweet.id,
+        state: :unrelated,
+        score: default_score,
+        lang: tweet.lang,
+        created_at: tweet.created_at,
+      )
     end
     Promote::ActionTweet.import!(promote_action_tweets)
   end
