@@ -26,9 +26,10 @@ class Promote::TwitterFriend < Promote::Friend
 
   def self.import_from_users!(me_user:, twitter_users: [], to_be_follower: false, default_score: 0)
     to_user_id_twitter_friends =
-      Promote::TwitterFriend
-        .where(from_user_id: me_user.id, to_user_id: twitter_users.map { |tu| tu.id.to_s })
-        .index_by(&:to_user_id)
+      Promote::TwitterFriend.where(
+        from_user_id: me_user.id,
+        to_user_id: twitter_users.map { |tu| tu.id.to_s },
+      ).index_by(&:to_user_id)
     promote_twitter_friends = []
     twitter_users.each do |twitter_user|
       next if me_user.id.to_i == twitter_user.id.to_i

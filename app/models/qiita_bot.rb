@@ -58,13 +58,7 @@ class QiitaBot < ApplicationRecord
     send_params = {
       title: "#{year_number}年#{start_month}月〜#{year_number}年#{end_month}月のハッカソン開催情報まとめ!",
       body: body,
-      tags: [
-        { name: 'hackathon' },
-        { name: 'ハッカソン' },
-        { name: 'アイディアソン' },
-        { name: '合宿' },
-        { name: year_number.to_s },
-      ],
+      tags: [{ name: 'hackathon' }, { name: 'ハッカソン' }, { name: 'アイディアソン' }, { name: '合宿' }, { name: year_number.to_s }],
     }
     return send_params
   end

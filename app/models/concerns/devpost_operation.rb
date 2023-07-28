@@ -82,21 +82,20 @@ module DevpostOperation
       event_struct.place = event_struct.place.to_s.strip
     end
     devpost_event.merge_event_attributes(
-      attrs:
-        {
-          informed_from: :devpost,
-          title: event_struct.name.to_s,
-          description: event_struct.description.to_s,
-          state: :active,
-          started_at: Time.parse(event_struct.startDate),
-          ended_at: Time.parse(event_struct.endDate),
-          place: event_struct.place,
-          address: event_struct.address,
-          attend_number: 0,
-          max_prize: 0,
-          currency_unit: 'JPY',
-          owner_name: organizer_struct.name,
-        }.merge(options),
+      attrs: {
+        informed_from: :devpost,
+        title: event_struct.name.to_s,
+        description: event_struct.description.to_s,
+        state: :active,
+        started_at: Time.parse(event_struct.startDate),
+        ended_at: Time.parse(event_struct.endDate),
+        place: event_struct.place,
+        address: event_struct.address,
+        attend_number: 0,
+        max_prize: 0,
+        currency_unit: 'JPY',
+        owner_name: organizer_struct.name,
+      }.merge(options),
     )
     return devpost_event
   end

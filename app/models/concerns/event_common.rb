@@ -228,10 +228,12 @@ module EventCommon
 
     candidate_times = Sanitizer.scan_candidate_time(sanitized_main_content_html)
     filtered_times =
-      candidate_times.select do |candidate_time|
-        0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
-          candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
-      end.uniq
+      candidate_times
+        .select do |candidate_time|
+          0 <= candidate_time[0].to_i && candidate_time[0].to_i < 30 && 0 <= candidate_time[1].to_i &&
+            candidate_time[1].to_i < 60 && 0 <= candidate_time[2].to_i && candidate_time[2] < 60
+        end
+        .uniq
     filtered_times.sort_by! { |time| time[0].to_i * 10_000 + time[1].to_i * 100 + time[2].to_i }
     start_time_array = filtered_times.first || []
     end_time_array = filtered_times.last || []
@@ -266,10 +268,12 @@ module EventCommon
 
   def import_hashtags!(hashtag_strings: [])
     sanitized_hashtags =
-      [hashtag_strings].flatten.map do |hashtag|
-        htag = Sanitizer.basic_sanitize(hashtag.to_s)
-        Sanitizer.delete_sharp(htag).split(/[\s　,]/).select(&:present?)
-      end.flatten
+      [hashtag_strings].flatten
+        .map do |hashtag|
+          htag = Sanitizer.basic_sanitize(hashtag.to_s)
+          Sanitizer.delete_sharp(htag).split(/[\s　,]/).select(&:present?)
+        end
+        .flatten
     return false if sanitized_hashtags.blank?
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
     sanitized_hashtags.each do |h|
@@ -292,8 +296,7 @@ module EventCommon
     image_html = self.og_image_html
     words += [image_html, ''] if image_html.present?
 
-    words +=
-      [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
+    words += [self.started_at.strftime('%Y年%m月%d日'), self.place, "[#{self.address}](#{self.generate_google_map_url})"]
     words << "定員#{self.limit_number}人" if self.limit_number.present?
 
     if self.attend_number >= 0
@@ -307,8 +310,7 @@ module EventCommon
           if remain_number > 0
             words << "<font color=\"#FF0000;\">あと残り#{remain_number}人</font> 参加可能"
           else
-            words <<
-              "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
+            words << "今だと補欠登録されると思います。<font color=\"#FF0000\">(#{self.substitute_number}人が補欠登録中)</font>"
           end
         end
       end

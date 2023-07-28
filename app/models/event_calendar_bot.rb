@@ -25,8 +25,10 @@ class EventCalendarBot < ApplicationRecord
   end
 
   def self.generate_google_calender_event_object(event:)
-    calender_description =
-      ['<h1><a href="' + event.url + '">' + event.title + '</a></h1>', event.description.to_s].join('\n')
+    calender_description = [
+      '<h1><a href="' + event.url + '">' + event.title + '</a></h1>',
+      event.description.to_s,
+    ].join('\n')
     calender_event = Google::Apis::CalendarV3::Event.new
     calender_event.summary = event.title
     calender_event.location = [event.address, event.place].join(' ')

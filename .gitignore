@@ -39,3 +39,5 @@ public/assets/
 .gitconfig
 
 node_modules/
+
+firebase_config.json

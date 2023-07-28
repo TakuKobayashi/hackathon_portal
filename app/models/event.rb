@@ -103,9 +103,7 @@ class Event < ApplicationRecord
       self.url = shorted_url
       self.shortener_url = shorted_url
     end
-    if self.started_at > self.ended_at
-      self.ended_at = self.started_at.end_of_day
-    end
+    self.ended_at = self.started_at.end_of_day if self.started_at > self.ended_at
   end
 
   def self.import_events!
