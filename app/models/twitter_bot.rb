@@ -17,6 +17,8 @@
 #  index_twitter_bots_on_tweet_id               (tweet_id)
 #
 
+require 'google/cloud/firestore'
+
 class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
