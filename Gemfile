@@ -45,7 +45,6 @@ gem 'google-api-client'
 gem 'git'
 
 gem 'twitter', '>= 6.0'
-gem 'tweetstream'
 gem 'charwidth'
 
 gem 'devise'
