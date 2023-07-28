@@ -40,6 +40,7 @@ namespace :batch do
           from: event,
           options: tweet_options,
         )
+        sleep 1
       end
     end
     QiitaBot.post_or_update_article!(events: will_post_events, access_token: ENV.fetch('QIITA_BOT_ACCESS_TOKEN', ''))
