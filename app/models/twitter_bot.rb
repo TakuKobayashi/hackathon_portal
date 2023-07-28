@@ -36,9 +36,11 @@ class TwitterBot < ApplicationRecord
     tweet_result = OpenStruct.new(tweet_result_hash['data'])
     #    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
     #    tweet_result = twitter_client.update(text, options)
-    twitter_bot =
-      TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: Time.current, from: from)
-    return twitter_bot
+    unless tweet_result.text.nil?
+      twitter_bot =
+        TwitterBot.create!(tweet: tweet_result.text, tweet_id: tweet_result.id, tweet_time: Time.current, from: from)
+      return twitter_bot
+    end
   end
 
   def reject_tweet!(
