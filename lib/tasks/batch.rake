@@ -30,10 +30,12 @@ namespace :batch do
       end
     end
 
+    twitter_oauth_token = TwitterBot.load_twitter_oauth_token
     future_events.each do |event|
       unless TwitterBot.exists?(from: event)
         tweet_options = { lat: event.lat, long: event.lon }
         TwitterBot.tweet!(
+          twitter_oauth_token: twitter_oauth_token,
           text: event.generate_tweet_text,
           from: event,
           options: tweet_options,

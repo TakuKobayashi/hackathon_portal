@@ -65,6 +65,7 @@ gem 'parallel'
 
 gem 'uglifier'
 gem 'redcarpet'
+gem 'google-cloud-firestore', '~> 2.13', '>= 2.13.1'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -21,36 +21,17 @@ class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
   def self.tweet!(
+    twitter_oauth_token:,
     text:,
     from: nil,
     options: {}
   )
-  refreshed_token_hash = RequestParser.request_and_parse_json(
-    url: "https://api.twitter.com/2/oauth2/token",
-    method: :post,
-    header: {
-      "Content-Type" => "application/x-www-form-urlencoded",
-      Authorization: [
-        "Basic",
-        Base64.strict_encode64([
-          ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', ''),
-          ENV.fetch('TWITTER_OAUTH2_CLIENT_SECRET', ''),
-        ].join(":"))
-      ].join(" ")
-    },
-    body: URI.encode_www_form({
-      refresh_token: "UkZsdG5Fa2lDRk16d3diR1JyT2c0NWZ4bktIWHFyMmkyRGF3M0FJQ1BPQW9XOjE2OTAxMzcwMDk5NDg6MTowOnJ0OjE",
-      grant_type: "refresh_token",
-      client_id: ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', '')
-    })
-  )
-  refreshed_token = OpenStruct.new(refreshed_token_hash)
   tweet_result_hash = RequestParser.request_and_parse_json(
     url: "https://api.twitter.com/2/tweets",
     method: :post,
     header: {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: ["Bearer", refreshed_token.access_token].join(" "),
+      Authorization: ["Bearer", twitter_oauth_token.access_token].join(" "),
     },
     body: {text: text}.to_json
   )
@@ -80,51 +61,36 @@ class TwitterBot < ApplicationRecord
     self.destroy!
   end
 
-  def self.promote!(
-    access_token: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN', ''),
-    access_token_secret: ENV.fetch('TWITTER_BOT_ACCESS_TOKEN_SECRET', '')
-  )
-    twitter_client = self.get_twitter_client(access_token: access_token, access_token_secret: access_token_secret)
-    follower_ids = twitter_client.follower_ids({ count: 5000 })
-    follower_ids.each do |follower_id|
-      csrf_token = SecureRandom.hex
-      json =
-        RequestParser.request_and_parse_json(
-          url: 'https://api.twitter.com/2/timeline/liked_by.json',
-          params: {
-            include_profile_interstitial_type: 1,
-            include_blocking: 1,
-            include_blocked_by: 1,
-            include_followed_by: 1,
-            include_want_retweets: 1,
-            include_mute_edge: 1,
-            include_can_dm: 1,
-            include_can_media_tag: 1,
-            skip_status: 1,
-            cards_platform: 'Web-12',
-            include_cards: 1,
-            include_ext_alt_text: true,
-            include_quote_count: true,
-            include_reply_count: 1,
-            tweet_mode: 'extended',
-            include_entities: true,
-            include_user_entities: true,
-            include_ext_media_color: true,
-            include_ext_media_availability: true,
-            send_error_codes: true,
-            simple_quoted_tweet: true,
-            tweet_id: follower_id,
-            count: 80,
-            ext: 'mediaStats%2ChighlightedLabel',
-          },
-          header: {
-            # auth_token と Bearer token は調べて入れる必要がある
-            'authorization' => ['Bearer', twitter_client.token].join(' '),
-            'x-csrf-token' => csrf_token,
-            'cookie' => ['auth_token=' + csrf_token + ';', 'ct0=' + csrf_token + ';'].join(' '),
-          },
-        )
+  def self.load_twitter_oauth_token
+    firestore = Google::Cloud::Firestore.new(project_id: ENV.fetch('FIRESTORE_PROJECT_ID', ''), credentials: Rails.root.join("firebase_config.json"))
+    record_token_doc = firestore.col("twitter_oauth2_token").doc("HackathonPortal")
+    record_token = record_token_doc.get()
+    record_token_data = OpenStruct.new(record_token.data())
+    if Time.current > record_token.updated_at + record_token_data.expires_in
+      refreshed_token_hash = RequestParser.request_and_parse_json(
+        url: "https://api.twitter.com/2/oauth2/token",
+        method: :post,
+        header: {
+          "Content-Type" => "application/x-www-form-urlencoded",
+          Authorization: [
+            "Basic",
+            Base64.strict_encode64([
+              ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', ''),
+              ENV.fetch('TWITTER_OAUTH2_CLIENT_SECRET', ''),
+            ].join(":"))
+          ].join(" ")
+        },
+        body: URI.encode_www_form({
+          refresh_token: record_token_data.refresh_token,
+          grant_type: "refresh_token",
+          client_id: ENV.fetch('TWITTER_OAUTH2_CLIENT_ID', '')
+        })
+      )
+      record_token_doc.set(refreshed_token_hash)
+      record_token_data = OpenStruct.new(refreshed_token_hash)
     end
+
+    return record_token_data
   end
 
   def self.get_twitter_client(
