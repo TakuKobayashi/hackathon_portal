@@ -4076,3 +4076,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4102,'CoREjp');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4103,'vnyurijam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4104,'nikkei_tech_talk');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4105,'YAHAHA');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4106,'AIandGamesJam23');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4107,'MonarcaGameJam2023');
