@@ -23,11 +23,7 @@ namespace :batch do
       next if event.started_at < Time.current
 
       # これから始まるものだけ選別する
-      if event.url_active?
-        future_events << event
-      else
-        event.closed!
-      end
+      event.url_active? ? future_events << event : event.closed!
     end
 
     twitter_oauth_token = TwitterBot.load_twitter_oauth_token
@@ -173,13 +169,12 @@ namespace :batch do
           entity_components << '=='
           # 外部キーには目印
         elsif foreign_key_pairs[table_column_string].present?
-          entity_components <<
-            [
-              '#',
-              model_column.name,
-              '[FK(' + foreign_key_pairs[table_column_string] + ')]',
-              model_column.sql_type,
-            ].join(' ')
+          entity_components << [
+            '#',
+            model_column.name,
+            '[FK(' + foreign_key_pairs[table_column_string] + ')]',
+            model_column.sql_type,
+          ].join(' ')
           # unique indexには目印
         elsif unique_index_table_columns.include?(table_column_string)
           entity_components << ['*', model_column.name, model_column.sql_type].join(' ')

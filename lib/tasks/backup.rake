@@ -38,20 +38,19 @@ namespace :backup do
       export_full_dump_sql = Rails.root.join('db', 'seeds', model_class.table_name + '.sql')
       mysqldump_commands = ['mysqldump', '-u', username, '-h', host]
       mysqldump_commands << "-p#{password}" if password.present?
-      mysqldump_commands +=
-        [
-          database,
-          model_class.table_name,
-          '--no-create-info',
-          '-c',
-          '--order-by-primary',
-          '--skip-extended-insert',
-          '--skip-add-locks',
-          '--skip-comments',
-          '--compact',
-          '>',
-          export_full_dump_sql,
-        ]
+      mysqldump_commands += [
+        database,
+        model_class.table_name,
+        '--no-create-info',
+        '-c',
+        '--order-by-primary',
+        '--skip-extended-insert',
+        '--skip-add-locks',
+        '--skip-comments',
+        '--compact',
+        '>',
+        export_full_dump_sql,
+      ]
       system(mysqldump_commands.join(' '))
       FileUtils.remove_dir(export_table_directory_name) if Dir.exists?(export_table_directory_name)
       Dir.mkdir(export_table_directory_name)
@@ -80,26 +79,24 @@ namespace :backup do
 
   task export_json_data: :environment do
     events =
-      Event
-        .select(
-          :event_id,
-          :type,
-          :title,
-          :url,
-          :shortener_url,
-          :started_at,
-          :ended_at,
-          :limit_number,
-          :address,
-          :place,
-          :lat,
-          :lon,
-          :state,
-        )
-        .all
+      Event.select(
+        :event_id,
+        :type,
+        :title,
+        :url,
+        :shortener_url,
+        :started_at,
+        :ended_at,
+        :limit_number,
+        :address,
+        :place,
+        :lat,
+        :lon,
+        :state,
+      ).all
     event_json_files_directory = Rails.root.join('landing_front', 'public', 'jsons', 'events')
     FileUtils.mkdir(event_json_files_directory) unless Dir.exists?(event_json_files_directory)
-    started_at_month_events = events.group_by{|event| event.started_at.strftime("%Y%m") }
+    started_at_month_events = events.group_by { |event| event.started_at.strftime('%Y%m') }
     started_at_month_events.each do |year_month, events|
       json_filename = Rails.root.join('landing_front', 'public', 'jsons', 'events', "#{year_month}.json")
       File.write(json_filename, events.to_json)
