@@ -125,7 +125,6 @@ module RequestParser
           insert_top_messages: [
             "Response Error Status Code: #{response.status}",
             "Response Headers: #{response.headers.to_json}",
-            "Response Body: #{response.body}",
           ],
         )
       end
