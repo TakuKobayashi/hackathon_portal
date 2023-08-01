@@ -23,8 +23,8 @@ class TwitterBot < ApplicationRecord
   belongs_to :from, polymorphic: true, required: false
 
   def self.tweet!(twitter_oauth_token:, text:, from: nil, options: {})
-    tweet_result_hash =
-      RequestParser.request_and_parse_json(
+    tweet_result_hash, response =
+      RequestParser.request_and_parse_json_with_response(
         url: 'https://api.twitter.com/2/tweets',
         method: :post,
         header: {
@@ -66,8 +66,8 @@ class TwitterBot < ApplicationRecord
     record_token = record_token_doc.get()
     record_token_data = OpenStruct.new(record_token.data())
     if Time.current > record_token.updated_at + record_token_data.expires_in
-      refreshed_token_hash =
-        RequestParser.request_and_parse_json(
+      refreshed_token_hash, response =
+        RequestParser.request_and_parse_json_with_response(
           url: 'https://api.twitter.com/2/oauth2/token',
           method: :post,
           header: {

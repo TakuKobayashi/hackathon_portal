@@ -37,6 +37,19 @@ module RequestParser
   end
 
   def self.request_and_parse_json(url:, method: :get, params: {}, header: {}, body: '', options: {})
+    parsed_json, response =
+      self.request_and_parse_json_with_response(
+        url: url,
+        method: method,
+        params: params,
+        header: header,
+        body: body,
+        options: options,
+      )
+    return parsed_json
+  end
+
+  def self.request_and_parse_json_with_response(url:, method: :get, params: {}, header: {}, body: '', options: {})
     response =
       self.request_and_response(url: url, method: method, params: params, header: header, body: body, options: options)
     text =
@@ -56,7 +69,7 @@ module RequestParser
         insert_top_messages: ['exception:' + e.class.to_s],
       )
     end
-    return parsed_json
+    return parsed_json, response
   end
 
   def self.request_and_parse_xml(url:, method: :get, params: {}, header: {}, body: '', options: {})
@@ -109,7 +122,11 @@ module RequestParser
           header: header,
           body: body,
           options: options,
-          insert_top_messages: ["request Error Status Code: #{response.status}"],
+          insert_top_messages: [
+            "Response Error Status Code: #{response.status}",
+            "Response Headers: #{response.headers.to_json}",
+            "Response Body: #{response.body}",
+          ],
         )
       end
     rescue SocketError,
