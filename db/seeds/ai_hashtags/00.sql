@@ -4085,3 +4085,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4111,'bigaarcade');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4112,'gametricjam1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4113,'TacticalHeroicCinematicFantasyJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4114,'learntojam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4115,'SGGOSummer2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4116,'RPGBakinProgrammersJam');
