@@ -4089,3 +4089,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4115,'SGGOSummer2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4116,'RPGBakinProgrammersJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4117,'byog2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4118,'stungamejam23');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4119,'techjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4120,'nikhilmalankargamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4121,'quadjam8');
