@@ -4094,3 +4094,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4120,'nikhilmalankargamejam'
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4121,'quadjam8');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4122,'7DayGoodbyeSummerJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4123,'IPS-short');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4124,'https://twitter.com/PeapodGames');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4125,'AroundTheWorldJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4126,'4thWallHorrorJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4127,'shreemX');
