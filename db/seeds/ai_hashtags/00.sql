@@ -4098,3 +4098,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4124,'https://twitter.com/Pe
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4125,'AroundTheWorldJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4126,'4thWallHorrorJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4127,'shreemX');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4128,'EmilyJulieJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4129,'olcCodeJam2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4130,'MFFttrpgJam');
