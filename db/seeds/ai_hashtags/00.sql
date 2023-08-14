@@ -4104,3 +4104,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4130,'MFFttrpgJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4131,'olivejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4132,'JamTo21');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4133,'guildjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4134,'DojoGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4135,'TrialsOfMastery');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4136,'PS2ToyBox');
