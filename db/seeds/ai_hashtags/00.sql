@@ -4110,3 +4110,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4136,'PS2ToyBox');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4137,'XR信州');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4138,'XRMTG');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4139,'godot-rumble');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4140,'oprwj9');
