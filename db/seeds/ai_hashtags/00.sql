@@ -4124,3 +4124,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4150,'blenderproject');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4151,'OpenWorldGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4152,'HyperGameDev');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4153,'NoWordsJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4154,'makeadinosaur');
