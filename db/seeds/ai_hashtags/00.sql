@@ -4136,3 +4136,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4162,'ougda');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4163,'SGC23');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4164,'enjoy_pda');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4165,'ConLatinidad2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4166,'gdgt-idj23');
