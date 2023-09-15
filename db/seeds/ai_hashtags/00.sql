@@ -4156,3 +4156,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4182,'BeyondCapitalism');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4183,'FallChillJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4184,'spoopyjam5');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4185,'TexasGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4186,'bnscup2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4187,'TavernGamesAutumn23');
