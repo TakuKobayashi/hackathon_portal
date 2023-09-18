@@ -4161,3 +4161,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4187,'TavernGamesAutumn23');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4188,'14gjsm');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4189,'heavengamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4190,'ECTOCOMP2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4191,'IndieSpainJam23');
