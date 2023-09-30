@@ -4172,3 +4172,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4198,'_');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4199,'GWMonthlyJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4200,'HAGJ8');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4201,'FallGamesJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4202,'prtimes_onecareer_dev');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4203,'horrorjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4204,'seedcomp');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4205,'NondeterministicNovember');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4206,'MadeWith8thWall');
