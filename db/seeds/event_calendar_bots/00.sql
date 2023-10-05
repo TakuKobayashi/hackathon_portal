@@ -5456,3 +5456,5 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (5792,'Event',693868,'hd3tnfpr4d9o697v8g6idgbp2k','2023-10-04 10:07:58','2023-10-04 10:07:58');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (5793,'Event',693869,'30fjjvkh5krvk2ut7b0fp9kh44','2023-10-04 10:07:59','2023-10-04 10:07:59');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (5794,'Event',693877,'32d7daj86p90u5gbi5vgkfn4tg','2023-10-04 10:07:59','2023-10-04 10:07:59');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (5795,'Event',693884,'bgnarspcgcq9cus8lp66sf6mts','2023-10-05 10:07:05','2023-10-05 10:07:05');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (5796,'Event',693883,'jn3ta0f9g86j24nhcf34ju36hk','2023-10-05 10:07:06','2023-10-05 10:07:06');
