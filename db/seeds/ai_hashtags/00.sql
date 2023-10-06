@@ -4179,3 +4179,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4205,'NondeterministicNovemb
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4206,'MadeWith8thWall');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4207,'SpooktoberN64');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4208,'FailJam1');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4209,'decipher');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4210,'ChileChoriJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4211,'oniriajam3');
