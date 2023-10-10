@@ -4187,3 +4187,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4213,'queerfear2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4214,'ProcessingJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4215,'FailJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4216,'poesiayvideojuegos');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4217,'it勉強宴会');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4218,'SHMUPbundle');
