@@ -4195,3 +4195,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4221,'dink');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4222,'ambientrun');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4223,'VeloxTurbo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4224,'GameJamPlus');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4225,'imgj30');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4226,'injamfr');
