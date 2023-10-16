@@ -4201,3 +4201,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4227,'DemocraciaGamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4228,'toucandoit');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4229,'HololiveGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4230,'NetYaroze');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4231,'upsteam5');
