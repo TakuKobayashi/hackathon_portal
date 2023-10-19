@@ -4204,3 +4204,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4230,'NetYaroze');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4231,'upsteam5');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4232,'BIGAJAMV2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4233,'Diversify2023');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4234,'Codagon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4235,'scorejamVR');
