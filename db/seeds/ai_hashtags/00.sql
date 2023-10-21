@@ -4212,3 +4212,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4238,'NDJam14');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4239,'orcajam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4240,'rustcppdragons');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4241,'punyjam4');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4242,'FreePalestine');
