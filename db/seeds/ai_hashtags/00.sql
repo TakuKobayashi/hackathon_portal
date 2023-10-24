@@ -4215,3 +4215,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4241,'punyjam4');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4242,'FreePalestine');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4243,'StoryOfPalestine');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4244,'RISEjam2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4245,'HTML5_9th_Anniversary');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4246,'MermeladaJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4247,'WECREATE');
