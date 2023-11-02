@@ -4236,3 +4236,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4262,'mealhackathonokayama')
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4263,'buzzati2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4264,'BahiaBlanca');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4265,'bluearchivejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4266,'mlse冬合宿2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4267,'godotxrgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4268,'shufflecomp2023');
