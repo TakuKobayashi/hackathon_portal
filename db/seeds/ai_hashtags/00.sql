@@ -4266,3 +4266,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4292,'okanan');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4293,'TowardsAFreePalestine');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4294,'LynxJam2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4295,'AcornJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4296,'ggj_tokyo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4297,'characterxyz');
