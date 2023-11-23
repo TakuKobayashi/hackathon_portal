@@ -4283,3 +4283,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4309,'HoloFanGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4310,'holymolly');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4311,'TangledBlessingsJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4312,'WinterJam24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4313,'educacin');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4314,'planeta');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4315,'GDEX_WGJ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4316,'deckmonth');
