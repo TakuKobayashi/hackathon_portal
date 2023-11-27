@@ -4287,3 +4287,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4313,'educacin');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4314,'planeta');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4315,'GDEX_WGJ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4316,'deckmonth');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4317,'86');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4318,'ScreamTV');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4319,'Toast2023');
