@@ -4332,3 +4332,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4358,'LogintotheFutureGameJa
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4359,'DiamondJam23');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4360,'LudexGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4361,'picotron');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4362,'PixelCaveGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4363,'12daysofsketchmas');
