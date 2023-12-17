@@ -4347,3 +4347,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4373,'GGJCM2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4374,'cokonpile');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4375,'rePort2023');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4376,'igdaClark');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4377,'lqgj7');
