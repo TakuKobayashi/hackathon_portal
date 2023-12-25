@@ -4367,3 +4367,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4393,'dmddesignchallenge');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4394,'FischbrotJAM');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4395,'NexusGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4396,'@MR_TEAMACO');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4397,'toyamaLMH');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4398,'QiitaHackathon');
