@@ -210,3 +210,8 @@ INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hasht
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10292,'Event',694776,4397);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10293,'Event',694777,4398);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10294,'Event',694782,3379);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10295,'Event',694788,4399);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10296,'Event',694792,2412);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10297,'Event',694793,4400);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10298,'Event',694796,4401);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10299,'Event',694799,4402);

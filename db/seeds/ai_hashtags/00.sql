@@ -4369,3 +4369,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4395,'NexusGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4396,'@MR_TEAMACO');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4397,'toyamaLMH');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4398,'QiitaHackathon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4399,'ggj');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4400,'ArcaneJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4401,'リブートジャム');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4402,'oprwj10');
