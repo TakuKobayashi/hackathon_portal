@@ -4373,3 +4373,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4399,'ggj');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4400,'ArcaneJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4401,'リブートジャム');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4402,'oprwj10');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4403,'imgj31');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4404,'imgj32');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4405,'imgj33');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4406,'imgj34');
