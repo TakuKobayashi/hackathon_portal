@@ -4380,3 +4380,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4406,'imgj34');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4407,'WealthIsACompleteSentence');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4408,'AssetFlipJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4409,'SteamboatWillieJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4410,'maplesyrupjam');
