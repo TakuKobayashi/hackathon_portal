@@ -4385,3 +4385,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4411,'GDKO2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4412,'VeloxFormido');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4413,'vdjam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4414,'DustyOldGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4415,'rpijamtokyo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4416,'nsfw-minijam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4417,'IndieDevGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4418,'hphgamejam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4419,'RecipeMiniJam');
