@@ -4390,3 +4390,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4416,'nsfw-minijam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4417,'IndieDevGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4418,'hphgamejam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4419,'RecipeMiniJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4420,'boygjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4421,'SingleChoiceJam');
