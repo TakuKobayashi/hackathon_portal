@@ -4402,3 +4402,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4428,'dcjam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4429,'rhythmjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4430,'32BitSpringCleaning');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4431,'kyjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4432,'GEUnityJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4433,'GEUnrealJam');
