@@ -4427,3 +4427,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4453,'SmoochieJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4454,'Reremixed');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4455,'WorldJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4456,'contest-gamerzsfx-2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4457,'シャチトラ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4458,'virtualcoregamejam');
