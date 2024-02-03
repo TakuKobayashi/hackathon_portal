@@ -4436,3 +4436,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4462,'VallesGameJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4463,'MonarcaGameJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4464,'Kloud');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4465,'温泉合宿2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4466,'U29');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4467,'未経験者歓迎');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4468,'非エンジニア歓迎');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4469,'U29');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4470,'fukuidxlab');
