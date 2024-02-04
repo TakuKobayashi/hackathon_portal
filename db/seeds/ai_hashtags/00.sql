@@ -4441,3 +4441,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4467,'未経験者歓迎');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4468,'非エンジニア歓迎');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4469,'U29');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4470,'fukuidxlab');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4471,'こそぷろ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4472,'CaribbeanPizzaParty');
