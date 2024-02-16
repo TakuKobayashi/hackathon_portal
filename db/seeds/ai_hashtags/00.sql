@@ -4458,3 +4458,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4484,'ifrevivaljam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4485,'yurijam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4486,'ossanjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4487,'riggyjam5');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4488,'pixelcoalgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4489,'GameCraft');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4490,'EasterJam2024');
