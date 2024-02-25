@@ -4466,3 +4466,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4492,'UE5ぷちコン');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4493,'ue5petitcon21');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4494,'mmorpgjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4495,'cthulhudarkitaliajam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4496,'MonstrousDesiresVNjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4497,'ExtraterrestrialTerrorJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4498,'WorldJamFuture2024');
