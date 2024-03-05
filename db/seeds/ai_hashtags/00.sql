@@ -4475,3 +4475,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4501,'JADJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4502,'DOTISDED');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4503,'CSvnjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4504,'unexpectedjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4505,'FillHexJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4506,'fishfest');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4507,'the-thoughtful-jam');
