@@ -4495,3 +4495,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4521,'daisygamejam24h1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4522,'JointJam24');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4523,'futureinspirejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4524,'UniGameJam3');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4525,'FusionFrenzyGameJam');
