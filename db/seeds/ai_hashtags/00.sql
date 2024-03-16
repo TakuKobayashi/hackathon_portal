@@ -4496,3 +4496,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4522,'JointJam24');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4523,'futureinspirejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4524,'UniGameJam3');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4525,'FusionFrenzyGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4526,'GDevelopGameJam5');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4527,'CofradeJam24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4528,'CakeBookJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4529,'hensjam3');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4530,'climatejam');
