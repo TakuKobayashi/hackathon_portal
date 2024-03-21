@@ -4504,3 +4504,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4530,'climatejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4531,'4に参加');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4532,'typicalgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4533,'microjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4534,'NextbeatTechBar');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4535,'wattwisegames');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4536,'AmorodoJam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4537,'TheGDGJam');
