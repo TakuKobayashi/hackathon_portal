@@ -4508,3 +4508,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4534,'NextbeatTechBar');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4535,'wattwisegames');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4536,'AmorodoJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4537,'TheGDGJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4538,'FileMaker');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4539,'linedcba24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4540,'PygameSpringJam24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4541,'Pix3lJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4542,'@sieusaovang');
