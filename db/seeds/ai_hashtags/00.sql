@@ -4514,3 +4514,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4540,'PygameSpringJam24');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4541,'Pix3lJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4542,'@sieusaovang');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4543,'ISOUjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4544,'CentralMAGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4545,'GothicHorrorJam');
