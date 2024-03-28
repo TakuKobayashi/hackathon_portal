@@ -4518,3 +4518,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4544,'CentralMAGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4545,'GothicHorrorJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4546,'u1w共有会');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4547,'sketchstergj24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4548,'AmareGamesFestival');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4549,'thegatesjam');
