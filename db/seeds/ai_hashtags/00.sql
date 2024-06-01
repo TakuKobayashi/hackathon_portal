@@ -4577,3 +4577,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4603,'TigerJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4604,'weekend');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4605,'HaroldJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4606,'QueerJoyJam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4607,'FanStudioZombeezJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4608,'blackcatjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4609,'doujinfest');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4610,'ngagejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4611,'SummerJam2024');
