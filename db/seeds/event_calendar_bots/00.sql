@@ -6450,3 +6450,5 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (6786,'Event',696098,'spfgtue51mog2vglp8o2h50sp4','2024-06-19 10:06:13','2024-06-19 10:06:13');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (6787,'Event',696105,'l93vj1m2su7r86ngh5t9o0kl3c','2024-06-20 10:05:57','2024-06-20 10:05:57');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (6788,'Event',696106,'mcn71dqg3j9ehqvefp71efg208','2024-06-20 10:05:58','2024-06-20 10:05:58');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (6789,'Event',696107,'q05pl8rh4dfds287l3oehd4ivg','2024-06-21 10:06:18','2024-06-21 10:06:18');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (6790,'Event',696108,'coei360b5ul125fn8ugji43j28','2024-06-21 10:06:19','2024-06-21 10:06:19');
