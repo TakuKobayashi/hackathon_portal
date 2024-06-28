@@ -4606,3 +4606,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4632,'NSJSMainJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4633,'DisCoDevs');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4634,'UOPGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4635,'bbqjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4636,'kbgames18cardjam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4637,'VetelinoSummerJam2024');
