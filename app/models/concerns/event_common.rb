@@ -1,6 +1,7 @@
 module EventCommon
   BITLY_SHORTEN_API_URL = 'https://api-ssl.bitly.com/v4/shorten'
   TINY_SHORTEN_API_URL = 'https://tiny.cc/tiny/api/3/urls'
+  IS_GD_SHORTEN_API_URL = 'https://is.gd/create.php'
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
@@ -455,5 +456,23 @@ module EventCommon
     else
       return nil
     end
+=begin
+    result = RequestParser.request_and_parse_json(
+      url: IS_GD_SHORTEN_API_URL,
+      method: :post,
+      header: {
+        'Content-Type' => 'application/json'
+      },
+      params: {
+        format: "json",
+        url: self.url
+      }
+    )
+    if result['shorturl'].present?
+      return result['shorturl'].to_s
+    else
+      return nil
+    end
+=end
   end
 end
