@@ -42,6 +42,8 @@ stages:
     - echo "QIITA_BOT_ACCESS_TOKEN='${QIITA_BOT_ACCESS_TOKEN}'" >> .env
     - echo "MEETUP_API_KEY='${MEETUP_API_KEY}'" >> .env
     - echo "BITLY_ACCESS_TOKEN='${BITLY_ACCESS_TOKEN}'" >> .env
+    - echo "TINY_USERNAME='${TINY_USERNAME}'" >> .env
+    - echo "TINY_API_KEY='${TINY_API_KEY}'" >> .env
     - echo "DOORKEEPER_API_KEY='${DOORKEEPER_API_KEY}'" >> .env
     - echo "LOCATION_GAS_SCRIPT_ID='${LOCATION_GAS_SCRIPT_ID}'" >> .env
     - echo "EVENTBRITE_API_TOKEN='${EVENTBRITE_API_TOKEN}'" >> .env
