@@ -1,5 +1,6 @@
 module EventCommon
   BITLY_SHORTEN_API_URL = 'https://api-ssl.bitly.com/v4/shorten'
+  TINY_SHORTEN_API_URL = 'https://tiny.cc/tiny/api/3/urls'
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
@@ -429,19 +430,28 @@ module EventCommon
   def get_short_url
     result =
       RequestParser.request_and_parse_json(
-        url: BITLY_SHORTEN_API_URL,
+        url: TINY_SHORTEN_API_URL,
         method: :post,
+        params: {
+          disable_long_url_duplicates: "account"
+        },
         header: {
-          'Authorization' => "Bearer #{ENV.fetch('BITLY_ACCESS_TOKEN', '')}",
+          'X-Tinycc-User' => ENV.fetch('TINY_USERNAME', ''),
+          'X-Tinycc-Key' => ENV.fetch('TINY_API_KEY', ''),
           'Content-Type' => 'application/json',
         },
-        body: { long_url: self.url }.to_json,
+        body: {
+          urls: [
+            { long_url: self.url },
+          ]
+        }.to_json,
         options: {
           follow_redirect: true,
         },
       )
-    if result['id'].present?
-      return 'https://' + result['id']
+    if result['urls'].present?
+      result_url_info = result['urls'].first || {}
+      return 'https://' + result_url_info['short_url'].to_s
     else
       return nil
     end
