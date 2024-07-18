@@ -852,3 +852,4 @@ INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hasht
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10934,'Event',696245,4355);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10935,'Event',696251,4651);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10936,'Event',696254,2467);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (10937,'Event',696255,4652);
