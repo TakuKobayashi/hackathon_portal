@@ -4635,3 +4635,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4661,'madewithdefold');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4662,'ChooseASongJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4663,'PowerJam3');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4664,'T3Jam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4665,'YAZJam5');
