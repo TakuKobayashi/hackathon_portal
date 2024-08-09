@@ -4643,3 +4643,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4669,'MUGJ2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4670,'SnesStyleGraphicsJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4671,'4とSW岩国');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4672,'1に参加');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4673,'@FukuokaGameJam');
