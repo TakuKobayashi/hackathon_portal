@@ -278,14 +278,18 @@ module EventCommon
         .flatten
     return false if sanitized_hashtags.blank?
     ai_hashtags = Ai::Hashtag.where(hashtag: sanitized_hashtags).index_by(&:hashtag)
-    sanitized_hashtags.each do |h|
-      if ai_hashtags[h].present?
-        aih = ai_hashtags[h]
-      else
-        aih = Ai::Hashtag.new(hashtag: h)
+    self.transaction do
+      sanitized_hashtags.each do |h|
+        if ai_hashtags[h].present?
+          aih = ai_hashtags[h]
+        else
+          aih = Ai::Hashtag.new(hashtag: h)
+        end
+        aih.save!
+        if self.resource_hashtags.all?{|rh| rh.hashtag_id != aih.id}
+          self.resource_hashtags.create!(hashtag_id: aih.id)
+        end
       end
-      aih.save!
-      self.resource_hashtags.find_or_create_by(hashtag_id: aih.id)
     end
   end
 
