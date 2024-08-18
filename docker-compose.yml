@@ -11,6 +11,10 @@ services:
       RAILS_MAX_THREADS: '5'
     ports:
       - '3306:3306'
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - appandserver
 
   web:
     build: .
@@ -23,5 +27,13 @@ services:
       - MYSQL_PASSWORD=
     ports:
       - '3000:3000'
-    links:
+    networks:
+      - appandserver
+    depends_on:
       - db
+
+networks:
+  appandserver:
+
+volumes:
+  db-data:
