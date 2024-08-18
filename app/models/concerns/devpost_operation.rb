@@ -29,6 +29,8 @@ module DevpostOperation
         if devpost_event.blank?
           devpost_event = Event.new(url: info.url.to_s)
         end
+        detail_page = RequestParser.request_and_parse_html(url: info.url)
+        description_string = detail_page.css("meta").find{|meta| meta.attr("name") == "description"}.try(:attr, "content").to_s
         started_at_date, ended_at_date = self.split_to_start_and_end_date(date_range_string: info.submission_period_dates)
         location_strut = OpenStruct.new(info.displayed_location)
         address_string = nil
@@ -40,6 +42,7 @@ module DevpostOperation
           attrs: {
             informed_from: :devpost,
             title: info.title.to_s,
+            description: description_string,
             state: :active,
             started_at: started_at_date,
             ended_at: ended_at_date,
