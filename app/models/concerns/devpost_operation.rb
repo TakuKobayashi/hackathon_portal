@@ -23,7 +23,7 @@ module DevpostOperation
           },
         )
       hackathon_info_structs = (response_json["hackathons"] || []).map{|info| OpenStruct.new(info) }
-      url_devpost_events = Event.where(url: hackathon_info_structs.map(&:url)).includes(:event_detail).index_by(&:url)
+      url_devpost_events = Event.where(url: hackathon_info_structs.map(&:url)).includes(:event_detail, :resource_hashtags).index_by(&:url)
       hackathon_info_structs.each do |info|
         devpost_event = url_devpost_events[info.url]
         if devpost_event.blank?
