@@ -47,71 +47,81 @@ module ConnpassOperation
 
   def self.import_events_from_keywords!(keywords:)
     [keywords].flatten.each do |keyword|
-      response_html = RequestParser.request_and_parse_html(
-        url: CONNPASS_SEARCH_URL,
-        params: {
-          q: keyword,
-          start_from: Time.current.strftime("%Y/%m/%d"),
-        },
-      )
-      event_list_docs = response_html.css(".event_list")
-      event_urls = event_list_docs.map{|doc| doc.css("a.url").first.try(:attr, 'href') }.compact
-      current_url_events = Event.where(url: event_urls).includes(:event_detail).index_by(&:url)
-      event_list_docs.each do |event_doc|
-        event_url_doc = event_doc.css("a.url").first
-        event_url = Addressable::URI.parse(event_url_doc.try(:attr, 'href').to_s)
-        if current_url_events[event_url.to_s].present?
-          connpass_event = current_url_events[event_url.to_s]
-        else
-          connpass_event = Event.new(url: event_url.to_s)
-        end
-        event_id = event_url.path.split('/').find_all(&:present?).last
-        attend_number, limit_number = event_doc.css("span.amount").text.split('/')
-        substitute_number = nil
-        if limit_number.present?
-          substitute_number = [attend_number.to_i - limit_number.to_i, 0].max
-        end
-        event_owner_doc = event_doc.css('.event_owner')
-        owner_info_doc = event_owner_doc.css('a').first
-        owner_nickname = owner_info_doc.try(:attr, 'href').split('/').find_all(&:present?).last
-        owner_name = owner_info_doc.try(:text).to_s.strip
-        detail_page_doc = RequestParser.request_and_parse_html(url: event_url.to_s)
-        event_schedule_doc = detail_page_doc.css('.event_schedule_area')
-        start_at_value = event_schedule_doc.css('.dtstart').css('.value-title').first.try(:attr, 'title').to_s
-        ended_at_value = event_schedule_doc.css('.dtend').css('.value-title').first.try(:attr, 'title').to_s
-        place_info_doc = detail_page_doc.css('.event_place_area')
-        place_geo_doc = place_info_doc.css('.geo')
-        connpass_event.merge_event_attributes(
-          attrs: {
-            state: :active,
-            informed_from: :connpass,
-            event_id: event_id,
-            title: event_url_doc.try(:text).to_s,
-            description: Sanitizer.basic_sanitize(detail_page_doc.css("#editor_area").children.to_html.strip.to_s),
-            limit_number: limit_number,
-            address: place_info_doc.css('.adr').css('.value-title').first.try(:attr, 'title'),
-            place: place_info_doc.css(".place_name").text.strip,
-            lat: place_geo_doc.css(".latitude").css(".value-title").first.try(:attr, 'title'),
-            lon: place_geo_doc.css(".longitude").css(".value-title").first.try(:attr, 'title'),
-            cost: 0,
-            max_prize: 0,
-            currency_unit: 'JPY',
-            owner_nickname: owner_nickname,
-            owner_name: owner_name,
-            attend_number: attend_number.to_i,
-            substitute_number: substitute_number,
-            started_at: Time.parse(start_at_value),
-            ended_at: Time.parse(ended_at_value),
+      event_count = 0
+      page = 1
+      total_count = 1
+      loop do
+        response_html = RequestParser.request_and_parse_html(
+          url: CONNPASS_SEARCH_URL,
+          params: {
+            q: keyword,
+            start_from: Time.current.strftime("%Y/%m/%d"),
+            page: page,
           },
         )
-        Event.transaction do
-          connpass_event.save!
-          hashtags = detail_page_doc.css(".label_hashtag").map{|hashtag_dom| hashtag_dom.css("a").map{|a_tag| a_tag.text.strip } }.flatten
-          connpass_event.import_hashtags!(hashtag_strings: hashtags)
+        total_count = response_html.css('.main_h2').text.gsub(/[^\d]/, "").to_i
+        event_list_docs = response_html.css(".event_list")
+        event_urls = event_list_docs.map{|doc| doc.css("a.url").first.try(:attr, 'href') }.compact
+        current_url_events = Event.where(url: event_urls).includes(:event_detail).index_by(&:url)
+        event_list_docs.each do |event_doc|
+          event_url_doc = event_doc.css("a.url").first
+          event_url = Addressable::URI.parse(event_url_doc.try(:attr, 'href').to_s)
+          if current_url_events[event_url.to_s].present?
+            connpass_event = current_url_events[event_url.to_s]
+          else
+            connpass_event = Event.new(url: event_url.to_s)
+          end
+          event_id = event_url.path.split('/').find_all(&:present?).last
+          attend_number, limit_number = event_doc.css("span.amount").text.split('/')
+          substitute_number = nil
+          if limit_number.present?
+            substitute_number = [attend_number.to_i - limit_number.to_i, 0].max
+          end
+          event_owner_doc = event_doc.css('.event_owner')
+          owner_info_doc = event_owner_doc.css('a').first
+          owner_nickname = owner_info_doc.try(:attr, 'href').split('/').find_all(&:present?).last
+          owner_name = owner_info_doc.try(:text).to_s.strip
+          detail_page_doc = RequestParser.request_and_parse_html(url: event_url.to_s)
+          event_schedule_doc = detail_page_doc.css('.event_schedule_area')
+          start_at_value = event_schedule_doc.css('.dtstart').css('.value-title').first.try(:attr, 'title').to_s
+          ended_at_value = event_schedule_doc.css('.dtend').css('.value-title').first.try(:attr, 'title').to_s
+          place_info_doc = detail_page_doc.css('.event_place_area')
+          place_geo_doc = place_info_doc.css('.geo')
+          connpass_event.merge_event_attributes(
+            attrs: {
+              state: :active,
+              informed_from: :connpass,
+              event_id: event_id,
+              title: event_url_doc.try(:text).to_s,
+              description: Sanitizer.basic_sanitize(detail_page_doc.css("#editor_area").children.to_html.strip.to_s),
+              limit_number: limit_number,
+              address: place_info_doc.css('.adr').css('.value-title').first.try(:attr, 'title'),
+              place: place_info_doc.css(".place_name").text.strip,
+              lat: place_geo_doc.css(".latitude").css(".value-title").first.try(:attr, 'title'),
+              lon: place_geo_doc.css(".longitude").css(".value-title").first.try(:attr, 'title'),
+              cost: 0,
+              max_prize: 0,
+              currency_unit: 'JPY',
+              owner_nickname: owner_nickname,
+              owner_name: owner_name,
+              attend_number: attend_number.to_i,
+              substitute_number: substitute_number,
+              started_at: Time.parse(start_at_value),
+              ended_at: Time.parse(ended_at_value),
+            },
+          )
+          Event.transaction do
+            connpass_event.save!
+            hashtags = detail_page_doc.css(".label_hashtag").map{|hashtag_dom| hashtag_dom.css("a").map{|a_tag| a_tag.text.strip } }.flatten
+            connpass_event.import_hashtags!(hashtag_strings: hashtags)
+          end
+          event_count += 1
+          sleep 1
         end
+        break if total_count <= event_count
+        page += 1
         sleep 1
       end
-      sleep 1
     end
   end
 
