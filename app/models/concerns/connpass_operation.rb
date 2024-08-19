@@ -45,7 +45,7 @@ module ConnpassOperation
     return event
   end
 
-  def self.import_searched_events_from_keywords!(keywords: [])
+  def self.import_events_from_keywords!(keywords:)
     [keywords].flatten.each do |keyword|
       response_html = RequestParser.request_and_parse_html(
         url: CONNPASS_SEARCH_URL,
@@ -115,7 +115,7 @@ module ConnpassOperation
     end
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords_request_api!(keywords:)
     results_available = 0
     start = 1
     begin
