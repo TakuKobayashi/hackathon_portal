@@ -1,5 +1,6 @@
 module ConnpassOperation
   CONNPASS_URL = 'https://connpass.com/api/v1/event/'
+  CONNPASS_SEARCH_URL = 'https://connpass.com/search/'
 
   def self.find_event(keywords: nil, start: 1, event_id: nil)
     return(
@@ -42,6 +43,21 @@ module ConnpassOperation
       },
     )
     return event
+  end
+
+  def self.import_searched_events_from_keywords!(keywords: [])
+    [keywords].flatten.each do |keyword|
+      response_html = RequestParser.request_and_parse_html(
+        url: CONNPASS_SEARCH_URL,
+        params: {
+          q: keyword,
+          start_from: Time.current.strftime("%Y/%m/%d")
+        },
+      )
+      event_list_docs = response_html.css(".event_list")
+      event_list_docs.each do |event_doc|
+      end
+    end
   end
 
   def self.import_events_from_keywords!(keywords:)
