@@ -1,3 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
 INSERT INTO `promote_users` (`id`, `user_id`, `type`, `screen_name`, `state`, `follower_count`, `follow_count`) VALUES (1597223525203449,'714837456416333824','Promote::TwitterUser','hackathon_ideas',0,70,2);
 INSERT INTO `promote_users` (`id`, `user_id`, `type`, `screen_name`, `state`, `follower_count`, `follow_count`) VALUES (1597223525203884,'853079672481099776','Promote::TwitterUser','RequenaEA',0,31,125);
 INSERT INTO `promote_users` (`id`, `user_id`, `type`, `screen_name`, `state`, `follower_count`, `follow_count`) VALUES (1597223525205175,'453125939','Promote::TwitterUser','BeMyAppEMEA',0,1599,1146);
