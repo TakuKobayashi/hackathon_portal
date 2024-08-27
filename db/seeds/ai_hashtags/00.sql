@@ -4705,3 +4705,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4731,'indiegalactic');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4732,'SasquatchBGameJam24');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4733,'AIEngineeringDecoded');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4734,'Blackvisualnoveljam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4735,'PyConJP2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4736,'ChatGPT');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4737,'discovergamess');
