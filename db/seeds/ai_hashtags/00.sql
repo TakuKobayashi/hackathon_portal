@@ -4709,3 +4709,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4735,'PyConJP2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4736,'ChatGPT');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4737,'discovergamess');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4738,'bgj2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4739,'CGCJ2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4740,'dpshorrorjam2024');
