@@ -4711,3 +4711,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4737,'discovergamess');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4738,'bgj2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4739,'CGCJ2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4740,'dpshorrorjam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4741,'byog2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4742,'triplejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4743,'CodeforYamaguchi');
