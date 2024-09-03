@@ -4722,3 +4722,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4748,'Retro-Horror-Jam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4749,'VeloxTurbo2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4750,'hack_creator_party');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4751,'levelup2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4752,'scala_LT');
