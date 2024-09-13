@@ -4788,3 +4788,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4814,'2024FallCougarCup');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4815,'DreamerJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4816,'AMQ1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4817,'spoopyjam6');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4818,'darkmattergamjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4819,'BerryFarmFall2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4820,'Fusionween2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4821,'novembernutfest2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4822,'J3GJAM');
