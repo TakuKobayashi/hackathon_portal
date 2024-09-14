@@ -4793,3 +4793,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4819,'BerryFarmFall2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4820,'Fusionween2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4821,'novembernutfest2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4822,'J3GJAM');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4823,'IGDAHarvestJam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4824,'AnnualHalloweenJam');
