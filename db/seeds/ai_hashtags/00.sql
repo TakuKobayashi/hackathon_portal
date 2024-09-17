@@ -1,3 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (1,'saicollo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (2,'webiotmakers');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (3,'socioinfo');
