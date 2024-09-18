@@ -4801,3 +4801,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4826,'AR/VR');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4827,'OUATVNJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4828,'Pocketpackjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4829,'TimeTravelersToolbox');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4830,'飛騨高山Pythonの会');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4831,'GenJam25');
