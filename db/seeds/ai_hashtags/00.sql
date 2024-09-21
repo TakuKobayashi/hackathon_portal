@@ -4806,3 +4806,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4831,'GenJam25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4832,'SAGJ2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4833,'mstechcampjp');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4834,'polymorphrpg');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4835,'松尾研_LLM');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4836,'HarvestJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4837,'agoodbrewii');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4838,'JameGamChristmasEdition');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4839,'TXGameJam24');
