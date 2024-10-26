@@ -1,3 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
 INSERT INTO `promote_friends` (`id`, `type`, `from_user_id`, `to_user_id`, `state`, `score`, `followed_at`, `record_followers_follower_counter`) VALUES (12,'Promote::TwitterFriend','872351463678386178','714837456416333824',1,0,'2020-08-22 16:11:52',1);
 INSERT INTO `promote_friends` (`id`, `type`, `from_user_id`, `to_user_id`, `state`, `score`, `followed_at`, `record_followers_follower_counter`) VALUES (16,'Promote::TwitterFriend','872351463678386178','853079672481099776',1,0,'2020-08-13 20:40:13',0);
 INSERT INTO `promote_friends` (`id`, `type`, `from_user_id`, `to_user_id`, `state`, `score`, `followed_at`, `record_followers_follower_counter`) VALUES (28,'Promote::TwitterFriend','872351463678386178','453125939',11,0.9,'2020-08-13 20:40:14',1);
