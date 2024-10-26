@@ -74,6 +74,7 @@ module PeatixOperation
   end
 
   def self.import_events_from_keywords!(keywords:)
+=begin
     keywords.each do |keyword|
       page = 1
       begin
@@ -105,5 +106,6 @@ module PeatixOperation
         end
       end while json_data['events'].present?
     end
+=end
   end
 end
