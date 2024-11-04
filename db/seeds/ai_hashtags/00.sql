@@ -4885,3 +4885,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4910,'HopefulRomanticGameJam
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4911,'GBKitbashJam1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4912,'FediJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4913,'FarmFiesta2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4914,'Electriczinejamwinter2024');
