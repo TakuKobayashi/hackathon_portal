@@ -4903,3 +4903,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4928,'JingleGameJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4929,'redotgamjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4930,'soulsborneJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4931,'LostInAdaptationGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4932,'スタハブ高専');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4933,'jamdelavent');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4934,'JamTime24');
