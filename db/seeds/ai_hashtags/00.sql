@@ -4910,3 +4910,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4935,'Progateハッカソン
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4936,'GGJ_hiroshima');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4937,'NotAStrictJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4938,'imgj36');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4939,'lovebugjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4940,'HelloGodotGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4941,'@Ontario\'s_Winter_Game_Jam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4942,'IGDA');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4943,'SPG_WGJ');
