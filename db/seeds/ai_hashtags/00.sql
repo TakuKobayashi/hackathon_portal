@@ -4915,3 +4915,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4940,'HelloGodotGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4941,'@Ontario\'s_Winter_Game_Jam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4942,'IGDA');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4943,'SPG_WGJ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4944,'oopsalltables');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4945,'SkyelJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4946,'frankengamejam2024');
