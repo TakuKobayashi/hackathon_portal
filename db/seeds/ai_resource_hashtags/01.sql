@@ -2524,3 +2524,13 @@ INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hasht
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12605,'Event',697632,4655);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12606,'Event',697634,4953);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12607,'Event',697638,4954);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12608,'Event',697639,4682);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12609,'Event',697639,4683);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12610,'Event',697639,4695);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12611,'Event',697639,4696);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12612,'Event',697640,4680);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12613,'Event',697640,4681);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12614,'Event',697646,4955);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12615,'Event',697649,4956);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12616,'Event',697634,4957);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (12617,'Event',697650,4958);
