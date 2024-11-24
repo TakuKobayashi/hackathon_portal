@@ -4932,3 +4932,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4957,'JamForDemocracy');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4958,'ngj2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4959,'KC3Hack2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4960,'FOCSJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4961,'logansgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4962,'vrjam');
