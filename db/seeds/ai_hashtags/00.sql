@@ -4955,3 +4955,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4980,'card-deck-jam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4981,'picocad');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4982,'GGJMermeladaFriki25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4983,'sketchmasaj24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4984,'Gamesmadeinutah');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4985,'playgama');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4986,'jumpgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4987,'NeuraNodeJams');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4988,'GameJamSapo');
