@@ -4960,3 +4960,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4985,'playgama');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4986,'jumpgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4987,'NeuraNodeJams');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4988,'GameJamSapo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4989,'badmoonjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4990,'ProgateBar');
