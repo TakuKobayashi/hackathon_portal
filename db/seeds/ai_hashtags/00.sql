@@ -4965,3 +4965,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4990,'ProgateBar');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4991,'openhacku2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4992,'JamOfTheYear2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4993,'NeoTwinyJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4994,'ResolutionJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4995,'gigajam2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (4996,'confiture');
