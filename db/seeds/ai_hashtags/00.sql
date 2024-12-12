@@ -4975,3 +4975,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5000,'flowjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5001,'shittygaljam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5002,'Bestof2024TTRPGJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5003,'gameon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5004,'ハッカタス');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5005,'NagoyaAI');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5006,'dwarfjam');
