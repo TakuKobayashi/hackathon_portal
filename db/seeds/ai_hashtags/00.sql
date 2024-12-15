@@ -4987,3 +4987,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5012,'DomeKeeperModJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5013,'tagap-build-up');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5014,'Toast2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5015,'bpb_gamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5016,'ouyajam');
