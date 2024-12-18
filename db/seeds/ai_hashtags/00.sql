@@ -4993,3 +4993,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5018,'FolcloreRolJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5019,'backtoschooljam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5020,'mehujam7');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5021,'skatejam2k24');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5022,'大晦日ハッカソン');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5023,'gaypopeye');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5024,'joinusonbluesky');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5025,'UnpaidPromotionGameJam');
