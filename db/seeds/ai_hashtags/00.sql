@@ -4997,3 +4997,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5022,'大晦日ハッカソ�
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5023,'gaypopeye');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5024,'joinusonbluesky');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5025,'UnpaidPromotionGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5026,'3DHAPTICS');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5027,'pulsgamejam');
