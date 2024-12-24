@@ -5002,3 +5002,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5027,'pulsgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5028,'jam-ironsworn-fr');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5029,'kiri_is_me');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5030,'JamTime25');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5031,'Gamelike');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5032,'redpillgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5033,'D3DFJ');
