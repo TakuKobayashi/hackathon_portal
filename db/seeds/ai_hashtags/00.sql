@@ -5006,3 +5006,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5031,'Gamelike');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5032,'redpillgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5033,'D3DFJ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5034,'GoofyJam2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5035,'CIGP');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5036,'make12');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5037,'unreal-engine-sweden-jam');
