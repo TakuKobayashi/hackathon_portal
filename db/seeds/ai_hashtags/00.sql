@@ -5009,3 +5009,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5034,'GoofyJam2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5035,'CIGP');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5036,'make12');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5037,'unreal-engine-sweden-jam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5038,'MGGJ11');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5039,'CloudEmpressWinterJam');
