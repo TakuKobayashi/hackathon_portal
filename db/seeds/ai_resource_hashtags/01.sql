@@ -3022,3 +3022,5 @@ INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hasht
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (13103,'Event',698070,2350);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (13104,'Event',698073,5049);
 INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (13105,'Event',698080,5050);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (13106,'Event',698083,4452);
+INSERT INTO `ai_resource_hashtags` (`id`, `resource_type`, `resource_id`, `hashtag_id`) VALUES (13107,'Event',698085,4368);
