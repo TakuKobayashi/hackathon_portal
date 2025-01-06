@@ -5022,3 +5022,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5047,'projectsparkjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5048,'caveenginejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5049,'LeicesterGamesNetwork');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5050,'CrownedGameJam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5051,'techmarketing');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5052,'BoardGamesReimagined');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5053,'shortcircuitvnjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5054,'AkvatJam');
