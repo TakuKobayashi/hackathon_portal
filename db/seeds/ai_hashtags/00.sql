@@ -5028,3 +5028,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5053,'shortcircuitvnjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5054,'AkvatJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5055,'omegajam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5056,'MorikoJam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5057,'mehujam8');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5058,'ScratchsFinest2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5059,'akvatjam');
