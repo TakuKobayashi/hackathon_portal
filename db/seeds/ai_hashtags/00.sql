@@ -5035,3 +5035,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5060,'GamejaNavidejaCuatro')
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5061,'cococodejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5062,'gamedevromania');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5063,'pmjdii2024');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5064,'textilegamejam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5065,'dimensiongamejam2025');
