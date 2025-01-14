@@ -5038,3 +5038,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5063,'pmjdii2024');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5064,'textilegamejam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5065,'dimensiongamejam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5066,'specialinterestjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5067,'fast_workshop');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5068,'MysteryGameJam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5069,'streetgrim25');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5070,'UnchartedHearts');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5071,'ChanakuaGGJ25');
