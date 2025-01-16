@@ -5045,3 +5045,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5070,'UnchartedHearts');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5071,'ChanakuaGGJ25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5072,'canadiangamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5073,'casa_honero');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5074,'tinyworldjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5075,'yurijam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5076,'heavenjam1');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5077,'8agrancitmgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5078,'gamegen-gamejam-5');
