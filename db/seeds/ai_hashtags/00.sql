@@ -5051,3 +5051,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5076,'heavenjam1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5077,'8agrancitmgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5078,'gamegen-gamejam-5');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5079,'LDGQ');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5080,'Voice');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5081,'skills');
