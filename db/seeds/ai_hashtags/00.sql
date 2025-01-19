@@ -5053,3 +5053,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5078,'gamegen-gamejam-5');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5079,'LDGQ');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5080,'Voice');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5081,'skills');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5082,'davidlynchgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5083,'greatparablejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5084,'72h-fps-gamejam');
