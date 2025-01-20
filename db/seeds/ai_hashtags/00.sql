@@ -5056,3 +5056,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5081,'skills');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5082,'davidlynchgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5083,'greatparablejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5084,'72h-fps-gamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5085,'vfiplaython');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5086,'FuckCapitalismJam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5087,'orceard-jam');
