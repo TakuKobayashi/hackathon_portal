@@ -5062,3 +5062,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5087,'orceard-jam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5088,'smashJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5089,'SuperglueGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5090,'StarHavenJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5091,'ScreamRoulette');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5092,'gamezinejam');
