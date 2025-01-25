@@ -5072,3 +5072,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5097,'24jam24jan');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5098,'charactercreationjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5099,'DisCoDevs2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5100,'KSUGameDev');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5101,'tittyrpg');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5102,'WomensGameFest');
