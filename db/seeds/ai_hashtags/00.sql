@@ -5089,3 +5089,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5114,'JamesTall2024-2025anni
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5115,'EndlessHorrorJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5116,'FraudJam2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5117,'anityaspace');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5118,'LilGuyGameJam2025');
