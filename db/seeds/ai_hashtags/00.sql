@@ -5110,3 +5110,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5135,'HumanCodeJam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5136,'LAGS_GameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5137,'JamCraze');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5138,'T&EGamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5139,'byogamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5140,'mundorotopersonajes');
