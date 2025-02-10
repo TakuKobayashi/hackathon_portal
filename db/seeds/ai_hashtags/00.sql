@@ -5112,3 +5112,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5137,'JamCraze');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5138,'T&EGamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5139,'byogamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5140,'mundorotopersonajes');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5141,'CloudflareUG_hnd');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5142,'ShmupLoveMonthJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5143,'PicnicSeasonJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5144,'Fishstickjam2');
