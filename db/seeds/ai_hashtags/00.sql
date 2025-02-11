@@ -5116,3 +5116,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5141,'CloudflareUG_hnd');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5142,'ShmupLoveMonthJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5143,'PicnicSeasonJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5144,'Fishstickjam2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5145,'lovejam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5146,'ByteBash');
