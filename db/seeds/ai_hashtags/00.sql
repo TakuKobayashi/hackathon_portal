@@ -5126,3 +5126,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5151,'mehujam9');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5152,'ROSCAFE');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5153,'fusic_tech_live');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5154,'Firesidejam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5155,'第3木曜LT会');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5156,'pix3ljam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5157,'SettingSunJam2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5158,'SGJNantes25');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5159,'aijam');
