@@ -5135,3 +5135,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5160,'kotlin');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5161,'igccollabjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5162,'NaNoRenO2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5163,'EUClimatePact');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5164,'sweetnspicyjam1');
