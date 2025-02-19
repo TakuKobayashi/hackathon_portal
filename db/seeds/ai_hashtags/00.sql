@@ -5138,3 +5138,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5163,'EUClimatePact');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5164,'sweetnspicyjam1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5165,'gdgocconnect');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5166,'B1TJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5167,'XRm鹿児島');
