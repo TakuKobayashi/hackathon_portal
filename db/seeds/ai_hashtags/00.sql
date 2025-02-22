@@ -5150,3 +5150,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5175,'CGC');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5176,'DropBearMiniJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5177,'oprwj13');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5178,'brno-game-jam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5179,'dazezine');
