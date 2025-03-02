@@ -5169,3 +5169,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5194,'appetitesjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5195,'onefilebasetorulethemall');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5196,'RedotSpringJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5197,'kagezinefest');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5198,'jamdraconis2025');
