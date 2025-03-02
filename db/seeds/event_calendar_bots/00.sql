@@ -7578,3 +7578,5 @@ INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (7913,'Event',698728,'jcb7p9sttghoos4ro33jhavtu8','2025-03-01 10:07:12','2025-03-01 10:07:12');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (7914,'Event',698716,'srrhtvse063sgvfj2vga7o2qu4','2025-03-01 10:07:13','2025-03-01 10:07:13');
 INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (7915,'Event',697619,'l0bhnerd3pdsm2tbschckd50p0','2025-03-01 10:07:13','2025-03-01 10:07:13');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (7916,'Event',698761,'sg5a1ijosm3mnn3rapr9d97648','2025-03-02 10:06:15','2025-03-02 10:06:15');
+INSERT INTO `event_calendar_bots` (`id`, `from_type`, `from_id`, `calender_event_id`, `created_at`, `updated_at`) VALUES (7917,'Event',698764,'5134k1q97a7qsr7jd7csenj7m0','2025-03-02 10:06:15','2025-03-02 10:06:15');
