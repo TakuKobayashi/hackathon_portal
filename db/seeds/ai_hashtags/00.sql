@@ -5178,3 +5178,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5203,'LT');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5204,'QueerHorrorGameJam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5205,'GamePulse');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5206,'RPGMakerAssetcon');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5207,'AITRIOS');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5208,'BenderJamV1');
