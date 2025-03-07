@@ -5183,3 +5183,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5208,'BenderJamV1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5209,'psychospiritual');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5210,'hotwetqueersummer');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5211,'JameTime');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5212,'HarrisburgUniversity');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5213,'pixelscenejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5214,'RiderWaiteless');
