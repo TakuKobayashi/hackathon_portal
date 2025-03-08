@@ -5186,3 +5186,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5211,'JameTime');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5212,'HarrisburgUniversity');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5213,'pixelscenejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5214,'RiderWaiteless');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5215,'ImaginaryCardsJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5216,'dazefest');
