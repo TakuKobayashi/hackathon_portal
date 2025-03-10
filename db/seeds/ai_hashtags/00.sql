@@ -5190,3 +5190,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5215,'ImaginaryCardsJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5216,'dazefest');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5217,'StudyCo');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5218,'FromTheArcticsJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5219,'blobfish-jame-2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5220,'TinyEmbersJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5221,'WeekLoveGoodGames');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5222,'futureinspireacademy');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5223,'NCGJ5');
