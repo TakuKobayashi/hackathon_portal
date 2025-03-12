@@ -5197,3 +5197,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5222,'futureinspireacademy')
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5223,'NCGJ5');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5224,'blobfish-jam-2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5225,'Russian');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5226,'プログラミング教室');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5227,'@caligamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5228,'NokiaArtJam');
