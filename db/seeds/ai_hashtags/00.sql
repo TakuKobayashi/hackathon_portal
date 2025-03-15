@@ -5218,3 +5218,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5243,'poverigaglioffi');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5244,'AliensOnEarth');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5245,'GetPublishedJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5246,'Neutrondev');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5247,'Godot-Jam-03');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5248,'worstvnjam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5249,'flamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5250,'Godot-Jam-04');
