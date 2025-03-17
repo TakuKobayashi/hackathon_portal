@@ -5226,3 +5226,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5251,'ワンデーハッカ�
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5252,'MattAspland5Years');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5253,'clownjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5254,'mehujam10');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5255,'FlowerFest2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5256,'website-template-jam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5257,'BabelJam');
