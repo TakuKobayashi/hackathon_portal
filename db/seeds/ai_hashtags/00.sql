@@ -5236,3 +5236,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5261,'April');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5262,'SelfJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5263,'Arcjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5264,'MiniZamJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5265,'nerdyjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5266,'eternalttrpgjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5267,'gddspringjam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5268,'TriGameDevJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5269,'BuuAIJam');
