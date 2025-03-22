@@ -5246,3 +5246,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5271,'shuukuraGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5272,'mindcrack');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5273,'CofradeJam25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5274,'emojamspring2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5275,'osc25sh');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5276,'SCPGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5277,'JericallaGameJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5278,'subversionjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5279,'blobfish-jam-2025-2');
