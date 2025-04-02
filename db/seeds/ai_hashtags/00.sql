@@ -5276,3 +5276,9 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5301,'studioboolapriljam2025
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5302,'streetjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5303,'highschooljam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5304,'mydog');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5305,'FlutterKaigi');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5306,'生成AIもくもく会');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5307,'nounborg2electricborgaloo');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5308,'FerryJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5309,'KrakenSpringJam2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5310,'ChaosEngineJam');
