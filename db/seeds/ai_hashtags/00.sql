@@ -5285,3 +5285,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5310,'ChaosEngineJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5311,'onedaygamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5312,'mlse夏合宿2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5313,'martinscode');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5314,'discmasterjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5315,'acmjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5316,'uncrankdgamejam');
