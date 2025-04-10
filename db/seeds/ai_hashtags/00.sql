@@ -5303,3 +5303,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5328,'spzcolab');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5329,'TSJ2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5330,'lighturnjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5331,'TTRPGManifestoJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5332,'twogritgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5333,'GLGWebejammin');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5334,'gmcmidsem');
