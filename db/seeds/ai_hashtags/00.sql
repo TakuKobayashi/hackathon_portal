@@ -5306,3 +5306,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5331,'TTRPGManifestoJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5332,'twogritgamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5333,'GLGWebejammin');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5334,'gmcmidsem');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5335,'東京AI祭');
