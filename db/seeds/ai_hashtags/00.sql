@@ -5313,3 +5313,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5338,'CraftpixJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5339,'onedaysimulate');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5340,'EASTERJAM2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5341,'mehujam11');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5342,'signfulgames');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5343,'smcccd-hacks');
