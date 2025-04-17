@@ -5323,3 +5323,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5348,'GamesForABetterFuture'
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5349,'GamersHome');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5350,'CerealBoxGameJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5351,'emojamFALL2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5352,'ggjam2');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5353,'retechtalk');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5354,'TripTech_GameJam25');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5355,'gameponsjam');
