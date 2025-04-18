@@ -5327,3 +5327,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5352,'ggjam2');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5353,'retechtalk');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5354,'TripTech_GameJam25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5355,'gameponsjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5356,'senacassetjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5357,'12SoCGameJam');
