@@ -106,13 +106,13 @@ class Event < ApplicationRecord
     self.ended_at = self.started_at.end_of_day if self.started_at > self.ended_at
   end
 
-  def self.import_events!
+  def self.import_events!(run_ci: true)
     # マルチスレッドで処理を実行するとCircular dependency detected while autoloading constantというエラーが出るのでその回避のためあらかじめeager_loadする
     Rails.application.eager_load!
     operation_modules = HackathonEvent::SEARCH_OPERATION_KEYWORDS.keys
     Parallel.each(operation_modules, in_threads: operation_modules.size) do |operation_module|
       keywords = HackathonEvent::SEARCH_OPERATION_KEYWORDS[operation_module]
-      operation_module.import_events_from_keywords!(keywords: keywords)
+      operation_module.import_events_from_keywords!(keywords: keywords, run_ci: run_ci)
     end
     ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
     GC.start

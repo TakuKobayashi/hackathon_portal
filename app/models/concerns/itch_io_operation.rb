@@ -1,7 +1,7 @@
 module ItchIoOperation
   ITCH_IO_JAMS_URL = 'https://itch.io/jams'
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
     self.imoport_gamejam_events!
   end
 

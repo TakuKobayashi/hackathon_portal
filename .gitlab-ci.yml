@@ -82,7 +82,7 @@ crawlAndPublish:on-schedule:
     - bundle exec rails db:create
     - bundle exec rails db:migrate
     - bundle exec rails db:seed
-    - bundle exec rails runner Event.import_events!
+    - bundle exec rails runner Event.import_events!(run_ci:true)
     - bundle exec rails batch:event_revive_challenge
     - bundle exec rails backup:export_active_records_data
   artifacts:

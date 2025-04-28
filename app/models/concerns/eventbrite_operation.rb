@@ -67,7 +67,7 @@ module EventbriteOperation
     return event
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
     %w[online japan].each do |location_name|
       keywords.each do |keyword|
         page = 1

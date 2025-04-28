@@ -53,7 +53,7 @@ module DoorkeeperOperation
     return event
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
     page = 1
     begin
       events_response = self.search_events(keywords: keywords, page: page)
