@@ -2,6 +2,7 @@ module EventCommon
   BITLY_SHORTEN_API_URL = 'https://api-ssl.bitly.com/v4/shorten'
   TINY_SHORTEN_API_URL = 'https://tiny.cc/tiny/api/3/urls'
   IS_GD_SHORTEN_API_URL = 'https://is.gd/create.php'
+  XGD_SHORTEN_API_URL = 'https://xgd.io/V1/shorten'
 
   def merge_event_attributes(attrs: {})
     ops = OpenStruct.new(attrs.reject { |key, value| value.nil? })
@@ -436,31 +437,17 @@ module EventCommon
   def get_short_url
     result =
       RequestParser.request_and_parse_json(
-        url: TINY_SHORTEN_API_URL,
-        method: :post,
+        url: XGD_SHORTEN_API_URL,
+        method: :get,
         params: {
-          disable_long_url_duplicates: "account"
+          key: ENV.fetch('XGD_API_KEY', ''),
+          url: self.url,
         },
-        header: {
-          'X-Tinycc-User' => ENV.fetch('TINY_USERNAME', ''),
-          'X-Tinycc-Key' => ENV.fetch('TINY_API_KEY', ''),
-          'Content-Type' => 'application/json',
-        },
-        body: {
-          urls: [
-            { long_url: self.url },
-          ]
-        }.to_json,
         options: {
           follow_redirect: true,
         },
       )
-    if result['urls'].present?
-      result_url_info = result['urls'].first || {}
-      return 'https://' + result_url_info['short_url'].to_s
-    else
-      return nil
-    end
+    return result['shorturl']
 =begin
     result = RequestParser.request_and_parse_json(
       url: IS_GD_SHORTEN_API_URL,
