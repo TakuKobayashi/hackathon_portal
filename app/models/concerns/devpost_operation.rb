@@ -3,7 +3,7 @@ module DevpostOperation
   DEVPOST_HACKATHONS_API_URL = 'https://devpost.com/api/hackathons'
   MAX_PER_PAGE = 40
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
     self.imoport_hackathon_events!
   end
 

@@ -73,7 +73,10 @@ module PeatixOperation
     return event
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
+    if run_ci
+      return false
+    end
     keywords.each do |keyword|
       page = 1
       begin

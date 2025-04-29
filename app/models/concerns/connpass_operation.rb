@@ -45,7 +45,7 @@ module ConnpassOperation
     return event
   end
 
-  def self.import_events_from_keywords!(keywords:)
+  def self.import_events_from_keywords!(keywords:, run_ci: true)
     [keywords].flatten.each do |keyword|
       event_count = 0
       page = 1

@@ -18,9 +18,9 @@ services:
 
   web:
     build: .
-    command: rails s -p 3000 -b '0.0.0.0'
     volumes:
       - .:/app
+    tty: true
     environment:
       - MYSQL_HOST=db
       - MYSQL_USERNAME=root
