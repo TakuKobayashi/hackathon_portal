@@ -5369,3 +5369,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5394,'EpiJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5395,'LazGameDevSummerJam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5396,'scgjam00');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5397,'FoothillsJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5398,'HAGJ11');
