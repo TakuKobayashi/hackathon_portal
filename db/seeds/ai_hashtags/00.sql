@@ -5383,3 +5383,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5408,'undesjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5409,'palettelockjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5410,'wierd');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5411,'scrappygamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5412,'hytopiajam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5413,'NeoXonlineJam');
