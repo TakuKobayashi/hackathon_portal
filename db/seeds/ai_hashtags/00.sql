@@ -5385,3 +5385,6 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5410,'wierd');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5411,'scrappygamejam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5412,'hytopiajam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5413,'NeoXonlineJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5414,'JamInSilence');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5415,'cgdcspeedgame2025');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5416,'sugaming');
