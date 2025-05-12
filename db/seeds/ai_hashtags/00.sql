@@ -5389,3 +5389,8 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5414,'JamInSilence');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5415,'cgdcspeedgame2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5416,'sugaming');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5417,'mehujam12');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5418,'生成AIで捗りたい会');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5419,'poetryttrpgjam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5420,'N64StyleGraphicsJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5421,'Fortmaxxing');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5422,'Pressure12Jam');
