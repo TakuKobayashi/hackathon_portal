@@ -5400,3 +5400,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5425,'poetryinspiredgamejam'
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5426,'NextPlay');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5427,'pivotproblemjam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5428,'thesmoothlyanimatedgamejam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5429,'dinojam');
