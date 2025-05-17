@@ -5408,3 +5408,4 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5433,'AntiRomance25');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5434,'Nubtember2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5435,'wakecareer_techconf');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5436,'zaephus-engine-jam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5437,'allsummerjam');
