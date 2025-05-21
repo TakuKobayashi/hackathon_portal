@@ -5414,3 +5414,5 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5439,'BeyondGameJam2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5440,'visionOS_LT');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5441,'python1');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5442,'ThirdJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5443,'mobbing');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5444,'dinosaurjam');
