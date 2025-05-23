@@ -5422,3 +5422,7 @@ INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5447,'PantherJam');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5448,'GOATJAM');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5449,'BrowsingWithEggs2025');
 INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5450,'OddSizedZineJam');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5451,'mini-gim');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5452,'wandervibe');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5453,'birdgamejamtour');
+INSERT INTO `ai_hashtags` (`id`, `hashtag`) VALUES (5454,'mechinterphackaton');
