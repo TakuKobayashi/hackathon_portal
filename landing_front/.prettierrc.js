@@ -1,7 +1,12 @@
 module.exports = {
+  printWidth: 140,
+  tabWidth: 2,
+  useTabs: false,
   arrowParens: 'always',
   singleQuote: true,
   jsxSingleQuote: true,
-  tabWidth: 2,
   semi: true,
+  trailingComma: 'all',
+  bracketSpacing: true,
+  parser: "typescript",
 };
